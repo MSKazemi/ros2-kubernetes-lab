@@ -200,6 +200,74 @@ robots = SITE / "robots.txt"
 if robots.exists() and "Sitemap: " + BASE_URL + "sitemap.xml" not in robots.read_text(encoding="utf-8"):
     ERRORS.append("robots.txt: sitemap address does not match public base URL")
 
+
+# Research scenario registry: proposed experiments must not masquerade as measurements.
+# File/schema checks are necessary but cannot prove that a linked result was actually run.
+registry_path = SITE / "scenarios/data/experiments.json"
+if not registry_path.is_file():
+    ERRORS.append("Missing site/scenarios/data/experiments.json")
+else:
+    try:
+        import math
+        record = json.loads(registry_path.read_text(encoding="utf-8"))
+        if record.get("schema_version") != "scenario-results-v0":
+            ERRORS.append("Scenario registry schema_version must be scenario-results-v0")
+        items = record.get("experiments", [])
+        expected_ids = {"fault-triage", "placement", "skill-review", "fleet-dispatch"}
+        seen_ids: set[str] = set()
+        if not isinstance(items, list):
+            ERRORS.append("Scenario registry experiments must be a list")
+            items = []
+        for item in items:
+            if not isinstance(item, dict):
+                ERRORS.append("Scenario registry entry is not an object")
+                continue
+            ident = item.get("id")
+            status = item.get("status")
+            if not isinstance(ident, str) or ident not in expected_ids or ident in seen_ids:
+                ERRORS.append(f"Scenario registry invalid/duplicate id: {ident!r}")
+            if isinstance(ident, str):
+                seen_ids.add(ident)
+            if status not in ("planned", "collecting", "verified"):
+                ERRORS.append(f"{ident}: invalid status: {status!r}")
+            if not isinstance(item.get("primary_metric"), str) or not item["primary_metric"].strip():
+                ERRORS.append(f"{ident}: missing primary_metric")
+            if not isinstance(item.get("unit"), str) or not item["unit"].strip():
+                ERRORS.append(f"{ident}: missing unit")
+            evidence_fields = ("evidence_url", "run_manifest_sha256", "source_commit",
+                               "raw_data_url", "analysis_script_url", "reviewed_by", "review_date_utc")
+            if status != "verified":
+                if item.get("result") is not None:
+                    ERRORS.append(f"{ident}: unverified status must keep result null")
+                if item.get("run_count") != 0:
+                    ERRORS.append(f"{ident}: unverified status must have run_count=0")
+                if any(item.get(key) is not None for key in evidence_fields):
+                    ERRORS.append(f"{ident}: unverified status must not display result evidence")
+            else:
+                value = item.get("result")
+                if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value):
+                    ERRORS.append(f"{ident}: verified result must be a finite number")
+                elif value < 0 or (item.get("unit") in ("fraction", "macro-F1") and value > 1):
+                    ERRORS.append(f"{ident}: verified result outside expected nonnegative/unit range")
+                if not isinstance(item.get("run_count"), int) or item.get("run_count") < 1:
+                    ERRORS.append(f"{ident}: verified record needs observed run_count >= 1")
+                for key in ("evidence_url", "raw_data_url", "analysis_script_url"):
+                    if not isinstance(item.get(key), str) or not item[key].startswith("https://"):
+                        ERRORS.append(f"{ident}: verified result missing HTTPS {key}")
+                if not re.fullmatch(r"[a-fA-F0-9]{64}", str(item.get("run_manifest_sha256") or "")):
+                    ERRORS.append(f"{ident}: missing immutable run_manifest_sha256")
+                if not re.fullmatch(r"[a-fA-F0-9]{40}", str(item.get("source_commit") or "")):
+                    ERRORS.append(f"{ident}: missing source_commit SHA")
+                for key in ("reviewed_by", "review_date_utc"):
+                    if not isinstance(item.get(key), str) or not item[key].strip():
+                        ERRORS.append(f"{ident}: missing independent review metadata {key}")
+                if not isinstance(item.get("limitations"), str) or not item["limitations"].strip():
+                    ERRORS.append(f"{ident}: verified result must document limitations")
+        if seen_ids != expected_ids:
+            ERRORS.append(f"Scenario registry IDs: missing={sorted(expected_ids - seen_ids)}, extra={sorted(seen_ids - expected_ids)}")
+    except (ValueError, TypeError, OSError) as exc:
+        ERRORS.append(f"Invalid scenario registry JSON: {exc}")
+
 if ERRORS:
     print("Static website validation failed:")
     for error in ERRORS:
