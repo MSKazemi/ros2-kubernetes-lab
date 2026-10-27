@@ -46,6 +46,8 @@
 9. [Experiment record / preregistration template](templates/EXPERIMENT-TEMPLATE.md)
 10. [Dataset, model and risk templates](templates/DATASET-CARD-TEMPLATE.md), [model](templates/MODEL-CARD-TEMPLATE.md), [risk register](templates/RISK-REGISTER-TEMPLATE.md)
 11. [Primary sources and related work](REFERENCES.md)
+12. [Claude Code/Codex task-specific contributor prompts](CONTRIBUTOR-PROMPTS.md)
+13. [Design decisions, alternatives and unresolved questions](DECISIONS-AND-OPEN-QUESTIONS.md)
 
 ## Flagship demonstration: ROS 2 observations to AI policy to simulated action
 
