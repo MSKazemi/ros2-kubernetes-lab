@@ -112,8 +112,10 @@ for page in pages:
         ERRORS.append(f"{label}: missing/descriptive metadata")
     if parser.h1 != 1:
         ERRORS.append(f"{label}: expected exactly one H1, got {parser.h1}")
-    expected_url = BASE_URL + ("" if page == SITE / "index.html"
-                               else page.relative_to(SITE).as_posix())
+    relative_url = page.relative_to(SITE).as_posix()
+    if relative_url.endswith("index.html"):
+        relative_url = relative_url[:-len("index.html")]
+    expected_url = BASE_URL + relative_url
     if parser.canonical != expected_url:
         ERRORS.append(f"{label}: canonical mismatch ({parser.canonical} vs {expected_url})")
     if parser.duplicates:
