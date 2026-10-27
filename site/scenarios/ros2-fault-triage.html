@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<meta name="color-scheme" content="dark">
+<title>ROS 2 Fault Diagnosis + Jev | DDS, QoS &amp; Kubernetes Lab</title>
+<meta name="description" content="Study a Jev-assisted ROS 2 and Kubernetes fault diagnosis experiment: synthetic DDS/QoS incidents, baseline rules, research metrics and open student tasks.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Mohsen Seyedkazemi Ardebili">
+<link rel="canonical" href="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/ros2-fault-triage.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs.css">
+<link rel="stylesheet" href="../assets/scenarios.css">
+<script defer src="../assets/scenarios.js"></script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ROS 2 Kubernetes Lab">
+<meta property="og:title" content="ROS 2 Fault Diagnosis + Jev | DDS, QoS &amp; Kubernetes Lab">
+<meta property="og:description" content="Study a Jev-assisted ROS 2 and Kubernetes fault diagnosis experiment: synthetic DDS/QoS incidents, baseline rules, research metrics and open student tasks.">
+<meta property="og:url" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/ros2-fault-triage.html">
+<meta property="og:image" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/assets/social-card.png">
+<meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ROS 2 Fault Diagnosis + Jev | DDS, QoS &amp; Kubernetes Lab">
+<meta name="twitter:description" content="Study a Jev-assisted ROS 2 and Kubernetes fault diagnosis experiment: synthetic DDS/QoS incidents, baseline rules, research metrics and open student tasks.">
+<meta name="twitter:image" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"ROS 2 Fault Diagnosis + Jev | DDS, QoS & Kubernetes Lab","headline":"ROS 2 Fault Diagnosis + Jev | DDS, QoS & Kubernetes Lab","description":"Study a Jev-assisted ROS 2 and Kubernetes fault diagnosis experiment: synthetic DDS/QoS incidents, baseline rules, research metrics and open student tasks.","url":"https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/ros2-fault-triage.html","isAccessibleForFree":true,"dateModified":"2026-10-27","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/"},{"@type":"ListItem","position":3,"name":"Fault triage","item":"https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/ros2-fault-triage.html"}]}]}</script>
+</head><body>
+<a class="sc-skip" href="#main">Skip to main content</a>
+<header class="docs-nav"><div class="sc-shell docs-nav-inner">
+<a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a class="github-link" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main">
+<section class="sc-hero"><div class="sc-shell sc-hero-inner">
+<div><nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Scenarios</a><span>/</span>Fault triage</nav>
+<span class="sc-kicker">SCENARIO 01 · P1 / FIRST EXPERIMENT</span>
+<h1>ROS 2 DDS &amp; Kubernetes Fault Diagnosis with Jev</h1>
+<p class="sc-lead">A listener stops receiving messages. Is the cause DDS discovery, QoS, networking or resource pressure? Build a transparent diagnostic comparison without touching a robot.</p>
+<div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · not benchmarked</span><span class="sc-pill">Beginner → MSc</span><span class="sc-pill">Laptop only for casebook</span></div>
+<div class="sc-actions"><a class="sc-link-button" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/84">Collaborate on issue #84 ↗</a><a class="sc-link-button sc-link-button--ghost" href="./results.html">View evidence registry</a></div>
+</div><div class="sc-visual">
+<div class="sc-visual-header"><span>CONCEPTUAL WORKFLOW / NOT LIVE</span><b>ROBOTICS · CLOUD · AI</b></div>
+<svg class="sc-motif" viewBox="0 0 500 240" role="img" aria-labelledby="sc-motif-title sc-motif-desc">
+<title id="sc-motif-title">Fault triage research workflow</title><desc id="sc-motif-desc">Illustrative processing stages EVIDENCE, HARD GATE, JEV?, REVIEW. No real Jev inference, ROS 2 traffic or robot control is shown.</desc>
+<path class="sc-wire" d="M134 88H185M312 88H355M420 119V158H338" />
+<path class="sc-wire" d="M164 186H115V125" />
+<rect x="8" y="51" width="126" height="74" rx="13" />
+<rect class="sc-vnode" x="182" y="51" width="130" height="74" rx="13" />
+<rect x="356" y="51" width="135" height="74" rx="13" />
+<rect class="sc-vnode" x="162" y="158" width="176" height="65" rx="13" />
+<text x="71" y="94">EVIDENCE</text><text x="247" y="94">HARD GATE</text><text x="423" y="94">JEV?</text><text x="250" y="194">REVIEW</text>
+<circle class="sc-pulse" cx="160" cy="88" r="5" /><circle class="sc-pulse" cx="335" cy="88" r="5" />
+</svg><div class="sc-visual-foot"><span>SIMULATED / RESEARCH BLUEPRINT</span><strong>NO ACTUATION</strong></div>
+</div></div></section>
+<section class="sc-section"><div class="sc-shell">
+<span class="sc-overline">01 / What are we studying?</span><h2>One real research question, not a product claim.</h2>
+<div class="sc-detail-grid">
+<div><p class="sc-intro">A fictional ROS 2 listener has missed a publisher&#39;s messages. The provided record might point to QoS incompatibility, DDS discovery, missing connectivity, or insufficient evidence; the underlying cause is deliberately not assumed.</p><div class="sc-panel"><h3>Research hypothesis</h3><p><strong>Question:</strong> Can a bounded Jev Choice improve held-out synthetic incident classification over a deterministic rule baseline without overconfident diagnoses?</p><p><strong>Null hypothesis:</strong> Jev offers no meaningful increase in macro-F1 or selective coverage at a fixed error rate compared with a simple offline rule baseline.</p><p><strong>Alternative:</strong> Jev adds diagnostic information on ambiguous cases while preserving an unknown/review option; this must be measured on held-out data.</p></div></div>
+<div class="sc-panel"><h3>Audience & learning targets</h3><p><strong>ROS 2 students · SREs · teaching assistants</strong> · Beginner → MSc · Laptop only for casebook</p><ul class="sc-mini-list"><li>Distinguish ROS 2 application nodes from Kubernetes worker nodes.</li><li>Identify reliability and durability QoS mismatches versus DDS discovery gaps.</li><li>Treat ambiguous logs as evidence, not commands; practice abstention.</li><li>Measure a structured classifier against a deterministic baseline.</li></ul></div>
+</div>
+</div></section>
+<section class="sc-section sc-section--shade" id="interactive-trace"><div class="sc-shell">
+<span class="sc-overline">02 / Interactive walkthrough</span><h2>Follow an illustrative decision trace.</h2>
+<p class="sc-intro">Select a fabricated case and trace where conventional code, an optional Jev judgment, and human review belong. This animation is preauthored educational content: <strong>it performs no inference, no API call, and no robot action.</strong></p>
+<div class="sc-trace" data-walkthrough="fault-triage">
+<div class="sc-trace-controls"><label for="example-select">Synthetic case</label><select id="example-select" class="sc-select" data-example-select><option value="qos">QoS incompatibility</option><option value="ambiguous">Ambiguous missing messages</option></select><span class="sc-pill sc-pill--mint">SYNTHETIC ONLY</span></div>
+<div class="sc-trace-observation" data-observation>A fictional ROS 2 listener has missed a publisher&#39;s messages. The provided record might point to QoS incompatibility, DDS discovery, missing connectivity, or insufficient evidence; the underlying cause is deliberately not assumed.</div>
+<ol class="sc-steps"><li><button type="button" class="sc-step-btn" data-step-index="0" aria-current="step"><b>STAGE 01</b><strong>Synthetic ROS 2 and pod events</strong><span data-step-description>Fictional logs and QoS settings only.</span></button></li><li><button type="button" class="sc-step-btn" data-step-index="1" aria-current="false"><b>STAGE 02</b><strong>Validate QoS, age, source and missingness</strong><span data-step-description>Hard checks remain in ordinary code.</span></button></li><li><button type="button" class="sc-step-btn" data-step-index="2" aria-current="false"><b>STAGE 03</b><strong>Optional Jev Choice classification</strong><span data-step-description>No request is sent from this website.</span></button></li><li><button type="button" class="sc-step-btn" data-step-index="3" aria-current="false"><b>STAGE 04</b><strong>Human review and a read-only incident report</strong><span data-step-description>No automatic remediation or robot actions.</span></button></li></ol>
+<div class="sc-trace-caption"><div><p role="status" aria-live="polite" data-step-status>Illustrative stage 1 of 4: Synthetic ROS 2 and pod events</p><p>Visual explanation only; Jev probabilities and experimental outcomes are intentionally absent.</p></div><div class="sc-trace-actions"><button type="button" class="sc-button sc-button--ghost" data-next-step>Next step</button><button type="button" class="sc-button" data-play-steps aria-pressed="false">Play walkthrough</button></div></div>
+</div>
+<p class="sc-aside">Keyboard users: select a case or activate any stage button. The animation can be paused in the header, and system reduced-motion preferences are supported.</p>
+</div></section>
+<section class="sc-section" id="experiment"><div class="sc-shell">
+<span class="sc-overline">03 / Experiment blueprint</span><h2>Variables, baselines and measurements.</h2>
+<p class="sc-intro">Before anyone reports performance, the task, failure cases, comparison methods and test split must be fixed. Keep negative results and rejected advice visible.</p>
+<div class="sc-table-wrap"><table class="sc-table"><thead><tr><th scope="col">Research dimension</th><th scope="col">Proposed measurement contract</th></tr></thead><tbody><tr><th scope="row">Dataset</th><td>20–40 starter synthetic incidents across discovery, QoS, network, resource, healthy and unknown; family-grouped held-out test set for later research.</td></tr>
+<tr><th scope="row">Baseline</th><td>Rule-based event triage and majority-class/always-unknown controls. Define label criteria before model evaluation.</td></tr>
+<tr><th scope="row">Variables</th><td>Event completeness, contradictions, ROS distro wording, log injection, Choice option order and Jev question wording.</td></tr>
+<tr><th scope="row">Failure cases</th><td>Stale timestamp, missing QoS metadata, conflicting evidence, API 429/timeout, malicious text inside a simulated log.</td></tr>
+<tr><th scope="row">Primary metrics</th><td>Macro-F1, per-class recall and selective risk vs accepted-coverage; measured end-to-end p95 and provider availability later.</td></tr>
+<tr><th scope="row">Reproducibility</th><td>Seed, synthetic fixture family, model/request revision, criteria hash, failures, abstentions and exact source commit.</td></tr></tbody></table></div>
+<div class="sc-detail-grid"><div class="sc-panel"><h3>Suggested experiment procedure</h3><ol><li>Author a small licensed synthetic incident corpus with class rationale, ambiguity flags and family IDs.</li>
+<li>Specify the input/output schema and deterministic rules (no provider key required).</li>
+<li>Split by incident family; preserve a held-out test set and preregister evaluation targets.</li>
+<li>Optionally query pinned Jev on sanitized synthetic state with an explicit cost/network budget.</li>
+<li>Report accepted/rejected/unknown outcomes, confidence calibration and runtime/cost evidence from real runs only.</li></ol></div><div class="sc-panel"><h3>What a contribution should produce</h3><ul><li>Synthetic incident casebook + label guidelines</li>
+<li>Versioned schema and offline baseline tests</li>
+<li>Reproducibility manifest and raw predictions (only after actual runs)</li>
+<li>Error analysis and confidence/abstention charts (only from observed data)</li></ul><p><strong>Required before publishing a result:</strong> independent run ID, method, seed, source/model revisions, environment, raw measurements, executable analysis, errors/limitations and human review.</p></div></div>
+</div></section>
+<section class="sc-section sc-section--shade" id="results"><div class="sc-shell">
+<span class="sc-overline">04 / Evidence not marketing</span><h2>Current results: not measured.</h2>
+<div class="sc-detail-grid"><div class="sc-callout"><h3>No verified experiment results yet</h3><p>No Jev-vs-baseline accuracy, latency, energy, fairness or simulator task-success result is available for this scenario. The website does not fabricate graphs or sample performance numbers. Future evidence must include raw data and replay instructions.</p><a class="sc-link-button" href="./results.html">Open results registry ↗</a></div>
+<div class="sc-panel"><h3>Dependencies and research honesty</h3><p>Follow existing research work <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/74">#74</a> and the broader <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/83">scenario epic #83</a>. The legacy Vagrant/Foxy manifests and current Jazzy image-local test do not establish multi-worker DDS or physical robot integration.</p><p><strong>Safety:</strong> no actuator commands, unrestricted cluster operations, or vendor data collection from this static demonstration.</p></div></div>
+</div></section>
+<section class="sc-section" id="contribute"><div class="sc-shell">
+<span class="sc-overline">05 / Open research collaboration</span><h2>Help turn the blueprint into evidence.</h2>
+<div class="sc-detail-grid">
+<div class="sc-callout"><h3>Join scenario 01</h3><p>Contributors can own a small, reviewable task: casebook, synthetic dataset, offline baseline, simulator test, reproducibility review or teaching guide. The issue includes a detailed Claude Code/Codex prompt, acceptance criteria and dependencies.</p><a class="sc-link-button" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/84">Contribute on GitHub issue #84 ↗</a></div>
+<div class="sc-panel"><h3>Technical references</h3><ul><li><a href="https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Quality-of-Service-Settings.html">ROS 2 QoS reference</a></li>
+<li><a href="https://docs.typesafe.ai/api/system-one">Jev System One API</a></li>
+<li><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/74">Related PoC #74</a></li></ul><p>Review <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/73">Jev research umbrella #73</a>, <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/83">scenario epic #83</a> and the <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/AGENTS.md">repository agent instructions</a>. No vendor endorsement or measured success is implied.</p></div></div>
+<h2 id="more" style="margin-top:70px">Continue exploring</h2><div class="sc-grid sc-grid--3"><a class="sc-card sc-card--link" href="./edge-cloud-inference.html"><span class="sc-card-index">SCENARIO 02</span><h3>Edge/cloud placement</h3><p>Which AI workload belongs on a robot, at a nearby edge service, or in Kubernetes? Compare feasibility filters with Jev&#39;s structured advice under unreliable networks.</p><span class="sc-card-cta">Explore Edge/cloud placement</span></a>
+<a class="sc-card sc-card--link" href="./robot-agent-safety.html"><span class="sc-card-index">SCENARIO 03</span><h3>Agent skill screening</h3><p>An LLM proposes a robot skill. Can a structured decision model provide useful extra review without bypassing deterministic permissions and simulator safety checks?</p><span class="sc-card-cta">Explore Agent skill screening</span></a>
+<a class="sc-card sc-card--link" href="./multi-robot-scheduling.html"><span class="sc-card-index">SCENARIO 04</span><h3>Multi-robot scheduling</h3><p>Three simulated robots have different capabilities, reservations and energy budgets. Who should get the next task—and how can we measure fairness?</p><span class="sc-card-cta">Explore Multi-robot scheduling</span></a></div>
+</div></section>
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Illustrative diagrams, synthetic examples; no physical robot or safety-critical control</span><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/SAFETY.md">Safety and limitations ↗</a></div></footer></body></html>
