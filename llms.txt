@@ -57,3 +57,12 @@ ROS 2 DDS discovery behavior depends on RMW configuration, network transport and
 - **Latest verified status:** this document describes repository files inspected on 11 October 2026, not a newly executed full VM integration test.
 
 This `llms.txt` is an informational navigation aid, not a claim of special indexing or AI-search ranking treatment.
+
+
+## Proposed Cloud Robotics + AI/LLM research track (not implemented)
+
+- [Cloud Robotics + AI/LLM Lab research hub](docs/cloud-robotics/README.md): staged student, PhD and industry study plan; design only.
+- [18 scenario catalog](docs/cloud-robotics/SCENARIO-CATALOG.md): simulated cloud robotics, ROS networking, Hugging Face, dataset, LLM agent and ethics experiments; not verified runtime features.
+- [LeRobot integration proposal](docs/cloud-robotics/HUGGINGFACE-INTEGRATION.md): unimplemented design and compatibility gates.
+- [Safety and ethics guidance](docs/cloud-robotics/ETHICS-SAFETY-AND-GOVERNANCE.md): simulation-only first phases and public data protection.
+- [2026-2027 research roadmap](docs/cloud-robotics/ROADMAP-2026-2027.md): prerequisites and linked implementation issues; no claimed benchmark results.
