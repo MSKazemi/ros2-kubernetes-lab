@@ -22,7 +22,8 @@ The name should communicate **practical learning** before implying a commercial 
 | Primary modular mark | `site/assets/logo-mark.svg` | Navbar, docs, presentations, avatars |
 | Horizontal lockup | `site/assets/brand-lockup.svg` | Wide contexts, conference slides, README graphics |
 | Robotics concept art | `site/assets/robotics-hero.svg` | Website showcase; always label *illustrative concept art* |
-| Social card source | `site/assets/social-card.svg` | Social preview design source; export to PNG before uploading |
+| Social card source | `site/assets/social-card.svg` | Editable vector composition for future social design updates |
+| Social card PNG | `site/assets/social-card.png` | Ready-to-upload 1280×640 raster social preview and Open Graph preview |
 | Favicon | `site/favicon.svg` | Browser tab |
 
 These SVGs are original assets for this repository. They depict **concepts**, not proven deployed machines or screenshots. Do not add third-party robotics or cloud trademarks without checking usage guidelines. Do not use manufacturer logos to imply endorsement.
@@ -106,8 +107,8 @@ Suggested copy:
 
 ## 7. Brand in social publishing
 
-- The SVG source `site/assets/social-card.svg` is **1280×640**.
-- For GitHub Settings → Social preview, export an accurate PNG/JPEG under the platform limit (verify GitHub's current requirement). This step is **manual**; committing the SVG alone does not set the social preview.
+- The SVG source `site/assets/social-card.svg` is **1280×640**; a corresponding raster PNG exists as `site/assets/social-card.png`.
+- For GitHub Settings → Social preview, upload the checked-in `site/assets/social-card.png` after verifying the platform's current format and size requirements. This step is **manual**; committing the file does not set the repository's social preview.
 - For blog, Dev.to, YouTube thumbnails and slide covers, reuse the same typographic contrast, modular mark and 4-color accent vocabulary.
 - Always link the **canonical public repository**, and use the **GitHub Pages website** only once deployment is verified.
 - On demo videos distinguish *historical screen recordings* from new runtime evidence.
