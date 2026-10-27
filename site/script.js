@@ -34,8 +34,6 @@ function updateMotion(){
   document.documentElement.classList.toggle("has-motion",!paused);
   if(motionButton){
     motionButton.setAttribute("aria-pressed",String(paused));
-    motionButton.setAttribute("aria-label",paused?"Enable decorative animations":"Pause decorative animations");
-    motionButton.textContent=paused?"Enable motion":"Pause motion";
   }
   if(paused) revealElements.forEach(el=>el.classList.add("is-revealed"));
 }
