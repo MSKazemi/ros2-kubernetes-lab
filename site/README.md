@@ -16,7 +16,7 @@ The static website for **ROS 2 Kubernetes Lab**, designed as an honest, accessib
 - **Original graphics:** `site/assets/` — modular SVG mark, horizontal wordmark, robotics concept art, vector social preview and 1280×640 PNG social card.
 - **Progressive enhancements:** `site/script.js` — mobile nav, working tabs, copy commands, architecture highlight, scroll reveal and an accessible pause-motion control.
 - **Styles:** `site/styles.css` for the home page, `site/assets/docs.css` for documentation.
-- **SEO:** independent title/description/canonical per page, structured data on the landing page, actual PNG Open Graph/Twitter metadata, robots.txt and six-URL sitemap.
+- **SEO:** independent title/description/canonical per page, structured data on the landing page, actual PNG Open Graph/Twitter metadata, robots.txt and sitemap covering each canonical HTML page.
 - **Deploy and verify:** GitHub Actions in `.github/workflows/pages.yml`; offline validation in `scripts/validate-site.py`.
 
 The website uses **vanilla HTML, CSS, and JS** (no npm build). External fonts are optional. There are no visitor analytics, user accounts, sales processing, or tracking cookies.
