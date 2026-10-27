@@ -33,8 +33,10 @@ class PageParser(HTMLParser):
         self.lang: str | None = None
         self.alt_missing = 0
         self.duplicates: list[str] = []
-        self.jsonld: list[str] = []
+        self.jsonld: list[str] = []  # one entry per application/ld+json block
         self._inside_ld = False
+        self.skip_link = False
+        self.motion_toggle = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         a = dict(attrs)
@@ -55,6 +57,10 @@ class PageParser(HTMLParser):
             self.canonical = a.get("href")
         if tag == "a" and a.get("href"):
             self.links.append(a["href"])
+            if a["href"] == "#main":
+                self.skip_link = True
+        if "data-motion-toggle" in a:
+            self.motion_toggle = True
         if a.get("aria-controls"):
             self.links.append("#" + a["aria-controls"])
         if tag in ("script", "link", "img", "source"):
@@ -66,6 +72,7 @@ class PageParser(HTMLParser):
             self.alt_missing += 1
         if tag == "script" and a.get("type") == "application/ld+json":
             self._inside_ld = True
+            self.jsonld.append("")
 
     def handle_endtag(self, tag: str) -> None:
         if tag == "script":
@@ -73,7 +80,7 @@ class PageParser(HTMLParser):
 
     def handle_data(self, data: str) -> None:
         if self._inside_ld:
-            self.jsonld.append(data)
+            self.jsonld[-1] += data
 
 
 def local_target(source: Path, reference: str) -> tuple[Path, str]:
@@ -110,6 +117,14 @@ for page in pages:
         ERRORS.append(f"{label}: missing title")
     if not parser.description or len(parser.description) < 50:
         ERRORS.append(f"{label}: missing/descriptive metadata")
+    elif len(parser.description) > 160:
+        ERRORS.append(f"{label}: meta description is {len(parser.description)} characters; limit is 160")
+    if not parser.skip_link:
+        ERRORS.append(f"{label}: missing skip link (href=\"#main\")")
+    scenarios_dir = (SITE / "scenarios").resolve()
+    if page.resolve().parent == scenarios_dir and page.name not in ("index.html", "results.html"):
+        if not parser.motion_toggle:
+            ERRORS.append(f"{label}: scenario detail page lacks a [data-motion-toggle] element")
     if parser.h1 != 1:
         ERRORS.append(f"{label}: expected exactly one H1, got {parser.h1}")
     relative_url = page.relative_to(SITE).as_posix()
@@ -122,11 +137,11 @@ for page in pages:
         ERRORS.append(f"{label}: duplicate ids {parser.duplicates}")
     if parser.alt_missing:
         ERRORS.append(f"{label}: images without alt: {parser.alt_missing}")
-    if parser.jsonld:
+    for block_number, block in enumerate(parser.jsonld, start=1):
         try:
-            json.loads("".join(parser.jsonld))
+            json.loads(block)
         except json.JSONDecodeError as exc:
-            ERRORS.append(f"{label}: invalid JSON-LD: {exc}")
+            ERRORS.append(f"{label}: invalid JSON-LD block {block_number}: {exc}")
     for ref in parser.links + parser.assets:
         if ref.startswith(("http:", "https:", "mailto:", "tel:", "javascript:")):
             continue
@@ -199,6 +214,74 @@ if sitemap.exists():
 robots = SITE / "robots.txt"
 if robots.exists() and "Sitemap: " + BASE_URL + "sitemap.xml" not in robots.read_text(encoding="utf-8"):
     ERRORS.append("robots.txt: sitemap address does not match public base URL")
+
+
+# Research scenario registry: proposed experiments must not masquerade as measurements.
+# File/schema checks are necessary but cannot prove that a linked result was actually run.
+registry_path = SITE / "scenarios/data/experiments.json"
+if not registry_path.is_file():
+    ERRORS.append("Missing site/scenarios/data/experiments.json")
+else:
+    try:
+        import math
+        record = json.loads(registry_path.read_text(encoding="utf-8"))
+        if record.get("schema_version") != "scenario-results-v0":
+            ERRORS.append("Scenario registry schema_version must be scenario-results-v0")
+        items = record.get("experiments", [])
+        expected_ids = {"fault-triage", "placement", "skill-review", "fleet-dispatch"}
+        seen_ids: set[str] = set()
+        if not isinstance(items, list):
+            ERRORS.append("Scenario registry experiments must be a list")
+            items = []
+        for item in items:
+            if not isinstance(item, dict):
+                ERRORS.append("Scenario registry entry is not an object")
+                continue
+            ident = item.get("id")
+            status = item.get("status")
+            if not isinstance(ident, str) or ident not in expected_ids or ident in seen_ids:
+                ERRORS.append(f"Scenario registry invalid/duplicate id: {ident!r}")
+            if isinstance(ident, str):
+                seen_ids.add(ident)
+            if status not in ("planned", "collecting", "verified"):
+                ERRORS.append(f"{ident}: invalid status: {status!r}")
+            if not isinstance(item.get("primary_metric"), str) or not item["primary_metric"].strip():
+                ERRORS.append(f"{ident}: missing primary_metric")
+            if not isinstance(item.get("unit"), str) or not item["unit"].strip():
+                ERRORS.append(f"{ident}: missing unit")
+            evidence_fields = ("evidence_url", "run_manifest_sha256", "source_commit",
+                               "raw_data_url", "analysis_script_url", "reviewed_by", "review_date_utc")
+            if status != "verified":
+                if item.get("result") is not None:
+                    ERRORS.append(f"{ident}: unverified status must keep result null")
+                if item.get("run_count") != 0:
+                    ERRORS.append(f"{ident}: unverified status must have run_count=0")
+                if any(item.get(key) is not None for key in evidence_fields):
+                    ERRORS.append(f"{ident}: unverified status must not display result evidence")
+            else:
+                value = item.get("result")
+                if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value):
+                    ERRORS.append(f"{ident}: verified result must be a finite number")
+                elif value < 0 or (item.get("unit") in ("fraction", "macro-F1") and value > 1):
+                    ERRORS.append(f"{ident}: verified result outside expected nonnegative/unit range")
+                if not isinstance(item.get("run_count"), int) or item.get("run_count") < 1:
+                    ERRORS.append(f"{ident}: verified record needs observed run_count >= 1")
+                for key in ("evidence_url", "raw_data_url", "analysis_script_url"):
+                    if not isinstance(item.get(key), str) or not item[key].startswith("https://"):
+                        ERRORS.append(f"{ident}: verified result missing HTTPS {key}")
+                if not re.fullmatch(r"[a-fA-F0-9]{64}", str(item.get("run_manifest_sha256") or "")):
+                    ERRORS.append(f"{ident}: missing immutable run_manifest_sha256")
+                if not re.fullmatch(r"[a-fA-F0-9]{40}", str(item.get("source_commit") or "")):
+                    ERRORS.append(f"{ident}: missing source_commit SHA")
+                for key in ("reviewed_by", "review_date_utc"):
+                    if not isinstance(item.get(key), str) or not item[key].strip():
+                        ERRORS.append(f"{ident}: missing independent review metadata {key}")
+                if not isinstance(item.get("limitations"), str) or not item["limitations"].strip():
+                    ERRORS.append(f"{ident}: verified result must document limitations")
+        if seen_ids != expected_ids:
+            ERRORS.append(f"Scenario registry IDs: missing={sorted(expected_ids - seen_ids)}, extra={sorted(seen_ids - expected_ids)}")
+    except (ValueError, TypeError, OSError) as exc:
+        ERRORS.append(f"Invalid scenario registry JSON: {exc}")
 
 if ERRORS:
     print("Static website validation failed:")
