@@ -9,8 +9,9 @@ The static website for **ROS 2 Kubernetes Lab**, designed as an honest, accessib
 - **Landing page:** `site/index.html` — original branding, hero diagram, illustrative robotics art, project features, learning paths, setup tabs, technical roadmap and community entry points.
 - **Visual identity:** `site/BRAND.md` — color tokens, logo assets, quotes, type, animation and truthful marketing rules.
 - **Five HTML documentation pages:** `site/docs/` — hub, getting started, architecture, learning paths and contributing.
-- **Cloud–Edge Robotics Scenario Lab:** `site/scenarios/` — searchable gallery, four detailed Jev/ROS 2/Kubernetes research blueprints, animated synthetic decision traces, results status board and reproducibility registry. **Research proposals only, not live model results.**
-- **Results governance:** `site/scenarios/data/experiments.json` starts with four planned records, all null performance values; `scripts/validate-site.py` rejects unverified result claims missing required provenance.
+- **Cloud–Edge Robotics Scenario Lab:** `site/scenarios/` — searchable gallery, eight detailed Jev/ROS 2/Kubernetes/Hugging Face research blueprints, animated synthetic decision traces, results status board and reproducibility registry. **Research proposals only, not live model results.**
+- **Results governance:** `site/scenarios/data/experiments.json` starts with eight planned records, all null performance values; `scripts/validate-site.py` rejects unverified result claims missing required provenance.
+- **Hugging Face RobotOps track:** `site/scenarios/hf-*.html`, `site/assets/hf-scenarios.js` and `docs/huggingface-robotops/` document dataset integrity, open-model comparison, SmolVLA/LIBERO and remote LeRobot policy research. `integrations/huggingface/spaces/` provides a static-only educational starter, **not a deployed Space**.
 - **Collaboration/SEO playbooks:** `docs/scenario-lab/` with research issue map, Claude Code/Codex instructions, results publication standard and student-first SEO strategy.
 - **Original graphics:** `site/assets/` — modular SVG mark, horizontal wordmark, robotics concept art, vector social preview and 1280×640 PNG social card.
 - **Progressive enhancements:** `site/script.js` — mobile nav, working tabs, copy commands, architecture highlight, scroll reveal and an accessible pause-motion control.
@@ -35,6 +36,7 @@ In a separate terminal:
 python3 scripts/validate-site.py
 node --check site/script.js
 node --check site/assets/scenarios.js
+node --check site/assets/hf-scenarios.js
 ```
 
 The validator checks local site paths, document references, sitemap consistency, JSON-LD and XML well-formedness. It does not replace real browser testing, live network requests, accessibility review or Kubernetes/DDS integration tests.
