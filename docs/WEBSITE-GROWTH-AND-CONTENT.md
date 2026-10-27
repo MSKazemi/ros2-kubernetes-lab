@@ -106,7 +106,7 @@ Use UTM parameters only for genuine attributable campaigns and avoid hidden data
 
 ### First 30 days
 - Review and merge website PR, enable GitHub Actions Pages, verify live URL.
-- Export social-card SVG to GitHub-compliant PNG and manually set social preview.
+- Upload the committed 1280×640 `site/assets/social-card.png` in GitHub Settings after validating preview behavior.
 - Verify mobile, keyboard, motion, redirects, crawling metadata and all links.
 - Set GitHub About website only after the site resolves.
 - Collect zero-day analytics baselines without claiming traffic.
