@@ -33,6 +33,8 @@ git diff --check
 git status --short
 # Bash provisioning scripts (GNU/Linux):
 bash scripts/check-shell.sh
+# Local Markdown links and #anchors (no network; known issues in scripts/markdown-links-known-issues.txt):
+python3 scripts/check-markdown-links.py
 # Only if Ruby is available and the Vagrantfile changed:
 ruby -c Vagrantfile
 ```

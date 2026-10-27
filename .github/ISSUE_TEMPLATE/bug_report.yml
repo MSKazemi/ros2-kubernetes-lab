@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting a bug. This repository currently contains a legacy ROS 2 Foxy stack; please state the versions you actually used. **Do not post passwords, login tokens, kubeconfigs or unredacted credentials.**
+        Thanks for reporting a bug. This repository currently contains a legacy ROS 2 Foxy Vagrant/Kubernetes stack and a separate Jazzy container image; please state the versions you actually used. **Do not post passwords, login tokens, kubeconfigs or unredacted credentials.**
   - type: dropdown
     id: area
     attributes:

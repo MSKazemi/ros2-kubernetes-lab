@@ -2,7 +2,7 @@
 
 **Repository:** https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment
 
-**Scope:** Repository-level search, README clarity, truthful descriptions, developer discovery, search landing pages, AI answer citations, and organic community growth. This report combines an **actual static repository inspection** with a limited **GitHub repository-search sample**. It does **not** claim to measure Google Search Console, Bing impressions, ChatGPT recommendations, visitors, or traffic. The project remains a historical ROS 2 Foxy lab.
+**Scope:** Repository-level search, README clarity, truthful descriptions, developer discovery, search landing pages, AI answer citations, and organic community growth. This report combines an **actual static repository inspection** with a limited **GitHub repository-search sample**. It does **not** claim to measure Google Search Console, Bing impressions, ChatGPT recommendations, visitors, or traffic. The Vagrant/Kubernetes stack remains a historical ROS 2 Foxy lab (`legacy`); a separate ROS 2 Jazzy / Ubuntu 24.04 container image is `container tested` only, and `cross-worker verified` has not been achieved (see [support states](ROS2-KUBERNETES-DDS-GUIDE.md#support-states-and-evidence)).
 
 ## Baseline (observed 11 October 2026)
 
@@ -81,7 +81,7 @@ Retain a clear Foxy/legacy signal until a modern tested release exists. Do **not
 | How does ROS 2 DDS discovery work across Kubernetes pods? | `docs/ROS2-KUBERNETES-DDS-GUIDE.md` | New in this PR |
 | How do I monitor ROS 2 and Kubernetes resource usage? | `MonitoringSystem/README.md`, `DataAnalysis/README.md` | Existing historical material |
 | Why does the ROS 2 listener not receive messages on Kubernetes? | DDS guide + link to real troubleshooting tasks | New in this PR; actual validation pending |
-| Can I use ROS 2 Jazzy/kind/k3d? | Compatibility warning and planned issues | Not yet delivered; do not position as available |
+| Can I use ROS 2 Jazzy/kind/k3d? | Compatibility warning and planned issues | A Jazzy container image exists (`container tested`, single container). Jazzy on Kubernetes across workers and kind/k3d are not delivered; do not position them as available |
 | Can I contribute without a large VM? | Good-first-issue labels + contributor PR #31 | Contributor PR is open, not merged |
 | How can I deploy across multiple robot/edge clusters? | Separate exploratory project, not this lab | Do not claim current feature coverage |
 

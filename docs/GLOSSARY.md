@@ -24,6 +24,14 @@ This document provides simple, plain-English definitions for the robotics and in
 * **RMW (ROS Middleware) implementation**: The software layer that connects the core ROS 2 code to the specific DDS library being used (such as FastDDS or CycloneDDS). [Read more about RMW](https://docs.ros.org/en/jazzy/Concepts/Intermediate/About-Different-Middleware-Vendors.html).
 * **ROS_DOMAIN_ID**: A numerical identifier used to logically isolate different ROS 2 networks sharing the same physical network. Only nodes sharing the same domain ID will discover and communicate with each other.
 
+## Support States
+
+These labels describe how far a part of this repository has actually been verified. See the [compatibility table](./ROS2-KUBERNETES-DDS-GUIDE.md#support-states-and-evidence) for which component is in which state.
+
+* **legacy**: Historical, unverified in the latest review, and based on end-of-life or archived components (ROS 2 Foxy, Kubernetes 1.29, Weave Net, the Vagrant VMs and the original `ROS2/ros_dep_*.yaml` manifests).
+* **container tested**: The ROS 2 Jazzy / Ubuntu 24.04 image builds and passes a talker/listener check inside a single container. This does not test Kubernetes or networking between nodes.
+* **cross-worker verified**: A talker and listener on different Kubernetes workers exchange messages in a repeatable test. Not achieved yet.
+
 ## Additional Tools
 
 * **Prometheus**: An open-source systems monitoring toolkit that collects and stores time-series performance metrics (like CPU and memory usage) from the cluster.

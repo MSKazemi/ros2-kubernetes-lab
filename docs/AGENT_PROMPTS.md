@@ -23,6 +23,8 @@ validation you performed, and what you did not verify.
 
 **Human check:** Compare every image path with `images/` and visually inspect any screenshot whose description changed. Do not accidentally publish secrets shown in screenshots.
 
+**Coordinate first:** PR [#36](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/pull/36) is already open for this issue. Review or comment on it rather than opening a duplicate PR.
+
 ## 2. Documentation + accuracy: issue #24 — ROS 2 workload guide
 
 ```text
@@ -40,22 +42,21 @@ Do not start Vagrant or change cluster security settings.
 
 **Human check:** The commands should refer to real files, namespaces and workload behavior. Do not mark the issue as fixed if acceptance criteria are unmet.
 
-## 3. First coding PR: issue #28 — Bash CI syntax check
+## 3. First coding PR: issue #55 — CPU-only mock policy
 
 ```text
-I want to implement open issue #28 with a small PR.
-Read AGENTS.md, the issue text, and .github/workflows/main.yaml.
-First propose a minimal separate GitHub Actions workflow that runs Bash syntax
-checks on tracked *.sh files for PRs. It must not need Docker Hub secrets,
-push container images, start Vagrant VMs, or rewrite all the existing scripts.
-Use a robust list of files including paths with spaces.
-Explain how you will prove a deliberately invalid script causes a nonzero exit,
-without committing the invalid file. Do not change runtime behavior or publish artifacts.
-After I approve, implement the workflow, document the local verification command
-in CONTRIBUTING.md, and show checks actually run and ones still awaiting GitHub CI.
+I want to implement open issue #55 with a small PR.
+Read AGENTS.md, the issue text and its acceptance criteria, and the existing ROS2/ directory.
+The issue body is authoritative; if it is not accessible, ask me to paste it and do not guess.
+First propose a minimal change that meets the acceptance criteria, listing the files you would add or edit.
+It must not need Docker Hub secrets, push container images, start Vagrant VMs,
+or rewrite existing workloads. Do not change runtime behavior of current manifests or publish artifacts.
+Explain how you will verify the change without a cluster, and which checks you cannot run.
+After I approve, implement it, document the verification command where the issue's scope requires it,
+and show checks actually run and ones still awaiting GitHub CI.
 ```
 
-**Human check:** Review workflow permissions/triggers; ensure a green static job does not imply the cluster was tested.
+**Human check:** Confirm the issue's acceptance criteria are met and that no check implies a cluster, DDS or hardware test passed.
 
 ## 4. Kubernetes validation: issue #29 — manifest schemas
 
