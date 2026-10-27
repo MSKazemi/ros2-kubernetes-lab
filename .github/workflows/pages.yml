@@ -35,7 +35,9 @@ jobs:
       - name: Validate website assets and links
         run: python3 scripts/validate-site.py
       - name: Check JavaScript syntax
-        run: node --check site/script.js
+        run: |
+          node --check site/script.js
+          node --check site/assets/scenarios.js
 
   deploy:
     name: Publish website
