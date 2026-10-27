@@ -24,6 +24,7 @@
   const query = document.querySelector("[data-scenario-search]");
   const cards = Array.from(document.querySelectorAll("[data-scenario-card]"));
   const filterStatus = document.querySelector("[data-filter-status]");
+  const emptySearch = document.querySelector(".sc-no-results");
   let active = "all";
   function updateCards() {
     const term = query ? query.value.trim().toLowerCase() : "";
@@ -36,6 +37,7 @@
       if (match) shown++;
     });
     if (filterStatus) filterStatus.textContent = String(shown) + " scenarios shown";
+    if (emptySearch) emptySearch.hidden = shown !== 0;
   }
   filterButtons.forEach(btn => btn.addEventListener("click", () => {
     active = btn.dataset.filter;
