@@ -13,6 +13,8 @@
 
 **Explore:** [Jazzy image build and test](./ROS2/jazzy/README.md) · [Requirements](#prerequisites) · [Legacy Vagrant setup](#quickstart) · [Legacy ROS 2 tutorial](./ROS2/README.md) · [DDS networking guide](./docs/ROS2-KUBERNETES-DDS-GUIDE.md) · [Monitoring](./MonitoringSystem/README.md) · [Metrics analysis](./DataAnalysis/README.md) · [Good first issues](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/good%20first%20issue)
 
+**New website (review/preview source):** [ROS 2 Kubernetes Lab landing page](./site/index.html) · [Technical field guide](./site/docs/index.html) · [Website setup and publication guide](./site/README.md) · [Visual identity](./site/BRAND.md). GitHub Pages becomes a public website only after its deployment workflow is enabled and verified; do not assume the planned URL is live until that check succeeds.
+
 ![Historical terminal screenshot from the ROS 2 lab](./images/cmd.png)
 
 > **New contributors welcome!** Choose a small [good first issue](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/good%20first%20issue) or a [help-wanted task](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/help%20wanted). Start with [CONTRIBUTING.md](./CONTRIBUTING.md), or follow the beginner-friendly [**Claude Code / Codex contribution tutorial**](./docs/AI_ASSISTED_CONTRIBUTING.md) and [ready-to-copy agent prompts](./docs/AGENT_PROMPTS.md). Using AI is optional; many starter tasks require only Markdown, Python, or GitHub Actions—not a 30 GB Vagrant setup.

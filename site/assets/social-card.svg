@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="t d"><title id="t">ROS 2 Kubernetes Lab social sharing banner</title><desc id="d">Branded dark blue banner with original lab mark, project title, educational mission and stylized infrastructure nodes</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07101E"/><stop offset="1" stop-color="#18315C"/></linearGradient><linearGradient id="stroke" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#5DEDD8"/><stop offset="1" stop-color="#9D9AFF"/></linearGradient><radialGradient id="light"><stop stop-color="#51A9ED" stop-opacity=".24"/><stop offset="1" stop-color="#2F67AF" stop-opacity="0"/></radialGradient><pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#5280B9" stroke-opacity=".13"/></pattern></defs>
+<rect width="1280" height="640" fill="url(#bg)"/><rect width="1280" height="640" fill="url(#grid)"/><circle cx="985" cy="320" r="480" fill="url(#light)"/><rect x="35" y="35" width="1210" height="570" rx="28" fill="none" stroke="#5484AE" stroke-opacity=".46" stroke-width="2"/>
+<g transform="translate(86 82) scale(.34) rotate(-12 128 128)"><rect x="28" y="28" width="94" height="94" rx="23" fill="#66EBDA"/><rect x="134" y="28" width="94" height="94" rx="23" fill="#7397FF"/><rect x="28" y="134" width="94" height="94" rx="23" fill="#7397FF"/><rect x="134" y="134" width="94" height="94" rx="23" fill="#A493FF"/></g>
+<text x="200" y="154" fill="#CDE1F5" font-family="Arial,Helvetica,sans-serif" font-size="25" font-weight="700" letter-spacing="3">OPEN-SOURCE ROBOTICS INFRASTRUCTURE</text>
+<text x="87" y="285" fill="#F4FAFF" font-family="Arial,Helvetica,sans-serif" font-size="82" font-weight="700" letter-spacing="-4">ROS 2</text><text x="87" y="381" fill="#74F0DE" font-family="Arial,Helvetica,sans-serif" font-size="82" font-weight="700" letter-spacing="-4">Kubernetes Lab.</text>
+<text x="91" y="450" fill="#AFBED7" font-family="Arial,Helvetica,sans-serif" font-size="28" letter-spacing="1">Build. Observe. Experiment.</text>
+<path d="M85 513h550" stroke="#75E9DD" opacity=".5"/>
+<text x="87" y="556" fill="#9BADCA" font-family="Arial,Helvetica,sans-serif" font-size="19">Educational lab · Local ROS 2 containers · Kubernetes studies</text>
+<g fill="none" stroke="url(#stroke)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+<path d="M961 173v94M961 267H812v78M961 267h148v78M812 425h297"/>
+</g>
+<g stroke-width="3"><rect x="873" y="82" width="177" height="113" rx="21" fill="#172E51" stroke="#72E9DD"/><rect x="716" y="344" width="191" height="133" rx="21" fill="#173352" stroke="#71E5DB"/><rect x="1012" y="344" width="191" height="133" rx="21" fill="#273467" stroke="#A09AFF"/></g>
+<g fill="#B5F7F1"><circle cx="960" cy="139" r="23"/><circle cx="812" cy="408" r="23"/></g><circle cx="1109" cy="408" r="23" fill="#B8ADFF"/>
+<text x="961" y="544" font-family="Arial,Helvetica,sans-serif" font-size="20" text-anchor="middle" fill="#B7CBDB">ONE CONTROL PLANE · TWO WORKERS</text>
+</svg>

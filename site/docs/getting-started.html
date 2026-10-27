@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#080d18">
+<title>Getting started | ROS 2 Kubernetes Lab</title><meta name="description" content="Build the ROS 2 Jazzy image and run its image-local, single-container test, or inspect the historical three-VM Vagrant lab. Includes verification limits."><meta name="robots" content="index, follow"><link rel="canonical" href="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/docs/getting-started.html"><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="../assets/docs.css">
+<meta property="og:type" content="article"><meta property="og:title" content="Getting started"><meta property="og:description" content="Build the ROS 2 Jazzy image and run its image-local, single-container test, or inspect the historical three-VM Vagrant lab. Includes verification limits."><meta property="og:url" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/docs/getting-started.html"><meta property="og:image" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/assets/social-card.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="640"><meta property="og:image:alt" content="ROS 2 Kubernetes Lab: educational lab banner, one control plane and two workers"><meta property="og:site_name" content="ROS 2 Kubernetes Lab"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/assets/social-card.png"><meta name="twitter:image:alt" content="ROS 2 Kubernetes Lab: educational lab banner, one control plane and two workers"><meta name="twitter:title" content="Getting started | ROS 2 Kubernetes Lab"></head></head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="docs-nav"><div class="docs-container docs-nav-inner"><a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a><nav class="docs-nav-links" aria-label="Documentation navigation"><a href="../">Website</a><a href="./" aria-current="false">Docs</a><a class="github-link" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment">Source on GitHub ↗</a></nav></div></header>
+<div class="docs-container docs-main"><aside class="doc-aside" aria-label="Documentation sections"><span class="aside-title">FIELD GUIDE / INDEX</span><nav aria-label="Documentation pages"><a href="./">Documentation</a>
+<a href="./getting-started.html" aria-current="page">Getting started</a>
+<a href="./architecture.html">Architecture</a>
+<a href="./lab-paths.html">Learning paths</a>
+<a href="./contribute.html">Contribute</a></nav><div class="aside-divider"></div><p class="aside-note">Educational &amp; research lab. Historical Vagrant profile and Jazzy container verification have different support boundaries.</p></aside>
+<main class="doc-content" id="main" tabindex="-1"><div class="doc-crumbs"><a href="../">Lab</a><span>/</span><a href="./">Docs</a><span>/</span>Getting started</div><div class="doc-kicker" style="margin-top:29px">GETTING STARTED</div><h1>Getting started</h1><p class="lead">Begin with a clearly scoped experiment. The modern Jazzy image can be tested without starting a Kubernetes cluster; the historical Vagrant setup is a separate, higher-resource path.</p>
+<div class="doc-badges"><span class="doc-badge">IMAGE-LOCAL ROS 2 TEST</span><span class="doc-badge legacy">VAGRANT / HISTORICAL PROFILE</span></div>
+<h2 id="jazzy">Path A — ROS 2 Jazzy container test</h2>
+<p><strong>Requirements:</strong> Docker Engine/Desktop, a host able to run a Linux AMD64 container, sufficient disk capacity and access to the required image repositories. The CI image test checks the ROS 2 demo executables and the delivery of a local talker/listener message.</p>
+<div class="doc-steps">
+<div class="doc-step"><h3>Clone the public repository</h3><p>All commands in this guide assume you are in the checked-out repository root.</p></div>
+<div class="doc-step"><h3>Build the Jazzy image</h3><p>The Dockerfile uses a digest-pinned ROS 2 Jazzy / Ubuntu 24.04 base.</p></div>
+<div class="doc-step"><h3>Run the image-local smoke test</h3><p>The script fails when the listener receives no message within its timeout.</p></div>
+</div>
+<pre><code>git clone https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment.git
+cd Vagrant-Kubernetes-ROS2-Deployment
+
+docker build --platform linux/amd64 --file ROS2/Dockerfile --tag ros-jazzy-lab:local .
+docker run --rm -i --platform linux/amd64 ros-jazzy-lab:local bash -s &lt; scripts/test-ros2-image.sh</code></pre>
+<div class="doc-callout"><h3>What passing means</h3><p>The test demonstrates talker/listener communication inside the tested container image. It does <strong>not</strong> validate a Kubernetes cluster, DDS discovery between pods on separate workers, arm64 builds, or real-time performance. See the <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/ROS2/jazzy/README.md">full Jazzy guide</a>.</p></div>
+<h2 id="legacy">Path B — historical three-node Vagrant lab</h2>
+<p>This profile is useful for studying the checked-in infrastructure design, but it has old dependencies. The <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/Vagrantfile">Vagrantfile</a> defines three Ubuntu 22.04 VMs with a combined allocation near <strong>30 GB RAM and 18 vCPUs</strong>. You need a host capable of providing those resources, VirtualBox, Vagrant and the appropriate host networking support.</p>
+<pre><code># Run on your host, in the repository directory
+vagrant up
+vagrant ssh controlplane
+
+# Inside the control-plane VM after provisioning
+kubectl get nodes -o wide
+kubectl get pods -A</code></pre>
+<div class="doc-callout warning"><h3>This is not a modern verified quickstart</h3><p>Historical Kubernetes 1.29, ROS 2 Foxy and Weave Net may require repair. No ROS talker/listener pair starts just because <code>vagrant up</code> completes; the original workload YAML starts <code>stress-ng</code>. Never post VM logs, service tokens or kubeconfig contents publicly.</p></div>
+<h2 id="troubleshooting">Troubleshooting and evidence</h2>
+<ul><li><strong>Docker build failed?</strong> Check host architecture, free disk space, networking and the complete build log. Report error context without credentials.</li><li><strong>Legacy VM cannot start?</strong> Check virtualization support, available memory, VirtualBox/Vagrant compatibility and conflicting host hypervisors.</li><li><strong>Nodes not ready?</strong> Inspect Kubernetes events and historical CNI status. Avoid assuming multicast passes through all Kubernetes networking stacks.</li><li><strong>No messages across workers?</strong> That is a research/test gap, not a documented successful feature; follow <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/14">issue #14</a>.</li></ul>
+<h2 id="cleanup">Stopping local VMs</h2><pre><code>vagrant status
+vagrant halt
+# Destructive: deletes the three VM disks and cluster state
+vagrant destroy -f</code></pre><p>Do not use the destructive cleanup command without checking whether data in those VMs is needed.</p>
+
+<nav class="doc-next" aria-label="Documentation footer"><a href="../">← Back to the landing page</a><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues">Suggest a documentation improvement ↗</a></nav></main></div>
+<footer class="docs-footer"><div class="docs-container"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0</span><span>Educational / research use · Not validated for production or safety-critical control</span><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/DISCLAIMER.md">Responsible use ↗</a></div></footer></body></html>
