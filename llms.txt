@@ -48,6 +48,18 @@ ROS 2 DDS discovery behavior depends on RMW configuration, network transport and
 - [Move to maintained Kubernetes CNI and DDS discovery — issue #15](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/15)
 - [Lightweight kind/k3d profile — issue #16](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/16)
 
+## Experimental Cloud–Edge Robotics Scenario Lab (research proposals; not implemented)
+
+- [Scenario hub: ROS 2 + Kubernetes + Jev experiments](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/index.html) — searchable educational research gallery and conceptual animated explanations.
+- [Fault triage scenario](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/ros2-fault-triage.html) — synthetic DDS/QoS diagnosis, deterministic baseline and optional Jev Choice proposal.
+- [Edge/cloud placement scenario](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/edge-cloud-inference.html) — hard eligibility before advisory placement.
+- [LLM ROS 2 skill-review scenario](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/robot-agent-safety.html) — simulator-only deterministic authorization and optional model review.
+- [Multi-robot scheduling scenario](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/multi-robot-scheduling.html) — fair synthetic fleet allocation.
+- [Evidence registry](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/results.html) — all primary outcomes N/A until human-reviewed raw evidence and immutable run provenance.
+- [Scenario program and Claude collaborator playbook](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/docs/scenario-lab/README.md) — epic #83, child contributor issues #84–#89, results publication and SEO plan.
+
+**No verified Jev integration, cloud/edge model benchmark, real robot control, live simulator or cross-worker DDS is established by these web pages.** Animated step flows use synthetic, preauthored text and do not contact a model provider.
+
 ## Repository identity
 
 - **Canonical repository:** https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment
