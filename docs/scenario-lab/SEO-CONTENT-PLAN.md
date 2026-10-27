@@ -17,15 +17,15 @@ Treat these as candidate search phrases, **not verified keyword volumes or ranki
 
 ## 2. Technical SEO already designed for the scenario pages
 
-- Unique, human-readable \`<title>\`, \`<h1>\`, meta descriptions; no keyword stuffing.
-- Stable, accurate canonical URLs under the site's existing \`/Vagrant-Kubernetes-ROS2-Deployment/\` base. **Do not** change to \`github.io\` or another domain without verifying deployment and planning redirects/canonical updates.
+- Unique, human-readable `<title>`, `<h1>`, meta descriptions; no keyword stuffing.
+- Stable, accurate canonical URLs under the site's existing `/Vagrant-Kubernetes-ROS2-Deployment/` base. **Do not** change to `github.io` or another domain without verifying deployment and planning redirects/canonical updates.
 - Semantic static HTML content with hypotheses, methods, metrics, evidence limitations and human contribution links. Animations are progressive enhancement and not the only place where information exists.
-- BreadcrumbList schema.org JSON-LD and suitable \`CollectionPage\`/\`TechArticle\` types; structured data does **not** guarantee enhanced search results.
+- BreadcrumbList schema.org JSON-LD and suitable `CollectionPage`/`TechArticle` types; structured data does **not** guarantee enhanced search results.
 - Main homepage and docs link to scenario hub and detailed pages; internal scenario cross-links use descriptive anchor text; sitemap enumerates all exact pages.
 - Consistent original Open Graph raster card, HTML language, mobile viewport, visible link labels and alt/ARIA on concept SVG.
 - No visitor tracking, cookies or scripts fetching real robot telemetry. Browser JavaScript makes only optional same-origin fetch of the public synthetic experiment registry.
 
-**Release audit:** \`python3 scripts/validate-site.py\`, \`node --check site/assets/scenarios.js\`, real browser review (360/390/768/1024/1440px, keyboard, pausable/reduced motion, dark theme contrast), clean console and live canonical URLs. GitHub Actions CI should show passes *before* merging; verify actual Pages deployment and crawlability after merge.
+**Release audit:** `python3 scripts/validate-site.py`, `node --check site/assets/scenarios.js`, real browser review (360/390/768/1024/1440px, keyboard, pausable/reduced motion, dark theme contrast), clean console and live canonical URLs. GitHub Actions CI should show passes *before* merging; verify actual Pages deployment and crawlability after merge.
 
 ## 3. Student content that creates genuine value
 
@@ -72,7 +72,7 @@ Avoid storing user IDs, fingerprinting, invasive analytics or collecting individ
 
 **Third period:** publish pre-registered comparisons with raw evidence through #75/#88 if the run is actually feasible; organize a legitimate lab collaboration/instructor call only with specific completed material.
 
-Use source/evidence dates honestly. Do not update \`dateModified\` merely to suggest freshness.
+Use source/evidence dates honestly. Do not update `dateModified` merely to suggest freshness.
 
 ## Official references
 - [Google Search Essentials](https://developers.google.com/search/docs/essentials)
