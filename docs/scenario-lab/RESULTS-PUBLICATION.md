@@ -4,7 +4,7 @@
 
 ## Why a registry instead of a chart with example numbers?
 
-A public education/research website should let students follow the full scientific cycle: hypotheses, baseline, controlled trials, raw evidence, error analysis and negative results. Publishing imaginary latency bars, model accuracy or robot-task success would mislead users and compromise reproducibility. Thus [site/scenarios/data/experiments.json](../../site/scenarios/data/experiments.json) starts with four \`planned\` entries, every \`result: null\`.
+A public education/research website should let students follow the full scientific cycle: hypotheses, baseline, controlled trials, raw evidence, error analysis and negative results. Publishing imaginary latency bars, model accuracy or robot-task success would mislead users and compromise reproducibility. Thus [site/scenarios/data/experiments.json](../../site/scenarios/data/experiments.json) starts with four `planned` entries, every `result: null`.
 
 ## Status contract
 
@@ -12,13 +12,13 @@ A public education/research website should let students follow the full scientif
 - **collecting** — run setup or submission under review. Value remains null and cannot be advertised as a measured improvement.
 - **verified** — a measured numeric result supported by a **public, legally shareable** result archive, a 64-character SHA-256 run-manifest digest, an exact source commit, raw data and analysis-script links, independent reviewer and review date.
 
-A local validator enforces the metadata shape, not scientific soundness or remote link content. Human scientific review is mandatory before status becomes \`verified\`.
+A local validator enforces the metadata shape, not scientific soundness or remote link content. Human scientific review is mandatory before status becomes `verified`.
 
 ## Minimal research artifact set
 
 A complete contribution should link to or archive these items, using a stable release or permissively licensed public data repository and unambiguous version identifiers:
 
-\`\`\`text
+```text
 experiment-<id>/
   README.md                # hypothesis, null, limitations, hardware/simulation declaration
   manifest.json            # exact commit/images, ROS/K8s/RMW, model + criteria, clocks, seeds, dataset revision
@@ -28,13 +28,13 @@ experiment-<id>/
   analysis.py              # pin dependencies, reproduce every published aggregate
   hashes.sha256            # integrity references
   LICENSE                  # only data/code you have permission to publish
-\`\`\`
+```
 
 Do not commit these files to the main repository merely because a template mentions them. For large artifacts, use a suitable public research archive with retention/terms/licensing review and link from the issue/PR.
 
 ## Suggested experiment manifest fields
 
-\`\`\`json
+```json
 {
   "experiment_id": "EXAMPLE_NOT_RUN",
   "status": "NOT_RUN",
@@ -60,7 +60,7 @@ Do not commit these files to the main repository merely because a template menti
   "analysis_script_public_url": null,
   "limitations": "No experiment was run."
 }
-\`\`\`
+```
 
 This is an **illustrative manifest**, not the final schema defined in #60. Never substitute placeholder IDs for real hashes.
 
@@ -82,7 +82,7 @@ A scalar registry field is **one** selected primary endpoint, not the entire pap
 3. Implement and validate the deterministic baseline and any provider adapter with offline tests. Do not rely on mock Jev outputs as model evidence.
 4. Execute authorized experiments with reproducible environment manifests, explicit hosted API consent/budget if needed, and complete failure logging.
 5. Publish data/script/licenses and immutable SHA-256 manifest; run independent reproduction where feasible.
-6. Submit a small PR changing the specific registry record and linking all evidence. Maintain \`planned\`/null unless a reviewer verifies the above.
+6. Submit a small PR changing the specific registry record and linking all evidence. Maintain `planned`/null unless a reviewer verifies the above.
 7. Document negative/zero/no-improvement findings and limitations. Do not cherry-pick only successful runs or disguise missing data as zeros.
 
 ## Security, ethics and trust
