@@ -2,7 +2,7 @@
 
 The static website for **ROS 2 Kubernetes Lab**, designed as an honest, accessible learning and research portal. The site is located under `site/` and does **not** rename or replace the public repository.
 
-**Proposed live URL (verify after Pages deployment):** https://mskazemi.github.io/Vagrant-Kubernetes-ROS2-Deployment/
+**Proposed live URL (verify after Pages deployment):** https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/
 
 ## What is included?
 
