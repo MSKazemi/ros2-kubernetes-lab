@@ -4,7 +4,7 @@
 
 ## 1. Decision problem and falsifiable hypotheses
 
-Initial task: infer a **single synthetic ROS 2/Kubernetes incident category** from fixed evidence (the [scenario S1](SCENARIOS.md#s1--explain-a-missing-ros-2-subscriber-p1-flagship)). No attempt to operate a robot.
+Initial task: infer a **single synthetic ROS 2/Kubernetes incident category** from fixed evidence (the [scenario S1](SCENARIOS.md)). No attempt to operate a robot.
 
 - **H1 / diagnostic quality:** On held-out incident families, Jev with predefined Choice criteria has higher macro-F1 than a deterministic rules baseline. **Null:** no meaningful advantage or worse performance.
 - **H2 / selective risk:** Choosing to abstain using dev-set rules lowers the error rate among accepted read-only suggestions at a measured coverage cost. **Null:** abstention fails to improve useful triage risk.
