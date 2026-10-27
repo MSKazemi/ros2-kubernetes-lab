@@ -1,0 +1,35 @@
+{
+  "schema_version": "jev-robotics-incident-v0-proposal",
+  "incident_id": "synthetic-dds-discovery-001",
+  "synthetic": true,
+  "dataset_split": "demo_only_not_a_benchmark",
+  "source_kind": "fabricated_training_fixture",
+  "observed_at_utc": "2026-10-27T00:00:00Z",
+  "context": {
+    "ros_distro": "jazzy_example_only",
+    "environment": "fictional_isolated_lab",
+    "kubernetes_nodes_verified": false,
+    "physical_robot_involved": false
+  },
+  "events": [
+    {
+      "component": "fictional_ros2_listener",
+      "severity": "warning",
+      "description": "Synthetic listener receives no messages after a configured test interval."
+    },
+    {
+      "component": "fictional_discovery_report",
+      "severity": "warning",
+      "description": "Synthetic diagnostics show no matching remote participant at observation time."
+    },
+    {
+      "component": "test_author",
+      "severity": "info",
+      "description": "No actual cluster networking or ROS 2 discovery test was executed."
+    }
+  ],
+  "known_limitations": [
+    "Connectivity, DDS discovery and configuration faults can share symptoms.",
+    "This fabricated fixture has no real-world root-cause label."
+  ]
+}
