@@ -121,3 +121,9 @@ html[data-sc-motion=paused] .sc-motif .sc-wire,html[data-sc-motion=paused] .sc-m
 @media(max-width:800px){.docs-nav-inner{flex-wrap:wrap;padding-block:10px}.docs-nav-links{width:100%;justify-content:flex-start;gap:12px}.docs-nav-links .github-link{padding:7px 10px}}
 @media(max-width:650px){.sc-shell{width:min(100% - 32px,1180px)}.sc-hero{padding:46px 0 35px}.sc-hero h1{font-size:clamp(36px,10vw,54px);letter-spacing:-1.7px}.sc-hero p.sc-lead{font-size:15px}.sc-visual{padding:15px;min-height:270px}.sc-motif{height:210px}.sc-section{padding:50px 0}.sc-grid,.sc-grid--3{grid-template-columns:1fr}.sc-card{padding:21px}.sc-trace{padding:17px}.sc-steps{grid-template-columns:1fr}.sc-step-btn{min-height:95px}.sc-trace-actions{width:100%}.sc-trace-actions button{flex:1}.docs-nav-inner{min-height:72px;gap:10px}.docs-nav-links{gap:9px}.docs-nav-links a{font-size:11px}.sc-footer-inner{flex-direction:column;align-items:flex-start}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}.sc-card--link:hover,.sc-button:hover,.sc-step-btn[aria-current=step]{transform:none!important}}
+.skip-link{position:absolute;z-index:100;background:var(--cyan);color:#08111d;padding:9px;transform:translateY(-130%)}
+.skip-link:focus{transform:none}
+.sc-visual-foot{flex-wrap:wrap}
+.sc-button,.sc-link-button,.sc-motion,.sc-filter,.sc-select,.sc-search,.sc-step-btn,.sc-trace-actions button{min-height:24px;min-width:24px}
+.docs-nav-links a,.sc-breadcrumb a,.sc-footer a{display:inline-flex;align-items:center;min-height:24px;min-width:24px}
+@media(max-width:650px){.sc-step-btn,.sc-trace-actions button,.sc-visual-foot .sc-button{min-height:44px}}

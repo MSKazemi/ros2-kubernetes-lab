@@ -101,8 +101,10 @@
           <p class="hero-lead">A hands-on laboratory for exploring <strong>ROS 2 on Kubernetes</strong> — from containerized robotics and DDS networking to scaling, monitoring, and meaningful experiments.</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#start">Start exploring <svg aria-hidden="true" focusable="false" class="icon"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn-outline btn-scenarios" href="./scenarios/">Explore the animated scenarios <svg aria-hidden="true" focusable="false" class="icon"><use href="#i-arrow"/></svg></a>
             <a class="btn btn-outline" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment" target="_blank" rel="noopener noreferrer"><svg aria-hidden="true" focusable="false" class="icon"><use href="#i-github"/></svg> View source</a>
           </div>
+          <p class="hero-scenarios-note"><span class="tag-new">NEW</span><span>Step through four research scenarios &mdash; animated, synthetic, no unverified numbers.</span></p>
           <div class="hero-evidence">
             <div class="evidence-line"><span class="evidence-icon success" aria-hidden="true"><svg aria-hidden="true" focusable="false" class="icon"><use href="#i-check"/></svg></span><span><strong>ROS 2 Jazzy image</strong> — local message smoke test</span></div>
             <div class="evidence-line"><span class="evidence-icon legacy" aria-hidden="true"><svg aria-hidden="true" focusable="false" class="icon"><use href="#i-activity"/></svg></span><span><strong>3-node Vagrant cluster</strong> — historical lab profile</span></div>
@@ -268,23 +270,40 @@
           <div><span class="section-index">RESEARCH / EXPLORE & CONTRIBUTE</span><h2 id="scenarios-title">Four open problems.<br><span class="muted-heading">One research community.</span></h2></div>
           <p>Animated, synthetic-only experiment blueprints for Jev, ROS 2, Kubernetes and cloud–edge AI. No unverified performance numbers.</p>
         </div>
+        <div class="scenario-flow" role="group" aria-labelledby="flow-title">
+          <div class="flow-head">
+            <h3 id="flow-title">The idea behind every scenario</h3>
+            <span class="flow-badge">ILLUSTRATIVE &middot; SYNTHETIC</span>
+          </div>
+          <ol class="flow-steps">
+            <li class="flow-step flow-step--robot"><span class="flow-top"><span class="flow-ico" aria-hidden="true"><svg focusable="false"><use href="#i-radio"/></svg></span><span class="flow-num">STAGE 1</span></span><strong>Simulated robot</strong><small>Fictional sensor and fault events.</small><span class="flow-link" aria-hidden="true"><span class="flow-pulse"></span></span></li>
+            <li class="flow-step flow-step--edge"><span class="flow-top"><span class="flow-ico" aria-hidden="true"><svg focusable="false"><use href="#i-cube"/></svg></span><span class="flow-num">STAGE 2</span></span><strong>Edge</strong><small>Quick local checks close to the robot.</small><span class="flow-link" aria-hidden="true"><span class="flow-pulse"></span></span></li>
+            <li class="flow-step flow-step--cloud"><span class="flow-top"><span class="flow-ico" aria-hidden="true"><svg focusable="false"><use href="#i-bolt"/></svg></span><span class="flow-num">STAGE 3</span></span><strong>Cloud</strong><small>Heavier analysis that only advises.</small><span class="flow-link" aria-hidden="true"><span class="flow-pulse"></span></span></li>
+            <li class="flow-step flow-step--gate"><span class="flow-top"><span class="flow-ico" aria-hidden="true"><svg focusable="false"><use href="#i-shield"/></svg></span><span class="flow-num">STAGE 4</span></span><strong>Decision gate</strong><small>Hard safety rules in ordinary code.</small><span class="flow-link" aria-hidden="true"><span class="flow-pulse"></span></span></li>
+            <li class="flow-step flow-step--human"><span class="flow-top"><span class="flow-ico" aria-hidden="true"><svg focusable="false"><use href="#i-check"/></svg></span><span class="flow-num">STAGE 5</span></span><strong>Human review</strong><small>A person decides what happens next.</small></li>
+          </ol>
+          <p class="flow-caption"><strong>Illustrative, synthetic.</strong> A teaching sketch of the pattern the scenarios study, not a running system and not measured data. The moving dots and the highlight that steps through the stages are decoration; the text above says the same thing. Use <em>Pause motion</em> in the menu to stop them.</p>
+        </div>
         <div class="feature-grid">
           <article class="feature-card">
             <div class="card-top"><span class="feature-icon cyan" aria-hidden="true"><svg class="icon"><use href="#i-radio"/></svg></span><span class="card-index">S01 / BEGINNER</span></div>
             <span class="card-tag">HYPOTHESIS, NOT RESULT</span><h3>Diagnose missing ROS 2 messages</h3>
             <p>Compare synthetic DDS, QoS and Kubernetes incident evidence with an offline rule baseline and an optional Jev advisory classifier.</p>
+            <dl class="card-guide"><div><dt>FOR</dt><dd>Beginner &middot; MSc</dd></div><div><dt>YOU DO</dt><dd>Step through 4 stages</dd></div></dl>
             <a class="text-link" href="./scenarios/ros2-fault-triage.html">Study fault triage ↗</a>
           </article>
           <article class="feature-card">
             <div class="card-top"><span class="feature-icon violet" aria-hidden="true"><svg class="icon"><use href="#i-cube"/></svg></span><span class="card-index">S02 / RESEARCH</span></div>
             <span class="card-tag">HYPOTHESIS, NOT RESULT</span><h3>Compare edge and cloud decisions</h3>
             <p>Design placement experiments around network jitter, resource feasibility, loss of connectivity, action freshness and deterministic safety bounds.</p>
+            <dl class="card-guide"><div><dt>FOR</dt><dd>MSc &middot; PhD</dd></div><div><dt>YOU DO</dt><dd>Step through 4 stages</dd></div></dl>
             <a class="text-link" href="./scenarios/edge-cloud-inference.html">Study inference placement ↗</a>
           </article>
           <article class="feature-card">
             <div class="card-top"><span class="feature-icon orange" aria-hidden="true"><svg class="icon"><use href="#i-shield"/></svg></span><span class="card-index">S03–S04 / SIMULATION</span></div>
             <span class="card-tag">HYPOTHESIS, NOT RESULT</span><h3>Test agent skills and robot fleets</h3>
             <p>Explore how structured advisory decisions might assist simulated task screening and multi-robot scheduling, with hard gates enforced in code.</p>
+            <dl class="card-guide"><div><dt>FOR</dt><dd>MSc &middot; PhD</dd></div><div><dt>YOU DO</dt><dd>4 stages per scenario, two scenarios</dd></div></dl>
             <a class="text-link" href="./scenarios/">Browse all interactive scenarios ↗</a>
           </article>
         </div>

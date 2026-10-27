@@ -33,8 +33,10 @@ class PageParser(HTMLParser):
         self.lang: str | None = None
         self.alt_missing = 0
         self.duplicates: list[str] = []
-        self.jsonld: list[str] = []
+        self.jsonld: list[str] = []  # one entry per application/ld+json block
         self._inside_ld = False
+        self.skip_link = False
+        self.motion_toggle = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         a = dict(attrs)
@@ -55,6 +57,10 @@ class PageParser(HTMLParser):
             self.canonical = a.get("href")
         if tag == "a" and a.get("href"):
             self.links.append(a["href"])
+            if a["href"] == "#main":
+                self.skip_link = True
+        if "data-motion-toggle" in a:
+            self.motion_toggle = True
         if a.get("aria-controls"):
             self.links.append("#" + a["aria-controls"])
         if tag in ("script", "link", "img", "source"):
@@ -66,6 +72,7 @@ class PageParser(HTMLParser):
             self.alt_missing += 1
         if tag == "script" and a.get("type") == "application/ld+json":
             self._inside_ld = True
+            self.jsonld.append("")
 
     def handle_endtag(self, tag: str) -> None:
         if tag == "script":
@@ -73,7 +80,7 @@ class PageParser(HTMLParser):
 
     def handle_data(self, data: str) -> None:
         if self._inside_ld:
-            self.jsonld.append(data)
+            self.jsonld[-1] += data
 
 
 def local_target(source: Path, reference: str) -> tuple[Path, str]:
@@ -110,6 +117,14 @@ for page in pages:
         ERRORS.append(f"{label}: missing title")
     if not parser.description or len(parser.description) < 50:
         ERRORS.append(f"{label}: missing/descriptive metadata")
+    elif len(parser.description) > 160:
+        ERRORS.append(f"{label}: meta description is {len(parser.description)} characters; limit is 160")
+    if not parser.skip_link:
+        ERRORS.append(f"{label}: missing skip link (href=\"#main\")")
+    scenarios_dir = (SITE / "scenarios").resolve()
+    if page.resolve().parent == scenarios_dir and page.name not in ("index.html", "results.html"):
+        if not parser.motion_toggle:
+            ERRORS.append(f"{label}: scenario detail page lacks a [data-motion-toggle] element")
     if parser.h1 != 1:
         ERRORS.append(f"{label}: expected exactly one H1, got {parser.h1}")
     relative_url = page.relative_to(SITE).as_posix()
@@ -122,11 +137,11 @@ for page in pages:
         ERRORS.append(f"{label}: duplicate ids {parser.duplicates}")
     if parser.alt_missing:
         ERRORS.append(f"{label}: images without alt: {parser.alt_missing}")
-    if parser.jsonld:
+    for block_number, block in enumerate(parser.jsonld, start=1):
         try:
-            json.loads("".join(parser.jsonld))
+            json.loads(block)
         except json.JSONDecodeError as exc:
-            ERRORS.append(f"{label}: invalid JSON-LD: {exc}")
+            ERRORS.append(f"{label}: invalid JSON-LD block {block_number}: {exc}")
     for ref in parser.links + parser.assets:
         if ref.startswith(("http:", "https:", "mailto:", "tel:", "javascript:")):
             continue
