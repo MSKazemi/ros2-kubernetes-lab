@@ -1,6 +1,6 @@
 # ROS 2 on Kubernetes: DDS discovery across pods and nodes
 
-**Scope:** A practical explanation of DDS communication in Kubernetes and the limitations of the current [Vagrant-Kubernetes-ROS2-Deployment](../README.md) lab. This guide documents the **historical ROS 2 Foxy / Weave Net / Kubernetes 1.29 Vagrant and manifest checkout** (support state: *legacy*). The repository also contains a separate ROS 2 Jazzy / Ubuntu 24.04 container image (support state: *container tested*, see [Support states](#support-states-and-evidence)). Neither is evidence of successful current-version Kubernetes deployment or cross-node message delivery.
+**Scope:** A practical explanation of DDS communication in Kubernetes and the limitations of the current [Vagrant-Kubernetes-ROS2-Deployment](../README.md) lab. This guide documents the **historical ROS 2 Foxy / Weave Net / Kubernetes 1.29 Vagrant and manifest checkout** (support state: *legacy*). The repository also contains a separate ROS 2 Jazzy / Ubuntu 24.04 container image (support state: *container tested*, see [Support states](#support-states-and-evidence)). Neither the legacy checkout nor the container image alone is evidence of successful current-version Kubernetes deployment or cross-node message delivery; the one verified cross-worker case is the separate, lightweight kind profile ([`docs/KIND-DEMO.md`](./KIND-DEMO.md), see [Support states](#support-states-and-evidence)).
 
 ## Why ROS 2 discovery matters on Kubernetes
 
@@ -24,13 +24,13 @@ Read the upstream [Fast DDS ROS 2 Discovery Server tutorial](https://fast-dds.do
 
 ## Support states and evidence
 
-Three explicit states are used across the repository documentation. Only the first two are populated today.
+Three explicit states are used across the repository documentation. `cross-worker verified` is populated only for the kind profile described in its row below.
 
 | State | Meaning | Applies to | Evidence |
 |---|---|---|---|
 | `legacy` | Historical, unverified in this review, and built on end-of-life or archived components | Vagrant VMs (Ubuntu 22.04), kubeadm Kubernetes 1.29, Weave Net 2.8.1, ROS 2 Foxy images and `ROS2/ros_dep_*.yaml` / `ROS2/VPA.yaml` / `ROS2/ros_one.yaml` manifests | None executed in this review; static file inspection only |
 | `container tested` | The Jazzy image builds and passes a local talker/listener check **inside one container** | `ROS2/Dockerfile` (ROS 2 Jazzy, Ubuntu 24.04, linux/amd64) | [`.github/workflows/ros2-image-ci.yml`](../.github/workflows/ros2-image-ci.yml) runs [`scripts/test-ros2-image.sh`](../scripts/test-ros2-image.sh) in the container; this checks the Jazzy distro, Ubuntu 24.04, `demo_nodes_cpp`, `stress-ng` and one listener receiving one talker message locally |
-| `cross-worker verified` | A talker and listener scheduled on different Kubernetes workers exchange messages, with a repeatable scripted check | **Nothing yet.** Tracked in [#14](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/14) and [#15](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/15) | None |
+| `cross-worker verified` | A talker and listener scheduled on different Kubernetes workers exchange messages, with a repeatable scripted check | **Only the kind profile on this CNI (kindnetd):** [`kind/ros2k8s-demo.yaml`](../kind/ros2k8s-demo.yaml) + [`ROS2/jazzy/talker-listener.yaml`](../ROS2/jazzy/talker-listener.yaml), 1 control plane + 2 workers, Fast DDS Discovery Server. **Not** the Vagrant/kubeadm profile, other CNIs or other hosts. Remaining work: [#15](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/15) | Commit `862b026`, 2026-10-27, one host: `make demo` (exit 0), `make verify` (exit 0, talker on `ros2k8s-demo-worker`, listener on `ros2k8s-demo-worker2`, listener logged `I heard` for talker messages) and `make verify-negative` (broken delivery detected, exit 1, then recovered). Details and the failed default-multicast attempt: [`docs/KIND-DEMO.md`](./KIND-DEMO.md). The GitHub Actions workflow for it has **not been run yet** |
 
 Compatibility status (review date **2026-10-27**, repository base commit `7b9cb44`):
 
@@ -40,9 +40,9 @@ Compatibility status (review date **2026-10-27**, repository base commit `7b9cb4
 | ROS 2 image `ROS2/legacy/foxy/Dockerfile` and Foxy-based images used by `ROS2/ros_dep_*.yaml` | Foxy (EOL) | `legacy` |
 | Vagrant VMs, kubeadm Kubernetes, Weave Net | Ubuntu 22.04, Kubernetes 1.29, Weave Net 2.8.1 | `legacy` |
 | Optional Jazzy stress manifest [`ROS2/jazzy/stress-deployment.yaml`](../ROS2/jazzy/stress-deployment.yaml) | Jazzy image, `ros-jazzy-lab:local`, a `stress-ng` workload only | `container tested` for the image only; the manifest was not applied to any cluster in this review |
-| DDS discovery and talker/listener delivery across Kubernetes workers | any | `cross-worker verified`: **not achieved** |
+| DDS discovery and talker/listener delivery across Kubernetes workers | kind profile (Kubernetes v1.37.0, kindnetd), Fast DDS with a Discovery Server | `cross-worker verified` for **this profile only** (default multicast discovery did **not** work on it). Vagrant/kubeadm/Weave Net: **not achieved** |
 
-Basis of this table: static inspection of the repository files at commit `7b9cb44`. Runtime evidence is limited to what the image workflow and [`scripts/test-ros2-image.sh`](../scripts/test-ros2-image.sh) exercise inside a single container; that workflow does **not** create a Kubernetes cluster and does **not** validate Kubernetes or DDS across nodes. **No Vagrant cluster was executed** for this review, and the CI result was not re-run here.
+Basis of this table: static inspection of the repository files at commit `7b9cb44`, plus the separately recorded kind-profile run in [`docs/KIND-DEMO.md`](./KIND-DEMO.md). Apart from that kind run, runtime evidence is limited to what the image workflow and [`scripts/test-ros2-image.sh`](../scripts/test-ros2-image.sh) exercise inside a single container; that workflow does **not** create a Kubernetes cluster and does **not** validate Kubernetes or DDS across nodes. **No Vagrant cluster was executed** for this review, and the CI result was not re-run here.
 
 **Important distinction:** `kubectl scale deployment ros --replicas=3` creates stress-workload replicas in the original manifest. It does not itself demonstrate DDS communication.
 
