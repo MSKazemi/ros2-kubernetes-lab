@@ -158,6 +158,21 @@ for page, parser in parsed_pages.items():
                 if message not in ERRORS:
                     ERRORS.append(message)
 
+social_png = SITE / "assets/social-card.png"
+if not social_png.is_file():
+    ERRORS.append("Missing social preview PNG")
+else:
+    png_head = social_png.read_bytes()[:24]
+    if len(png_head) < 24 or png_head[:8] != b"\x89PNG\r\n\x1a\n":
+        ERRORS.append("Invalid PNG signature")
+    else:
+        width = int.from_bytes(png_head[16:20], "big")
+        height = int.from_bytes(png_head[20:24], "big")
+        if (width, height) != (1280, 640):
+            ERRORS.append(f"Unexpected social card dimensions: {width}x{height}")
+        if social_png.stat().st_size > 1024 * 1024:
+            ERRORS.append("Social card exceeds 1 MiB")
+
 for name in ("sitemap.xml", "favicon.svg", "assets/logo-mark.svg",
              "assets/brand-lockup.svg", "assets/social-card.svg", "assets/robotics-hero.svg"):
     path = SITE / name
