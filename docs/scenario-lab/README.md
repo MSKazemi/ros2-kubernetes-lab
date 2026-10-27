@@ -40,7 +40,7 @@ node --check site/assets/scenarios.js
 
 The script validator verifies metadata, internal links, sitemap and registry status/evidence conditions; a passing result does **not** prove live Jev correctness or scientifically valid results. Test visually and with keyboard/screen-reader/motion preferences at 360/390/768/1024/1440 px, on localhost or a reviewed Pages preview. If the environment has no browser, clearly state visual QA was not performed.
 
-**Motion controls:** no autoplay, an explicitly activated conceptual walkthrough, pause/reset behavior, accessible stage buttons, native reduced-motion preference, and static visible explanations without JavaScript. The conceptual animation never performs a Jev call, ROS command or Kubernetes mutation.
+**Motion controls:** no autoplay of the step-through demo (a user must activate it). Lightweight decorative wire pulses may run automatically but can be paused; pause/reset behavior, accessible stage buttons, native reduced-motion preference, and static visible explanations without JavaScript are required. The conceptual animation never performs a Jev call, ROS command or Kubernetes mutation.
 
 ### Contribute
 
