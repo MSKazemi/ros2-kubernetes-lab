@@ -9,10 +9,10 @@ The static website for **ROS 2 Kubernetes Lab**, designed as an honest, accessib
 - **Landing page:** `site/index.html` — original branding, hero diagram, illustrative robotics art, project features, learning paths, setup tabs, technical roadmap and community entry points.
 - **Visual identity:** `site/BRAND.md` — color tokens, logo assets, quotes, type, animation and truthful marketing rules.
 - **Five HTML documentation pages:** `site/docs/` — hub, getting started, architecture, learning paths and contributing.
-- **Original SVG assets:** `site/assets/` — modular mark, horizontal wordmark, robotics concept art and social preview source.
+- **Original graphics:** `site/assets/` — modular SVG mark, horizontal wordmark, robotics concept art, vector social preview and 1280×640 PNG social card.
 - **Progressive enhancements:** `site/script.js` — mobile nav, working tabs, copy commands, architecture highlight, scroll reveal and an accessible pause-motion control.
 - **Styles:** `site/styles.css` for the home page, `site/assets/docs.css` for documentation.
-- **SEO:** independent title/description/canonical per page, structured data on landing page, robots.txt and six-URL sitemap.
+- **SEO:** independent title/description/canonical per page, structured data on the landing page, actual PNG Open Graph/Twitter metadata, robots.txt and six-URL sitemap.
 - **Deploy and verify:** GitHub Actions in `.github/workflows/pages.yml`; offline validation in `scripts/validate-site.py`.
 
 The website uses **vanilla HTML, CSS, and JS** (no npm build). External fonts are optional. There are no visitor analytics, user accounts, sales processing, or tracking cookies.
@@ -57,7 +57,7 @@ The workflow publishes **only the `site/` folder**; it does not expose analysis 
 
 ### Social preview
 
-The designed social card is `site/assets/social-card.svg` (1280×640). Export to an optimized PNG or JPEG for the GitHub social-preview setting and validate size/format against GitHub's current requirements. Do not treat SVG in the repository as a configured social preview.
+The designed card is `site/assets/social-card.svg` (vector source) and `site/assets/social-card.png` (1280×640 raster, under 1 MB). The website uses the PNG in Open Graph/Twitter metadata. An administrator must still upload the PNG in GitHub **Settings → Social preview**; publishing it in the repository does not configure GitHub's own social preview.
 
 ## Accuracy requirements
 
