@@ -2,7 +2,7 @@
 
 > **Today this is a documentation-only exercise, not a runnable Jev-integrated ROS 2 app.** First prove the fixture/request shape; issue [#74](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/74) tracks the offline baseline and optional live adapter.
 
-**Audience:** ROS 2 students, Kubernetes developers, new AI contributors, and MSc/PhD researchers.  
+**Audience:** ROS 2 students, Kubernetes developers, new AI contributors, and MSc/PhD researchers.
 **Requirements for the offline steps:** a repository checkout, Python 3 and a text editor. No VM, Kubernetes cluster, GPU, ROS installation, cloud account or API key.
 
 ## Exercise A — inspect synthetic incident evidence (offline)
