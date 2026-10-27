@@ -22,21 +22,21 @@ The site at [site/scenarios/](../../site/scenarios/index.html) provides interact
 ### Reproducible results
 
 - [Website evidence board](../../site/scenarios/results.html)
-- [Machine-readable initial registry](../../site/scenarios/data/experiments.json): four \`planned\` records; every performance value is **null**.
+- [Machine-readable initial registry](../../site/scenarios/data/experiments.json): four `planned` records; every performance value is **null**.
 - [Result publication / peer-review contract](RESULTS-PUBLICATION.md)
 - [#88 Results and reproducibility](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/88)
 - [#75 Jev benchmark protocol](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/75); [#60 general experiment manifest](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/60)
 
 ### Build and review
 
-The static site is under \`site/\` and uses no frontend package manager. Review with a local server:
+The static site is under `site/` and uses no frontend package manager. Review with a local server:
 
-\`\`\`sh
+```sh
 python3 -m http.server 8000 --directory site
 # open http://localhost:8000/scenarios/
 python3 scripts/validate-site.py
 node --check site/assets/scenarios.js
-\`\`\`
+```
 
 The script validator verifies metadata, internal links, sitemap and registry status/evidence conditions; a passing result does **not** prove live Jev correctness or scientifically valid results. Test visually and with keyboard/screen-reader/motion preferences at 360/390/768/1024/1440 px, on localhost or a reviewed Pages preview. If the environment has no browser, clearly state visual QA was not performed.
 
@@ -49,7 +49,7 @@ The script validator verifies metadata, internal links, sitemap and registry sta
 - [Claude Code / Codex playbook](CLAUDE-DEVELOPMENT-PLAYBOOK.md) covers issue-first development and review.
 - [Student discoverability & SEO plan](SEO-CONTENT-PLAN.md) covers page intent and evidence-based growth.
 
-Observe root [AGENTS.md](../../AGENTS.md), [CONTRIBUTING.md](../../CONTRIBUTING.md) and [SAFETY.md](../../SAFETY.md). No autonomous push to \`main\`, merged PR, live robot actuation, unapproved cloud bills or secret/data publishing.
+Observe root [AGENTS.md](../../AGENTS.md), [CONTRIBUTING.md](../../CONTRIBUTING.md) and [SAFETY.md](../../SAFETY.md). No autonomous push to `main`, merged PR, live robot actuation, unapproved cloud bills or secret/data publishing.
 
 ### Research honesty checklist
 
