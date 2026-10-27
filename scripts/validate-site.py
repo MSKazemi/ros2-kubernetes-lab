@@ -16,7 +16,7 @@ from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
-BASE_URL = "https://mskazemi.github.io/Vagrant-Kubernetes-ROS2-Deployment/"
+BASE_URL = "https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/"
 ERRORS: list[str] = []
 
 
