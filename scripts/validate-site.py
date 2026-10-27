@@ -228,7 +228,8 @@ else:
         if record.get("schema_version") != "scenario-results-v0":
             ERRORS.append("Scenario registry schema_version must be scenario-results-v0")
         items = record.get("experiments", [])
-        expected_ids = {"fault-triage", "placement", "skill-review", "fleet-dispatch"}
+        expected_ids = {"fault-triage", "placement", "skill-review", "fleet-dispatch",
+                        "hf-dataset", "hf-classifier", "hf-simulation", "hf-remote"}
         seen_ids: set[str] = set()
         if not isinstance(items, list):
             ERRORS.append("Scenario registry experiments must be a list")

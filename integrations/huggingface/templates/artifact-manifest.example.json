@@ -1,0 +1,41 @@
+{
+  "schema_version": "hf-robotops-artifact-v0-example",
+  "status": "NOT_RUN",
+  "synthetic_example": true,
+  "purpose": "Documentation template only; no artifact fetched or published.",
+  "hf_model": {
+    "repo_id": null,
+    "commit_revision": null,
+    "license_verified": false,
+    "processor_hash_sha256": null
+  },
+  "hf_dataset": {
+    "repo_id": null,
+    "commit_revision": null,
+    "license_verified": false,
+    "lerobot_version": null,
+    "format": "LeRobotDataset v3 proposed, NOT VALIDATED"
+  },
+  "source": {
+    "github_commit": null,
+    "container_digest": null,
+    "simulator_revision": null
+  },
+  "observation_action_contract": {
+    "embodiment": null,
+    "state_features": null,
+    "action_features": null,
+    "physical_units": null,
+    "cameras": null,
+    "fps": null
+  },
+  "evaluation": {
+    "run_manifest_sha256": null,
+    "raw_data_url": null,
+    "analysis_url": null,
+    "measured_metric": null,
+    "unit": null,
+    "reviewer": null
+  },
+  "notes": "Replace nulls only after review and observed results. Never invent model/dataset identities."
+}
