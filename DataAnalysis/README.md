@@ -1,4 +1,6 @@
 # Data Analysis
+
+> **No cluster?** The JSON samples in [`dataset/`](./dataset/README.md) can be inspected offline with plain Python 3; see the [sample dataset guide](./dataset/README.md) for the data dictionary, provenance limits and one optional plot.
 In this section, we discuss how to extract data from Prometheus TSDB databases using Python, and provide some examples of data analysis.
 
 Prometheus, an open-source systems monitoring and alerting toolkit, uses a time series database (TSDB) to store all its data. This data can be queried using PromQL, Prometheus's built-in query language, but sometimes you may find it useful to extract this data and use it with other tools such as Python for further analysis.
