@@ -15,8 +15,9 @@
 
 The **Vagrant cluster and root-level Kubernetes manifest examples** are historical. There is a separate **ROS 2 Jazzy/Ubuntu 24.04 image recipe and same-container smoke test** in `ROS2/Dockerfile` and `scripts/test-ros2-image.sh`; it is **not a validated current Kubernetes release**:
 
-- Legacy Kubernetes manifests: ROS 2 Foxy (end of life June 2023), image `osrf/ros:foxy-desktop` (recipe preserved under `ROS2/legacy/foxy/Dockerfile`).
-- Modern container-only baseline: ROS 2 Jazzy on Ubuntu 24.04, official ROS base pinned to an OCI digest in `ROS2/Dockerfile`; ROS C++ demos and stress-ng, without cross-worker validation.
+- Support state `legacy`: Vagrant VMs and Kubernetes manifests use ROS 2 Foxy (end of life June 2023); the manifests pull a Foxy-based stress-ng image (`kazemi/ros-foxy-with-stress-ng`) and the original `osrf/ros:foxy-desktop` recipe is preserved under `ROS2/legacy/foxy/Dockerfile`. None of it was executed in the 2026-10-27 review.
+- Support state `container tested`: ROS 2 Jazzy on Ubuntu 24.04 (`ROS2/Dockerfile`, official ROS base pinned to an OCI digest; ROS C++ demos and stress-ng). The CI workflow `.github/workflows/ros2-image-ci.yml` runs `scripts/test-ros2-image.sh` inside a single container only; it does not validate Kubernetes or DDS across nodes.
+- Support state `cross-worker verified`: not achieved (tracked in issue #14). Details: docs/ROS2-KUBERNETES-DDS-GUIDE.md#support-states-and-evidence.
 - Kubernetes 1.29 with kubeadm/kubelet/kubectl.
 - Weave Net 2.8.1 CNI (archived upstream).
 - Ubuntu 22.04 Vagrant/VirtualBox VMs; combined defaults ~30 GB VM memory and 18 virtual CPUs.
@@ -54,6 +55,6 @@ ROS 2 DDS discovery behavior depends on RMW configuration, network transport and
 - **Author:** Mohsen Seyedkazemi Ardebili.
 - **License:** Apache-2.0 — see `LICENSE`.
 - **Citation:** `CITATION.cff`.
-- **Latest verified status:** this document describes repository files inspected on 11 October 2026, not a newly executed full VM integration test.
+- **Latest verified status:** this document describes repository files inspected on 11 October 2026; version and support-state statements were re-checked against the files on 27 October 2026 (commit 7b9cb44). No Vagrant cluster or full VM integration test was executed.
 
 This `llms.txt` is an informational navigation aid, not a claim of special indexing or AI-search ranking treatment.

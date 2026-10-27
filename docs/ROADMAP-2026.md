@@ -18,14 +18,14 @@ Growth target: improve usage and visibility; 600 stars would equal 100x the six-
 |---|---|
 | `ROS2/ros_dep_1.yaml` launches `stress-ng`, not an automatic talker/listener | README's main demonstration is not a one-command success path |
 | `ROS2/README.md` uses missing `ros_dep.yaml`, and examples omit the `ros` namespace | Fresh users encounter avoidable command errors |
-| `ROS2/Dockerfile` builds on ROS 2 Foxy; cluster scripts install Kubernetes 1.29; networking uses Weave Net 2.8.1 | Legacy stack and maintenance challenges |
+| At the 2026-10-11 audit, `ROS2/Dockerfile` built on ROS 2 Foxy. It now targets Jazzy / Ubuntu 24.04 (the Foxy recipe is preserved in `ROS2/legacy/foxy/Dockerfile`), but the `ROS2/ros_dep_*.yaml` manifests still use a Foxy image, cluster scripts install Kubernetes 1.29 and networking uses Weave Net 2.8.1 | Vagrant/Kubernetes stack remains `legacy`; the Jazzy image is `container tested` only (see the [support states](./ROS2-KUBERNETES-DDS-GUIDE.md#support-states-and-evidence)) |
 | Three-node `Vagrantfile`: 18 vCPUs, ~30 GB VM memory | Blocks access for many laptops |
-| CI builds/pushes a Docker image but does not test cluster creation or DDS | Green build does not establish that ROS messaging works |
+| CI builds and tests the Jazzy image ([`ros2-image-ci.yml`](../.github/workflows/ros2-image-ci.yml)) with a local talker/listener check inside one container, but does not test cluster creation or cross-worker DDS | A green image build is `container tested` at most; it does not establish `cross-worker verified` ROS messaging |
 | `MonitoringSystem/monitoring.sh` includes broad `chmod 777` permissions; `admin-user.yaml` binds `cluster-admin` | Unnecessarily broad permissions for a default educational installation |
 | Root README has no central proof-of-function GIF or validated modern install profile | Limited visitor-to-user conversion |
 | Repository has no GitHub release and existing code contains substantial analysis data | Reproducible release and research assets remain untapped |
 
-This audit inspected repository contents and workflow history; **it did not execute a fresh multi-VM installation**. Preserve historical results, but do not present old results as modern-profile benchmarks.
+This audit inspected repository contents and workflow history; **it did not execute a fresh multi-VM installation**. The table rows above were reconciled with the repository at commit `7b9cb44` on 2026-10-27 (static inspection; no Vagrant cluster was executed). Preserve historical results, but do not present old results as modern-profile benchmarks.
 
 ## 3. Workstreams and ownership
 
