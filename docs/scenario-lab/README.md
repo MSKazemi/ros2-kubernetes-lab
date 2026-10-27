@@ -25,6 +25,10 @@ The site at [site/scenarios/](../../site/scenarios/index.html) provides interact
 - [Machine-readable initial registry](../../site/scenarios/data/experiments.json): four `planned` records; every performance value is **null**.
 - [Result publication / peer-review contract](RESULTS-PUBLICATION.md)
 - [#88 Results and reproducibility](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/88)
+## Hugging Face research extension (four additional scenarios)
+
+The [Hugging Face RobotOps track](../huggingface-robotops/README.md) adds **four** detailed research pages: [S5 LeRobotDataset v3](../../site/scenarios/hf-lerobot-dataset.html), [S6 Jev vs HF classifier](../../site/scenarios/hf-jev-classifier.html), [S7 SmolVLA/LIBERO](../../site/scenarios/hf-smolvla-libero.html), [S8 remote LeRobot inference](../../site/scenarios/hf-robotics-remote-inference.html). They share the original animation framework and evidence registry, and have tasks [#93–#96](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/92), alongside a [Static HF Space template](../../integrations/huggingface/spaces/robotops-research-explorer/) and [model/dataset-card work](../../integrations/huggingface/templates/). All results remain **N/A** and no Space has been published.
+
 - [#75 Jev benchmark protocol](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/75); [#60 general experiment manifest](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/60)
 
 ### Build and review
