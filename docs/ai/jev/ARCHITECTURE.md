@@ -68,9 +68,9 @@ A request with `jev-latest` is acceptable as **exploration**; use an available *
 
 ## 4. Cloud/edge placement: service locality vs decision locality
 
-**Edge:** source ROS 2 nodes, perception and all time-sensitive control. Hard bounds and safe fallback remain local.  
-**Kubernetes lab:** optional read-only event aggregation, diagnostics, benchmark recording and hosted Jev API client.  
-**External provider:** a separately authorized, outbound call with strict quotas and minimized redacted state. Provider roundtrip is **not** acceptable as a motor control dependency.
+- **Edge:** source ROS 2 nodes, perception and all time-sensitive control. Hard bounds and safe fallback remain local.
+- **Kubernetes lab:** optional read-only event aggregation, diagnostics, benchmark recording and hosted Jev API client.
+- **External provider:** a separately authorized, outbound call with strict quotas and minimized redacted state. Provider roundtrip is **not** acceptable as a motor control dependency.
 
 Network disconnection, overload, stale robot state, cloud budget exhaustion or API unavailability must never produce robot commands. Later simulator experiments must go through independent typed contract #55 and fail-closed simulated action gate #59.
 
