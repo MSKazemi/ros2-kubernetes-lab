@@ -6,4 +6,10 @@
   <url><loc>https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/docs/architecture.html</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq></url>
   <url><loc>https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/docs/lab-paths.html</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq></url>
   <url><loc>https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/docs/contribute.html</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/ros2-fault-triage.html</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/edge-cloud-inference.html</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/robot-agent-safety.html</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/multi-robot-scheduling.html</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/results.html</loc><lastmod>2026-10-27</lastmod><changefreq>monthly</changefreq></url>
 </urlset>
