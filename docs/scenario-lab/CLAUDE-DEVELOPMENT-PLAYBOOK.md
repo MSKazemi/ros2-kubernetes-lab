@@ -5,17 +5,17 @@
 ## 1. Site design system (source of truth)
 
 - Existing website brand: [site/BRAND.md](../../site/BRAND.md).
-- CSS foundation: \`site/assets/docs.css\`; site-specific rules: \`site/assets/scenarios.css\`. Keep native HTML/CSS/JS, no unnecessary package/dependency introduction.
-- Site interaction: \`site/assets/scenarios.js\` — static case data and illustrative step animation only; **no Jev API**, no ROS 2 message subscriptions, no model inference, no privileged mutation, no analytics/cookies.
-- Pages: \`site/scenarios/index.html\`, \`ros2-fault-triage.html\`, \`edge-cloud-inference.html\`, \`robot-agent-safety.html\`, \`multi-robot-scheduling.html\`, \`results.html\`.
-- Evidence: \`site/scenarios/data/experiments.json\`; validator \`scripts/validate-site.py\`; Pages CI \`.github/workflows/pages.yml\`.
-- Visual style: deep navy \`#080D18\`, panel \`#101B2E\`, ice text, signal aqua \`#66EBDA\`, infrastructure blue \`#7397FF\`, lilac \`#A193FF\`, warning amber \`#FFA66E\`; Space Grotesk headings, DM Sans body, JetBrains Mono technical details; no false performance badges.
+- CSS foundation: `site/assets/docs.css`; site-specific rules: `site/assets/scenarios.css`. Keep native HTML/CSS/JS, no unnecessary package/dependency introduction.
+- Site interaction: `site/assets/scenarios.js` — static case data and illustrative step animation only; **no Jev API**, no ROS 2 message subscriptions, no model inference, no privileged mutation, no analytics/cookies.
+- Pages: `site/scenarios/index.html`, `ros2-fault-triage.html`, `edge-cloud-inference.html`, `robot-agent-safety.html`, `multi-robot-scheduling.html`, `results.html`.
+- Evidence: `site/scenarios/data/experiments.json`; validator `scripts/validate-site.py`; Pages CI `.github/workflows/pages.yml`.
+- Visual style: deep navy `#080D18`, panel `#101B2E`, ice text, signal aqua `#66EBDA`, infrastructure blue `#7397FF`, lilac `#A193FF`, warning amber `#FFA66E`; Space Grotesk headings, DM Sans body, JetBrains Mono technical details; no false performance badges.
 - Header uses existing logo and GitHub repo links, never a TypeSafe vendor logo used without rights or endorsement.
-- Animation: gentle wire-dash flows, node pulse and interactive step highlighting. Respect \`prefers-reduced-motion\`, pause control, keyboard interaction, minimum contrast, no autoplay inference and no blocked page content if JavaScript is disabled.
+- Animation: gentle wire-dash flows, node pulse and interactive step highlighting. Respect `prefers-reduced-motion`, pause control, keyboard interaction, minimum contrast, no autoplay inference and no blocked page content if JavaScript is disabled.
 
 ## 2. Site or SEO improvement prompt — issue #89
 
-\`\`\`text
+```text
 You are implementing one bounded improvement to issue #89 for
 MSKazemi/Vagrant-Kubernetes-ROS2-Deployment.
 First read the current AGENTS.md, CONTRIBUTING.md, issue #83 and #89.
@@ -37,11 +37,11 @@ After editing: run python3 scripts/validate-site.py, node --check for every
 changed JS file, and inspect relevant pages in a browser if available.
 State exactly what was and was not observed (especially browser QA).
 Show git diff; do not autonomously push to main or merge.
-\`\`\`
+```
 
 ## 3. Scientific casebook prompt — issue #84
 
-\`\`\`text
+```text
 Read AGENTS.md, issue #83, issue #84, #74 and docs/scenario-lab/README.md.
 Create a small offline-only synthetic ROS 2 DDS/QoS/Kubernetes incident casebook
 with correct evidence, family-grouped split IDs, true/unknown labels and
@@ -50,11 +50,11 @@ case. Do not call Jev or assert any diagnosis came from it; use a deterministic
 rule baseline for expected labels. No Vagrant, ROS actuation, cloud account,
 real telemetry, personal data or credentials. Check JSON syntax/schema,
 disclose which tests were run and show a scoped diff for human review.
-\`\`\`
+```
 
 ## 4. Benchmark artifact prompt — issue #88
 
-\`\`\`text
+```text
 Read AGENTS.md, issue #83, #88 and #60 plus
 docs/scenario-lab/RESULTS-PUBLICATION.md.
 Review the experiment registry and static validator. Propose strict
@@ -64,7 +64,7 @@ runs and independent reviewer. All existing performance values must remain
 null. Test that a fake 'verified' value with no evidence fails offline CI.
 Do not publish unmeasured improvements or make paid provider calls.
 Only after an actual valid run and human review may a numeric result appear.
-\`\`\`
+```
 
 ## 5. Epic and child task map
 
@@ -82,7 +82,7 @@ Only after an actual valid run and human review may a numeric result appear.
 
 ## 6. Change-management rules
 
-- Do not merge two concurrent PRs with overlapping \`site/index.html\` changes blindly; rebase and human-review. Website PR #63 was already merged; Jev docs PR #76 may still be open.
+- Do not merge two concurrent PRs with overlapping `site/index.html` changes blindly; rebase and human-review. Website PR #63 was already merged; Jev docs PR #76 may still be open.
 - Do not create fictitious public websites or claim an unverified URL is live. Verify actual GitHub Pages deployment before outreach.
 - Work on a branch and draft PR. No force-push, autonomous main write, secrets, changing license, publishing model weights or deploying physical robot controls.
 - Do not create new issues merely to inflate a community count; use current #83–#89 for real, sufficiently bounded work.
