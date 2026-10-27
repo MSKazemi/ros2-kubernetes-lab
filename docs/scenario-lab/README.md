@@ -22,7 +22,7 @@ The site at [site/scenarios/](../../site/scenarios/index.html) provides interact
 ### Reproducible results
 
 - [Website evidence board](../../site/scenarios/results.html)
-- [Machine-readable initial registry](../../site/scenarios/data/experiments.json): four `planned` records; every performance value is **null**.
+- [Machine-readable initial registry](../../site/scenarios/data/experiments.json): eight `planned` records in the stacked Hugging Face extension; every performance value is **null**.
 - [Result publication / peer-review contract](RESULTS-PUBLICATION.md)
 - [#88 Results and reproducibility](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/88)
 ## Hugging Face research extension (four additional scenarios)
