@@ -11,7 +11,7 @@ license: apache-2.0
 
 **Status:** Independent, static, synthetic-only educational demo. The HTML does **not** run any Hugging Face models, LeRobot simulator, Jev API, Kubernetes workload or physical robot. No real benchmark is claimed.
 
-This folder is a **ready-to-copy template** for an optional public Hugging Face **Static HTML Space**. It is **not yet a published Hugging Face Space**. Before posting a public URL, the repository owner must create a Space using their authorized account, review the license/visibility and upload this folder manually or via an approved Hub tool.
+This is the source of the public Hugging Face **Static HTML Space** published by the repository owner at https://huggingface.co/spaces/mskazemi/robotops-research-explorer (created and checked 2026-10-28). Changes are made in the GitHub repository and uploaded to the Space manually after human review; nothing is synced automatically.
 
 The four research tracks are: (1) validate synthetic robot episode metadata before attempting LeRobotDataset v3 conversion, (2) design Jev-vs-HF text classifier benchmarks, (3) define compatible SmolVLA/LIBERO experiments, and (4) study Kubernetes-hosted LeRobot remote policy inference and stale-action constraints.
 

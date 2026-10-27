@@ -1,6 +1,6 @@
 # Publish the Hugging Face research Space (when authorized)
 
-> **Current status:** Source template prepared in GitHub. No live Hugging Face Space or Collection is claimed. This guide does not initiate any HF upload and never exposes secrets.
+> **Current status:** The Static Space is published at https://huggingface.co/spaces/mskazemi/robotops-research-explorer (public, `sdk: static`, `apache-2.0`; created and checked on 2026-10-28 from this starter). No Hugging Face Collection, model or dataset exists yet. This guide does not initiate any HF upload and never exposes secrets.
 
 ## Why a Static Space first?
 
