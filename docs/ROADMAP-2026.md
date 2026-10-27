@@ -1,5 +1,7 @@
 # ROS 2 Kubernetes Lab: modernization, adoption and growth roadmap
 
+> **Proposed expansion, not implementation (27 October 2026):** A separate [Cloud Robotics + AI/LLM Lab research program](cloud-robotics/README.md) introduces Hugging Face LeRobot, typed simulated policy integration, LLM/RAG experiments, ethics and 18 teaching/research scenarios. Its [12-month research roadmap](cloud-robotics/ROADMAP-2026-2027.md) explicitly depends on the P0 ROS/Kubernetes verification and safe-default work in this document. No AI robot execution or new cluster benchmark is claimed.
+
 > Status: **Proposal** (11 October 2026). This roadmap does not indicate that new ROS distributions, Kubernetes configurations, or network modes have been validated. Current repository name is unchanged.
 >
 > Proposed name: **ROS 2 Kubernetes Lab** · proposed slug: `ros2-kubernetes-lab`.
