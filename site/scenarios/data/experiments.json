@@ -14,7 +14,14 @@
       "result": null,
       "evidence_url": null,
       "run_manifest_sha256": null,
-      "notes": "Synthetic casebook and offline comparator planned; no Jev measurements."
+      "notes": "Synthetic casebook and offline comparator planned; no Jev measurements.",
+      "run_count": 0,
+      "source_commit": null,
+      "raw_data_url": null,
+      "analysis_script_url": null,
+      "reviewed_by": null,
+      "review_date_utc": null,
+      "limitations": "No measured evidence yet; this is a proposed research experiment."
     },
     {
       "id": "placement",
@@ -27,7 +34,14 @@
       "result": null,
       "evidence_url": null,
       "run_manifest_sha256": null,
-      "notes": "Live action-freshness benchmark depends on verified simulator and network."
+      "notes": "Live action-freshness benchmark depends on verified simulator and network.",
+      "run_count": 0,
+      "source_commit": null,
+      "raw_data_url": null,
+      "analysis_script_url": null,
+      "reviewed_by": null,
+      "review_date_utc": null,
+      "limitations": "No measured evidence yet; this is a proposed research experiment."
     },
     {
       "id": "skill-review",
@@ -40,7 +54,14 @@
       "result": null,
       "evidence_url": null,
       "run_manifest_sha256": null,
-      "notes": "Deterministic policy must remain authoritative; no unsafe simulator actions."
+      "notes": "Deterministic policy must remain authoritative; no unsafe simulator actions.",
+      "run_count": 0,
+      "source_commit": null,
+      "raw_data_url": null,
+      "analysis_script_url": null,
+      "reviewed_by": null,
+      "review_date_utc": null,
+      "limitations": "No measured evidence yet; this is a proposed research experiment."
     },
     {
       "id": "fleet-dispatch",
@@ -53,7 +74,14 @@
       "result": null,
       "evidence_url": null,
       "run_manifest_sha256": null,
-      "notes": "Synthetic robot/task contract and schedule baselines planned."
+      "notes": "Synthetic robot/task contract and schedule baselines planned.",
+      "run_count": 0,
+      "source_commit": null,
+      "raw_data_url": null,
+      "analysis_script_url": null,
+      "reviewed_by": null,
+      "review_date_utc": null,
+      "limitations": "No measured evidence yet; this is a proposed research experiment."
     }
   ]
 }
