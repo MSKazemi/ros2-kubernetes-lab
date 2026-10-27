@@ -40,7 +40,7 @@ Jev also documents optional image/Box capabilities, but this lab's first exercis
 
 This is the **official TypeSafe** endpoint example, not an independently tested command in this repository. Only proceed if you own a valid TypeSafe account/key, accept the provider's terms, understand potential charges, and approve sending the **synthetic JSON state** to a hosted service.
 
-1. Check the [official API reference](https://docs.typesafe.ai/api/system-one) and [available models](https://docs.typesafe.ai/api/models); request only documented capabilities.
+1. Check the [official API reference](https://docs.typesafe.ai/api/system-one) and [available models](https://docs.typesafe.ai/api/list-models); request only documented capabilities.
 2. Set `TYPESAFE_API_KEY` privately in your shell/session using your preferred secret-handling method. **Do not put a value into a file, command history, issue, PR, or pasted chat.**
 3. Optionally send the example from the repository root:
 
