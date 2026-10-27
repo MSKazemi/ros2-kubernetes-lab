@@ -51,6 +51,8 @@
     <symbol id="i-activity" viewBox="0 0 24 24"><path d="M2 12h4l3-8 6 16 3-8h4"/></symbol>
     <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="3"/><path d="m7 9 3 3-3 3m6 0h4"/></symbol>
     <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5v14M17 5v14"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m7 4 13 8-13 8V4Z"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19"/></symbol>
@@ -64,7 +66,7 @@
   <header class="site-header" id="top">
     <div class="nav-shell container">
       <a class="brand" href="#top" aria-label="ROS 2 Kubernetes Lab home">
-        <span class="brand-symbol" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <img class="brand-logo" src="./assets/logo-mark.svg" width="31" height="31" alt="" decoding="async">
         <span class="brand-name">ROS<span class="brand-highlight">2</span><span class="brand-slash">/</span>K8S <em>LAB</em></span>
       </a>
       <button class="mobile-toggle" type="button" aria-label="Open navigation" aria-controls="site-nav" aria-expanded="false">
@@ -73,9 +75,12 @@
       </button>
       <nav class="site-nav" id="site-nav" aria-label="Main navigation">
         <a href="#features">Explore</a>
+        <a href="./docs/">Docs</a>
+        <a href="#learning-paths">Use cases</a>
         <a href="#architecture">Architecture</a>
         <a href="#start">Get started</a>
         <a href="#roadmap">Roadmap</a>
+        <button class="motion-toggle" type="button" aria-label="Pause decorative animations" aria-pressed="false" title="Pause decorative animations">Pause motion</button>
         <a class="nav-github" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment" target="_blank" rel="noopener noreferrer">
           <svg class="icon"><use href="#i-github"/></svg> GitHub <svg class="icon icon-small"><use href="#i-up"/></svg>
         </a>
@@ -89,8 +94,9 @@
       <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
       <div class="container hero-layout">
         <div class="hero-content">
-          <div class="eyebrow"><span class="eyebrow-dot"></span> OPEN-SOURCE ROBOTICS INFRASTRUCTURE <span class="eyebrow-tail">/ 2026</span></div>
+          <div class="eyebrow"><span class="eyebrow-dot"></span> OPEN-SOURCE ROBOTICS INFRASTRUCTURE <span class="eyebrow-tail">/ FIELD GUIDE</span></div>
           <h1>Robotics meets<br><span class="title-gradient">cloud-native.</span></h1>
+          <p class="hero-tagline">Build systems. <span>Observe behavior.</span> Discover what works.</p>
           <p class="hero-lead">A hands-on laboratory for exploring <strong>ROS 2 on Kubernetes</strong> — from containerized robotics and DDS networking to scaling, monitoring, and meaningful experiments.</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#start">Start exploring <svg class="icon"><use href="#i-arrow"/></svg></a>
@@ -317,7 +323,7 @@ kubectl get pods -A</code></pre></div>
   </main>
 
   <footer class="site-footer">
-    <div class="container footer-top"><a class="brand footer-brand" href="#top" aria-label="ROS 2 Kubernetes Lab back to top"><span class="brand-symbol" aria-hidden="true"><span></span><span></span><span></span><span></span></span><span class="brand-name">ROS<span class="brand-highlight">2</span><span class="brand-slash">/</span>K8S <em>LAB</em></span></a><p>Explore the systems behind cloud-native robotics.</p><a class="footer-repo" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-github"/></svg> GitHub repository <svg class="icon"><use href="#i-up"/></svg></a></div>
+    <div class="container footer-top"><a class="brand footer-brand" href="#top" aria-label="ROS 2 Kubernetes Lab back to top"><img class="brand-logo" src="./assets/logo-mark.svg" width="31" height="31" alt="" decoding="async"><span class="brand-name">ROS<span class="brand-highlight">2</span><span class="brand-slash">/</span>K8S <em>LAB</em></span></a><p>Explore the systems behind cloud-native robotics.</p><a class="footer-repo" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-github"/></svg> GitHub repository <svg class="icon"><use href="#i-up"/></svg></a></div>
     <div class="container footer-bottom"><span>© <span id="year">2026</span> ROS 2 Kubernetes Lab · Apache-2.0</span><span>Educational / research software · Not for safety-critical control</span><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/DISCLAIMER.md" target="_blank" rel="noopener noreferrer">Responsible use <svg class="icon"><use href="#i-up"/></svg></a></div>
   </footer>
   <div class="toast" id="copyToast" role="status" aria-live="polite"></div>
