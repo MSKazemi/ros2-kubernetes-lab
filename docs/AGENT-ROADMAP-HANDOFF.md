@@ -17,7 +17,7 @@
 
 **0A — Cross-worker reference demo, issue #14/#16, PR #97**
 
-Do NOT start a second kind profile. Review the PR's `Makefile`, `kind/ros2k8s-demo.yaml`, ROS 2 image pin, Kubernetes pod placement, Fast DDS Discovery Server and `scripts/verify-ros2.sh` carefully. Ask for actual two-worker test evidence from CI/run logs, negative verification case, CPU/RAM resource requirements, network/port permissions and cleanup behavior. Mark incomplete original Vagrant-specific acceptance conditions as open.
+Do NOT start a second kind profile. [CI run 40587051848](https://github.com/MSKazemi/ros2-kubernetes-lab/actions/runs/40587051848) already shows actual cross-worker ROS message delivery and a deliberate discovery-failure test with recovery on a hosted amd64 kind cluster. This **does not** validate the Vagrant profile, other network conditions or any model inference. Review the PR's `Makefile`, `kind/ros2k8s-demo.yaml`, ROS 2 image pin, Kubernetes pod placement, Fast DDS Discovery Server and `scripts/verify-ros2.sh` carefully. Ask for actual two-worker test evidence from CI/run logs, negative verification case, CPU/RAM resource requirements, network/port permissions and cleanup behavior. Mark incomplete original Vagrant-specific acceptance conditions as open.
 
 **0B — Documentation reconciliation, PR #91, #36, #50, #51, #72, #76, #101, #105**
 
