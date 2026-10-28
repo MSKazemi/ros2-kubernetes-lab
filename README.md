@@ -56,7 +56,7 @@ The [Vagrantfile](./Vagrantfile) defines one Kubernetes control-plane VM and two
 
 ## Features
 - **Three-node local Kubernetes cluster:** `vagrant up` defines three Ubuntu 22.04 VMs (one control plane plus two workers) with `kubeadm`.
-- **ROS 2 images and experiments:** `ROS2/Dockerfile` now builds a digest-pinned **Jazzy/Ubuntu 24.04 container** with `demo_nodes_cpp` and `stress-ng`, with an automated **same-container** ROS message smoke test. The original Kubernetes manifests remain **legacy Foxy stress workloads** and do **not** automatically start a talker/listener.
+- **ROS 2 images and experiments:** `ROS2/Dockerfile` now builds a digest-pinned **Jazzy/Ubuntu 24.04 container** with `demo_nodes_cpp` and `stress-ng`, with an automated **same-container** ROS message smoke test. An opt-in [ros2_pulse telemetry pilot](./ROS2/jazzy/README.md#optional-ros2_pulse-telemetry-pilot-issue-52) adds per-process topic publish/callback rates, a same-container CI check and an untested two-pod Kubernetes example. The original Kubernetes manifests remain **legacy Foxy stress workloads** and do **not** automatically start a talker/listener.
 - **DDS discovery study:** Weave Net networking configuration and a [guide to ROS 2 discovery across Kubernetes pods](./docs/ROS2-KUBERNETES-DDS-GUIDE.md). Cross-node communication must be verified for each environment.
 - **Monitoring configuration:** Prometheus, Grafana, Kubernetes Dashboard, and Metrics Server scripts and persistent-storage examples from the original experiment.
 - **Autoscaling and resource study:** HPA/VPA manifests and CPU/memory stress workloads (not a validated real-time robotics benchmark).
