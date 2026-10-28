@@ -1,0 +1,195 @@
+# Optional ros2_pulse telemetry pilot (issue #52): ROS 2 Jazzy talker and listener in two
+# separate pods, each with the probe preloaded on the ROS container and a pod-local
+# pulse-export sidecar reading the probe's log from a shared emptyDir.
+#
+# NOT cluster-tested: only parsed as YAML. Talker-to-listener discovery between two pods,
+# same node or different workers, is NOT validated here (see #14 and #15). If the pods cannot
+# discover each other, the talker pod still reports /chatter publishes and the listener pod
+# reports no /chatter callbacks.
+#
+# Image: ros-jazzy-lab:local, built from ROS2/Dockerfile at this commit (it contains
+# ros-jazzy-ros2-pulse and pulse-export). The Docker Hub digest recorded in
+# ROS2/jazzy/README.md predates ros2_pulse and does NOT contain it. Load the local image into
+# the container runtime of every node that may run these pods, or replace image and
+# imagePullPolicy with your own pinned registry digest.
+#
+# Nothing is exposed: no Service, NodePort, LoadBalancer, Ingress, hostPath or privileged
+# container. pulse-export listens on 127.0.0.1 inside each pod; use kubectl port-forward.
+# Start, verify and clean up: ROS2/jazzy/README.md, "Optional ros2_pulse telemetry pilot".
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ros2-pulse-pilot
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pulse-talker
+  namespace: ros2-pulse-pilot
+  labels:
+    app: pulse-talker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pulse-talker
+  template:
+    metadata:
+      labels:
+        app: pulse-talker
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      # pulse-export runs as PID 1 without a SIGTERM handler; do not wait 30 s for it.
+      terminationGracePeriodSeconds: 10
+      # uid 1000 is the image's ubuntu user, so ROS logs go to /home/ubuntu/.ros.
+      # scripts/test-ros2-pulse.sh runs the probe check with the same uid in CI.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: talker
+          image: ros-jazzy-lab:local
+          imagePullPolicy: Never
+          # Keeps the image ENTRYPOINT: /ros_entrypoint.sh sources Jazzy, then execs this.
+          args: ["/opt/ros/jazzy/lib/demo_nodes_cpp/talker"]
+          env:
+            - name: ROS_DOMAIN_ID
+              value: "42"
+            # Opt-in probe. Remove LD_PRELOAD to run the same talker uninstrumented; the
+            # ROS_TOPIC_STATS* variables do nothing without it.
+            - name: LD_PRELOAD
+              value: /opt/ros/jazzy/lib/libros2_pulse.so
+            - name: ROS_TOPIC_STATS_OUTPUT_FILE
+              value: /var/log/ros2_pulse/talker.jsonl
+            - name: ROS_TOPIC_STATS_FORMAT
+              value: jsonl
+            # Window length and flush interval, in seconds.
+            - name: ROS_TOPIC_STATISTICS_PUBLISH_PERIOD
+              value: "5.0"
+          volumeMounts:
+            - name: pulse-logs
+              mountPath: /var/log/ros2_pulse
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+        - name: pulse-export
+          image: ros-jazzy-lab:local
+          imagePullPolicy: Never
+          # Needs no ROS environment: skips the ROS entrypoint and only reads the log volume.
+          command: ["/opt/pulse-export/bin/pulse-export"]
+          args: ["--bind", "127.0.0.1", "--port", "9464", "/var/log/ros2_pulse/*.jsonl"]
+          volumeMounts:
+            - name: pulse-logs
+              mountPath: /var/log/ros2_pulse
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+      volumes:
+        # Pod-local; deleted with the pod. The probe rotates each log at 10 MiB (one .1 copy).
+        - name: pulse-logs
+          emptyDir:
+            sizeLimit: 64Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pulse-listener
+  namespace: ros2-pulse-pilot
+  labels:
+    app: pulse-listener
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pulse-listener
+  template:
+    metadata:
+      labels:
+        app: pulse-listener
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 10
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: listener
+          image: ros-jazzy-lab:local
+          imagePullPolicy: Never
+          args: ["/opt/ros/jazzy/lib/demo_nodes_cpp/listener"]
+          env:
+            - name: ROS_DOMAIN_ID
+              value: "42"
+            - name: LD_PRELOAD
+              value: /opt/ros/jazzy/lib/libros2_pulse.so
+            - name: ROS_TOPIC_STATS_OUTPUT_FILE
+              value: /var/log/ros2_pulse/listener.jsonl
+            - name: ROS_TOPIC_STATS_FORMAT
+              value: jsonl
+            - name: ROS_TOPIC_STATISTICS_PUBLISH_PERIOD
+              value: "5.0"
+          volumeMounts:
+            - name: pulse-logs
+              mountPath: /var/log/ros2_pulse
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+        - name: pulse-export
+          image: ros-jazzy-lab:local
+          imagePullPolicy: Never
+          command: ["/opt/pulse-export/bin/pulse-export"]
+          args: ["--bind", "127.0.0.1", "--port", "9464", "/var/log/ros2_pulse/*.jsonl"]
+          volumeMounts:
+            - name: pulse-logs
+              mountPath: /var/log/ros2_pulse
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+      volumes:
+        - name: pulse-logs
+          emptyDir:
+            sizeLimit: 64Mi
