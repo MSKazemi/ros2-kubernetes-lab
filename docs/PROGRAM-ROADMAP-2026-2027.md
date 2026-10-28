@@ -86,7 +86,7 @@ The LeRobot remote-inference contract is **version-sensitive**: the upstream doc
 ### M0: Foundation / first reproducible experiment (proposed weeks 1–3)
 
 1. Human-review PR #97, #91, #36 and conflicting #41; block unrelated #102. Do not auto-merge.
-2. Publish a current reference/support-state table: **Legacy Vagrant**, **Jazzy image-local**, **kind cross-worker pending verification**, **HF model inference pending**.
+2. Publish a current reference/support-state table: **Legacy Vagrant**, **Jazzy image-local**, **kind cross-worker verified by PR #97's GitHub Actions (not merged into main)**, **HF model inference pending**.
 3. Make #55's synthetic typed observation/action contract **only for simulation**; implement #59 reject-on-expiry/out-of-bounds/replay; add #60 minimal manifest schema and deterministic test in CI.
 4. Record one CPU-only offline run, from fixtures through evaluation. Publish results only if reproducible and reviewed.
 
@@ -119,7 +119,7 @@ Invite students to repeat the experiment on a different machine/network. Add gra
 | Profile | Purpose | Hardware/cost | State |
 | --- | --- | --- | --- |
 | CPU-only fixture/contract | Entry path, CI, data formats, safety, incident classifier | Ordinary Linux/macOS laptop; no GPU/robot/cloud | **To implement** (#55/#59/#60) |
-| Local kind multi-worker ROS 2 | Real ROS 2 DDS/cluster verification, scheduling, fault injection | Linux host with Docker and enough cores/RAM; document measured requirements | **Open PR #97**; verify independently |
+| Local kind multi-worker ROS 2 | Real ROS 2 DDS/cluster verification, scheduling, fault injection | Linux host with Docker and enough cores/RAM; document measured requirements | **Open PR #97**: [CI run](https://github.com/MSKazemi/ros2-kubernetes-lab/actions/runs/40587051848) verified two-worker talker/listener and a negative fault/restore on hosted amd64 kind; human merge and other profiles remain unverified |
 | Historical Vagrant | Reproduce archived Kubernetes/Foxy experiments if desired | ~30GB VM RAM and 18 vCPU in present configuration | **Legacy**, security caveats |
 | Opt-in GPU policy/simulation | SmolVLA/remote inference/GPU scheduling | Local/workstation or separately authorized cloud GPU, explicit cost disclosure | **Research proposal** |
 | Static web/HF Space | Scientific overview, approved metadata/results | No GPU needed | Site exists; HF Space **proposed** |
