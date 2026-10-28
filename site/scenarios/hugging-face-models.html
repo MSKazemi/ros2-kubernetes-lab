@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18"><meta name="color-scheme" content="dark">
+<title>Hugging Face Models for ROS 2 Cloud Robotics | Research Lab</title>
+<meta name="description" content="Explore SmolVLA, X-VLA, LIBERO, Grounding DINO and depth AI for ROS 2, Kubernetes and cloud-edge robotics research. Reproducible plans, no fake results.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/hugging-face-models.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/docs.css"><link rel="stylesheet" href="../assets/scenarios.css">
+<meta property="og:type" content="article"><meta property="og:site_name" content="ROS 2 Kubernetes Lab">
+<meta property="og:title" content="Hugging Face Models for Cloud–Edge Robotics Research">
+<meta property="og:description" content="A practical model shortlist with experiment hypotheses, scope, prerequisites and honest evidence status.">
+<meta property="og:url" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/hugging-face-models.html">
+<meta property="og:image" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/assets/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Hugging Face Models for ROS 2 and Kubernetes Research","description":"Compare practical robotics model families and research methods, with no fabricated runtime results.","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"dateModified":"2026-10-28","url":"https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/hugging-face-models.html","isAccessibleForFree":true,"about":["ROS 2","Kubernetes","Hugging Face","LeRobot","Embodied AI"]}</script>
+<style>
+.hf-hero{background:radial-gradient(ellipse at 84% 22%,rgba(79,205,199,.19),transparent 48%),linear-gradient(160deg,#0b1729,#08111c);border-bottom:1px solid #27394f}
+.hf-wrap{max-width:1160px;margin:auto;padding:58px 24px}
+.hf-kicker{color:#68ead7;font:700 12px/1.5 monospace;letter-spacing:.14em;text-transform:uppercase}
+.hf-hero h1{font-size:clamp(2.1rem,5vw,4.3rem);line-height:1.09;letter-spacing:-.04em;max-width:870px;margin:18px 0;color:#f3f7ff}
+.hf-lede{max-width:780px;color:#bfd0e3;font-size:1.08rem;line-height:1.8}
+.hf-banner{display:inline-block;background:#3b2c1d;color:#ffd09d;padding:7px 13px;border-radius:20px;font-size:.88rem;margin:18px 0}
+.hf-flow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:20px;margin:32px 0 6px;border:1px solid #34516e;border-radius:18px;background:#0e2237}
+.hf-node{border:1px solid #3b7286;background:#193247;padding:13px 15px;border-radius:12px;color:#e6faff;font-size:.85rem;box-shadow:0 0 0 0 rgba(103,234,215,.2);animation:hfGlow 4s ease-in-out infinite}
+.hf-arrow{font-size:1.25rem;color:#8fb6ce}
+@keyframes hfGlow{50%{box-shadow:0 0 0 7px rgba(103,234,215,.09)}}
+.hf-stop *, .hf-stop .hf-node{animation:none!important}
+.hf-section{max-width:1160px;margin:auto;padding:52px 24px}
+.hf-section h2{font-size:clamp(1.55rem,3vw,2.3rem);letter-spacing:-.025em;color:#f1f6ff;margin-bottom:10px}
+.hf-intro{color:#b9cbe1;line-height:1.75;max-width:860px}
+.hf-toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:24px 0}
+.hf-filter{border:1px solid #46617b;background:#172a3d;color:#d5e9f7;border-radius:999px;padding:10px 15px;cursor:pointer}
+.hf-filter[aria-pressed="true"]{background:#71ebd7;color:#082332;border-color:#71ebd7;font-weight:700}
+.hf-filter:focus-visible,.hf-card a:focus-visible,summary:focus-visible,.hf-motion:focus-visible{outline:3px solid #ffd18e;outline-offset:3px}
+.hf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:15px}
+.hf-card{border:1px solid #334963;background:linear-gradient(155deg,#11233a,#0d1a2c);border-radius:17px;padding:22px;min-height:252px}
+.hf-card h3{font-size:1.2rem;margin:10px 0;color:#e9f6ff}
+.hf-card p,.hf-card li{color:#c1d2e2;line-height:1.65;font-size:.96rem}
+.hf-card a{color:#75f0df;text-decoration:underline;text-underline-offset:4px}
+.hf-pill{font:600 .69rem/1.7 monospace;letter-spacing:.09em;color:#a79fff;text-transform:uppercase}
+.hf-card[hidden]{display:none}
+.hf-panel{border:1px solid #39516d;border-radius:16px;background:#142437;padding:24px;margin:17px 0;color:#c5d7ea;line-height:1.8}
+.hf-panel h3{margin-top:0;color:#e8f8ff}
+.hf-panel a{color:#86eadd}
+.hf-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:25px}
+.hf-action{display:inline-block;border-radius:10px;background:#76e8da;color:#072533!important;font-weight:700;padding:12px 17px;text-decoration:none!important}
+.hf-action.secondary{background:transparent;border:1px solid #72cfcc;color:#8cece0!important}
+.hf-motion{border:1px solid #46657b;background:#112a40;border-radius:9px;color:#d5eef5;padding:8px 12px;cursor:pointer}
+.hf-faq details{border-bottom:1px solid #344c63;padding:17px 3px;color:#ccdae9}
+.hf-faq summary{cursor:pointer;font-weight:650;color:#edf7ff}
+@media(prefers-reduced-motion:reduce){.hf-node{animation:none}}
+@media(max-width:680px){.hf-wrap{padding:42px 20px}.hf-arrow{transform:rotate(90deg)}.hf-flow{flex-direction:column;align-items:stretch;text-align:center}.hf-section{padding:35px 20px}}
+</style>
+</head><body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="docs-nav"><div class="sc-shell docs-nav-inner">
+<a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./">Scenarios</a><a href="./results.html">Results</a><a class="github-link" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/92">HF research epic ↗</a></nav>
+</div></header>
+<main id="main" tabindex="-1">
+<section class="hf-hero"><div class="hf-wrap">
+<nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Scenarios</a><span>/</span>Hugging Face models</nav>
+<div class="hf-kicker">Embodied AI / Open research / Hugging Face</div>
+<h1>Which AI model belongs <em>at the edge, in the cloud, or nowhere near the robot?</em></h1>
+<p class="hf-lede">Explore seven candidate Hugging Face robotics and perception models through scientifically testable ROS 2 and Kubernetes experiments. Policies, detectors, relative depth and segmentation solve different problems. Start with compatibility, then measure full-system behavior.</p>
+<div class="hf-banner">Research proposals only · no models deployed or benchmarked here</div>
+<div class="hf-flow" aria-label="Illustrative research workflow: select model, validate contract, simulate, measure evidence">
+<div class="hf-node">HF model + pinned revision</div><span class="hf-arrow" aria-hidden="true">→</span>
+<div class="hf-node">Schema and license gate</div><span class="hf-arrow" aria-hidden="true">→</span>
+<div class="hf-node">Simulator / controlled network</div><span class="hf-arrow" aria-hidden="true">→</span>
+<div class="hf-node">Reproducible evidence</div>
+</div>
+<button class="hf-motion" type="button" data-motion-toggle aria-pressed="false">Pause decorative motion</button>
+<div class="hf-actions"><a class="hf-action" href="#models">Explore models</a><a class="hf-action secondary" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/92">Join the research epic</a></div>
+</div></section>
+<section class="hf-section" id="models">
+<div class="hf-kicker">01 / Model discovery</div>
+<h2>Start with the right model family.</h2>
+<p class="hf-intro">These are <strong>upstream third-party models</strong>, not models created or certified by this lab. The exact HF cards are linked. The page is a research catalog, not a live inference interface.</p>
+<div class="hf-toolbar" role="group" aria-label="Filter models by task">
+<button class="hf-filter" type="button" aria-pressed="true" data-hf-filter="all">All models</button>
+<button class="hf-filter" type="button" aria-pressed="false" data-hf-filter="policy">Robot policies</button>
+<button class="hf-filter" type="button" aria-pressed="false" data-hf-filter="perception">Perception</button>
+</div>
+<p id="hf-filter-status" role="status" aria-live="polite">7 models shown</p>
+<div class="hf-grid">
+<article class="hf-card" data-hf-type="policy"><div class="hf-pill">VLA / Policy · starter GPU research</div><h3>SmolVLA base</h3><p>Compact language-conditioned robotic action policy. Compare local and remote simulated inference only after task/robot compatibility and permitted fine-tuning.</p><a href="https://huggingface.co/lerobot/smolvla_base">Official Hugging Face checkpoint</a></article>
+<article class="hf-card" data-hf-type="policy"><div class="hf-pill">VLA / Policy · advanced</div><h3>X-VLA base</h3><p>Soft-prompted cross-embodiment foundation policy. Investigate how task-specific adaptation changes the result; not a drop-in ROS 2 controller.</p><a href="https://huggingface.co/lerobot/xvla-base">Official Hugging Face checkpoint</a></article>
+<article class="hf-card" data-hf-type="policy"><div class="hf-pill">VLA / Policy · LIBERO simulation</div><h3>X-VLA LIBERO</h3><p>Domain-specific simulation checkpoint suitable for researching reproducibility across revisions, seeds, camera views and action semantics.</p><a href="https://huggingface.co/lerobot/xvla-libero">Official Hugging Face checkpoint</a></article>
+<article class="hf-card" data-hf-type="policy"><div class="hf-pill">VLA / Policy · high-resource</div><h3>π₀.₅ LIBERO base</h3><p>Larger action policy for resource-aware simulation experiments. Check model and gated tokenizer license/access before any optional GPU job.</p><a href="https://huggingface.co/lerobot/pi05_libero_base">Official Hugging Face checkpoint</a></article>
+<article class="hf-card" data-hf-type="perception"><div class="hf-pill">Perception / Detection</div><h3>Grounding DINO Tiny</h3><p>Ground objects from text prompts in images. Test camera-to-box response freshness and traffic cost, not motor-control performance.</p><a href="https://huggingface.co/IDEA-Research/grounding-dino-tiny">Official Hugging Face checkpoint</a></article>
+<article class="hf-card" data-hf-type="perception"><div class="hf-pill">Perception / Relative depth</div><h3>Depth Anything V2 Small</h3><p>Estimate monocular relative depth. Evaluate bandwidth, error and interruption using labeled fixtures when available; not uncalibrated metric distance.</p><a href="https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf">Official Hugging Face checkpoint</a></article>
+<article class="hf-card" data-hf-type="perception"><div class="hf-pill">Perception / Segmentation</div><h3>SAM 2 Small</h3><p>Investigate image/video segmentation continuity under lost frames and remote inference interruptions with appropriate prompts and state handling.</p><a href="https://huggingface.co/facebook/sam2-hiera-small">Official Hugging Face checkpoint</a></article>
+</div></section>
+<section class="hf-section" id="experiments">
+<div class="hf-kicker">02 / Research questions</div><h2>Four falsifiable experiments.</h2>
+<div class="hf-grid">
+<div class="hf-panel"><h3>01 · Action freshness vs model placement</h3><p>For a compatible simulator policy, compare local, supported asynchronous, and Kubernetes remote inference with network delays, packet loss and server restarts. Main outcomes: valid action age, deadline misses, task completion and outage recovery.</p><p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/96">Design and contribute to issue #96</a></p></div>
+<div class="hf-panel"><h3>02 · Detect objects over unreliable links</h3><p>Use a licensed synthetic or public image fixture and Grounding DINO. Compare prompt-controlled detection, compressed image traffic, cloud turnaround and missed detection deadlines.</p><p>Proposed extension; results not measured.</p></div>
+<div class="hf-panel"><h3>03 · Reproduce a LIBERO policy</h3><p>Pick one explicitly compatible dataset, model checkpoint, simulator and control mode. Compare per-task success across multiple seeds; record hashes and negative cases. A base model alone is not a benchmark.</p><p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/95">Design and contribute to issue #95</a></p></div>
+<div class="hf-panel"><h3>04 · How do models fail?</h3><p>Inject schema mismatch, stale images, GPU exhaustion, and policy-server disconnection in simulation. Independent deterministic validation and safe fallback are required; never send unrestricted remote robot commands.</p><p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/59">Read the safety-gate requirements</a></p></div>
+</div>
+</section>
+<section class="hf-section" id="start">
+<div class="hf-kicker">03 / Start contributing</div><h2>Three levels, one evidence standard.</h2>
+<div class="hf-grid">
+<div class="hf-panel"><h3>Beginner · No GPU</h3><p>Make a synthetic ROS 2 observation fixture, learn camera/action formats, build a deterministic mock and test invalid units and stale timestamps.</p><p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/55">Simulation contract #55</a></p></div>
+<div class="hf-panel"><h3>Master’s · Perception & evaluation</h3><p>Implement an optional pinned detection/depth experiment on redistributable images; report raw latencies, correctness definitions, licensing and processor versions.</p><p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/92">Coordinate via epic #92</a></p></div>
+<div class="hf-panel"><h3>PhD · Distributed policies</h3><p>Compare task-compatible remote action-chunk policies, fairness, outages and cost. Reproduce real simulator results, include uncertainty and negative cases.</p><p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/60">Evidence requirements #60</a></p></div>
+</div>
+</section>
+<section class="hf-section hf-faq" id="faq">
+<div class="hf-kicker">04 / Responsible claims</div><h2>Frequently asked questions</h2>
+<details><summary>Does this page run Hugging Face models?</summary><p>No. It is a static, readable research guide with an interactive category filter. No weights, inference, provider calls or robot actions are performed.</p></details>
+<details><summary>Can I connect any SmolVLA checkpoint to any ROS 2 robot?</summary><p>No. Camera views, state and action dimensions, units, ordering, normalization, task semantics, policy processor and embodiment must all be verified; physical actuation is excluded here.</p></details>
+<details><summary>Are the benchmark numbers already published?</summary><p>No. All proposed experiments remain unmeasured until a real run with raw evidence, pinned artifacts and human review has been accepted. The existing <a href="./results.html">results registry</a> is the evidence source.</p></details>
+<details><summary>Which parts can I try without a GPU?</summary><p>Documentation, simulated observation/action schemas, deterministic mock policies, static website and data-validation exercises. GPU real-policy evaluation requires a separately approved environment.</p></details>
+<p class="hf-intro">Upstream references: <a href="https://huggingface.co/docs/lerobot/main/smolvla">SmolVLA</a> · <a href="https://huggingface.co/docs/lerobot/xvla">X-VLA</a> · <a href="https://huggingface.co/docs/lerobot/main/libero">LIBERO</a> · <a href="https://huggingface.co/docs/lerobot/main/remote_inference">remote inference</a>. This lab is independent and not affiliated with or endorsed by upstream model creators.</p>
+</section>
+</main>
+<footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 site</span><span>Working research direction: RoboLattice (not a launched brand)</span><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment">Source on GitHub ↗</a></div></footer>
+<script>
+(()=>{const buttons=[...document.querySelectorAll('[data-hf-filter]')],cards=[...document.querySelectorAll('[data-hf-type]')],status=document.getElementById('hf-filter-status');for(const button of buttons){button.addEventListener('click',()=>{const t=button.dataset.hfFilter;buttons.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));let n=0;cards.forEach(c=>{const show=t==='all'||c.dataset.hfType===t;c.hidden=!show;if(show)n++});status.textContent=n+' models shown'})}const toggle=document.querySelector('[data-motion-toggle]');toggle.addEventListener('click',()=>{const paused=document.body.classList.toggle('hf-stop');toggle.setAttribute('aria-pressed',String(paused));toggle.textContent=paused?'Resume decorative motion':'Pause decorative motion'})})();
+</script>
+</body></html>
