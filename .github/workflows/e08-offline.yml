@@ -1,0 +1,36 @@
+name: E08 offline agent mobility smoke
+
+on:
+  pull_request:
+    paths:
+      - 'experiments/e08-task-handoff/**'
+      - 'docs/scenario-lab/agent-mobility.md'
+      - '.github/workflows/e08-offline.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/e08-task-handoff/**'
+      - 'docs/scenario-lab/agent-mobility.md'
+      - '.github/workflows/e08-offline.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-mission:
+    name: Deterministic synthetic mission (not ROS/K8s)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Python 3.12
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - name: Validate the offline fixture
+        run: python3 experiments/e08-task-handoff/simulate.py --validate-only
+      - name: Exercise the illustrative handoff
+        run: python3 experiments/e08-task-handoff/simulate.py
+      - name: Run negative tests
+        run: python3 -m unittest discover -s experiments/e08-task-handoff/tests -v
