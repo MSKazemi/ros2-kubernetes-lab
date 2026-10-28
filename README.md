@@ -15,6 +15,8 @@
 
 **New website (review/preview source):** [ROS 2 Kubernetes Lab landing page](./site/index.html) · [Technical field guide](./site/docs/index.html) · [Website setup and publication guide](./site/README.md) · [Visual identity](./site/BRAND.md). GitHub Pages becomes a public website only after its deployment workflow is enabled and verified; do not assume the planned URL is live until that check succeeds.
 
+**New research guide (proposal, not a model deployment):** [Hugging Face model explorer](./site/scenarios/hugging-face-models.html) · [Model compatibility and experiment catalog](./docs/huggingface-robotics/MODEL-CATALOG.md) · [Claude Code research handoff](./docs/huggingface-robotics/CLAUDE-CODE-HANDOFF.md) · [RoboLattice working-brand RFC](./docs/robolattice/README.md). The RoboLattice name is provisional pending legal/domain review; no models are claimed benchmarked here.
+
 **Cloud–Edge Robotics research scenarios (proposed, not benchmarked):** [interactive scenario gallery](./site/scenarios/index.html) · [ROS 2 DDS/QoS fault triage](./site/scenarios/ros2-fault-triage.html) · [edge/cloud inference placement](./site/scenarios/edge-cloud-inference.html) · [agent skill review](./site/scenarios/robot-agent-safety.html) · [fair simulated robot scheduling](./site/scenarios/multi-robot-scheduling.html) · [no-results-yet evidence registry](./site/scenarios/results.html). Students and researchers can join [epic #83](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/83) and scoped issues #84–#89. These pages are synthetic educational illustrations; they do not run Jev, robots, or Kubernetes experiments.
 
 ![Historical terminal screenshot from the ROS 2 lab](./images/cmd.png)
