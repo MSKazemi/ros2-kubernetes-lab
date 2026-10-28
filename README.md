@@ -9,17 +9,17 @@
 
 **Who it is for:** ROS 2 and robotics developers, cloud-native engineers, students, and researchers exploring containerized robotics without a paid cloud account. **Why use it:** infrastructure scripts, ROS 2 container examples, monitoring configuration, and historical sample metrics are in one repository.
 
-> **Compatibility and test status:** The **Vagrant/Kubernetes configuration and original root-level ROS manifests remain a historical ROS 2 Foxy / Kubernetes 1.29 / Weave Net lab**, **not a validated current-version or production deployment**. Foxy reached end of life in June 2023. The original Kubernetes workload manifests start `stress-ng`; the ROS 2 talker/listener example requires separate interactive commands and is **not** automatically launched by `vagrant up`. A **separate ROS 2 Jazzy / Ubuntu 24.04 container build and local message smoke test** now exist in [the Jazzy image guide](./ROS2/jazzy/README.md). This does **not** establish multi-node Kubernetes or DDS compatibility. Cross-worker integration remains tracked in [issue #14](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/14).
+> **Compatibility and test status:** The **Vagrant/Kubernetes configuration and original root-level ROS manifests remain a historical ROS 2 Foxy / Kubernetes 1.29 / Weave Net lab**, **not a validated current-version or production deployment**. Foxy reached end of life in June 2023. The original Kubernetes workload manifests start `stress-ng`; the ROS 2 talker/listener example requires separate interactive commands and is **not** automatically launched by `vagrant up`. A **separate ROS 2 Jazzy / Ubuntu 24.04 container build and local message smoke test** now exist in [the Jazzy image guide](./ROS2/jazzy/README.md). This does **not** establish multi-node Kubernetes or DDS compatibility. Cross-worker integration remains tracked in [issue #14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14).
 
-**Explore:** [Jazzy image build and test](./ROS2/jazzy/README.md) · [Requirements](#prerequisites) · [Legacy Vagrant setup](#quickstart) · [Legacy ROS 2 tutorial](./ROS2/README.md) · [DDS networking guide](./docs/ROS2-KUBERNETES-DDS-GUIDE.md) · [Monitoring](./MonitoringSystem/README.md) · [Metrics analysis](./DataAnalysis/README.md) · [Good first issues](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/good%20first%20issue)
+**Explore:** [Jazzy image build and test](./ROS2/jazzy/README.md) · [Requirements](#prerequisites) · [Legacy Vagrant setup](#quickstart) · [Legacy ROS 2 tutorial](./ROS2/README.md) · [DDS networking guide](./docs/ROS2-KUBERNETES-DDS-GUIDE.md) · [Monitoring](./MonitoringSystem/README.md) · [Metrics analysis](./DataAnalysis/README.md) · [Good first issues](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue)
 
 **New website (review/preview source):** [ROS 2 Kubernetes Lab landing page](./site/index.html) · [Technical field guide](./site/docs/index.html) · [Website setup and publication guide](./site/README.md) · [Visual identity](./site/BRAND.md). GitHub Pages becomes a public website only after its deployment workflow is enabled and verified; do not assume the planned URL is live until that check succeeds.
 
-**Cloud–Edge Robotics research scenarios (proposed, not benchmarked):** [interactive scenario gallery](./site/scenarios/index.html) · [ROS 2 DDS/QoS fault triage](./site/scenarios/ros2-fault-triage.html) · [edge/cloud inference placement](./site/scenarios/edge-cloud-inference.html) · [agent skill review](./site/scenarios/robot-agent-safety.html) · [fair simulated robot scheduling](./site/scenarios/multi-robot-scheduling.html) · [no-results-yet evidence registry](./site/scenarios/results.html). Students and researchers can join [epic #83](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/83) and scoped issues #84–#89. These pages are synthetic educational illustrations; they do not run Jev, robots, or Kubernetes experiments.
+**Cloud–Edge Robotics research scenarios (proposed, not benchmarked):** [interactive scenario gallery](./site/scenarios/index.html) · [ROS 2 DDS/QoS fault triage](./site/scenarios/ros2-fault-triage.html) · [edge/cloud inference placement](./site/scenarios/edge-cloud-inference.html) · [agent skill review](./site/scenarios/robot-agent-safety.html) · [fair simulated robot scheduling](./site/scenarios/multi-robot-scheduling.html) · [no-results-yet evidence registry](./site/scenarios/results.html). Students and researchers can join [epic #83](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83) and scoped issues #84–#89. These pages are synthetic educational illustrations; they do not run Jev, robots, or Kubernetes experiments.
 
 ![Historical terminal screenshot from the ROS 2 lab](./images/cmd.png)
 
-> **New contributors welcome!** Choose a small [good first issue](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/good%20first%20issue) or a [help-wanted task](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/help%20wanted). Start with [CONTRIBUTING.md](./CONTRIBUTING.md), or follow the beginner-friendly [**Claude Code / Codex contribution tutorial**](./docs/AI_ASSISTED_CONTRIBUTING.md) and [ready-to-copy agent prompts](./docs/AGENT_PROMPTS.md). Using AI is optional; many starter tasks require only Markdown, Python, or GitHub Actions—not a 30 GB Vagrant setup.
+> **New contributors welcome!** Choose a small [good first issue](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue) or a [help-wanted task](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/help%20wanted). Start with [CONTRIBUTING.md](./CONTRIBUTING.md), or follow the beginner-friendly [**Claude Code / Codex contribution tutorial**](./docs/AI_ASSISTED_CONTRIBUTING.md) and [ready-to-copy agent prompts](./docs/AGENT_PROMPTS.md). Using AI is optional; many starter tasks require only Markdown, Python, or GitHub Actions—not a 30 GB Vagrant setup.
 
 ## Table of Contents
 
@@ -50,7 +50,7 @@
 ## Overview
 The [Vagrantfile](./Vagrantfile) defines one Kubernetes control-plane VM and two worker VMs. Shell scripts configure a kubeadm-based Kubernetes cluster, deploy the historical Weave Net Container Network Interface (CNI), and install monitoring components. The [ROS 2 examples](./ROS2/) contain container images and manifests for learning how robotics software and Kubernetes scheduling interact.
 
-**ROS 2 networking:** DDS (Data Distribution Service) provides publish/subscribe communication. How ROS 2 participants discover one another depends on the middleware implementation (RMW) and network configuration. The original lab chose Weave Net for multicast. **Multicast is not universally required by ROS 2:** [Fast DDS Discovery Server](https://fast-dds.docs.eprosima.com/en/latest/fastdds/ros2/discovery_server/ros2_discovery_server.html) supports explicit, server-based discovery. The current setup has not been revalidated on modern Kubernetes; see the [DDS and Kubernetes troubleshooting guide](./docs/ROS2-KUBERNETES-DDS-GUIDE.md) and [networking upgrade issue](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/15).
+**ROS 2 networking:** DDS (Data Distribution Service) provides publish/subscribe communication. How ROS 2 participants discover one another depends on the middleware implementation (RMW) and network configuration. The original lab chose Weave Net for multicast. **Multicast is not universally required by ROS 2:** [Fast DDS Discovery Server](https://fast-dds.docs.eprosima.com/en/latest/fastdds/ros2/discovery_server/ros2_discovery_server.html) supports explicit, server-based discovery. The current setup has not been revalidated on modern Kubernetes; see the [DDS and Kubernetes troubleshooting guide](./docs/ROS2-KUBERNETES-DDS-GUIDE.md) and [networking upgrade issue](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15).
 
 **New to Kubernetes or ROS 2?** Check out our [Beginner Glossary](docs/GLOSSARY.md) to clarify the terminology used in this lab.
 
@@ -117,8 +117,8 @@ vagrant --version
 On your **host**:
 
 ```bash
-git clone https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment.git
-cd Vagrant-Kubernetes-ROS2-Deployment
+git clone https://github.com/MSKazemi/ros2-kubernetes-lab.git
+cd ros2-kubernetes-lab
 vagrant up
 vagrant ssh controlplane
 ```
@@ -138,9 +138,9 @@ kubectl -n ros get pods -o wide
 kubectl -n ros scale deployment ros --replicas=3
 ```
 
-To run a **manual ROS 2 talker/listener** demonstration, use the separate [ROS2/README.md](./ROS2/README.md) guide. Its outdated filename/namespace examples are being addressed in [issue #24](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/24). Scaling the stress workload alone does not demonstrate DDS message delivery.
+To run a **manual ROS 2 talker/listener** demonstration, use the separate [ROS2/README.md](./ROS2/README.md) guide. Its outdated filename/namespace examples are being addressed in [issue #24](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/24). Scaling the stress workload alone does not demonstrate DDS message delivery.
 
-> **Do not share provisioning logs or kubeconfig files.** The original monitoring scripts may include privileged Kubernetes Dashboard tokens in terminal output. Credential/RBAC hardening is tracked in [issue #6](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/6).
+> **Do not share provisioning logs or kubeconfig files.** The original monitoring scripts may include privileged Kubernetes Dashboard tokens in terminal output. Credential/RBAC hardening is tracked in [issue #6](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/6).
 
 ### Check status, stop, and remove the VMs
 
@@ -237,7 +237,7 @@ Yes, ROS 2 processes can run inside containers managed as Kubernetes pods. ROS 2
 
 ### How do I deploy ROS 2 on Kubernetes locally using Vagrant?
 
-Use the [historical Vagrant quickstart](#quickstart) to provision the local cluster, then follow the [ROS 2 tutorial](./ROS2/README.md). The default setup requires a powerful host, and a modern, lower-resource kind/k3d route is only [planned](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/16).
+Use the [historical Vagrant quickstart](#quickstart) to provision the local cluster, then follow the [ROS 2 tutorial](./ROS2/README.md). The default setup requires a powerful host, and a modern, lower-resource kind/k3d route is only [planned](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16).
 
 ### How does ROS 2 DDS discovery work between Kubernetes pods?
 
@@ -245,11 +245,11 @@ DDS discovery depends on RMW, discovery mode, networking, and participant config
 
 ### Does this project already work with ROS 2 Jazzy or a current Kubernetes release?
 
-A **Jazzy/Ubuntu 24.04 container image recipe** is now available and checked by an image-local test (see [Jazzy guide](./ROS2/jazzy/README.md)). This is **not** proof of a modern Kubernetes lab: the Vagrant scripts still use **Kubernetes 1.29**, archived Weave Net, and old Foxy Kubernetes manifest references. See [modernization issue #7](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/7).
+A **Jazzy/Ubuntu 24.04 container image recipe** is now available and checked by an image-local test (see [Jazzy guide](./ROS2/jazzy/README.md)). This is **not** proof of a modern Kubernetes lab: the Vagrant scripts still use **Kubernetes 1.29**, archived Weave Net, and old Foxy Kubernetes manifest references. See [modernization issue #7](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7).
 
 ### Does `ros_dep_1.yaml` run ROS 2 talker and listener automatically?
 
-No. The manifest runs `stress-ng` as a CPU workload with an HPA. Running talker/listener requires separate manual commands (and verification), as explained in the [ROS 2 walkthrough](./ROS2/README.md). A tested automatic cross-worker demonstration is tracked in [issue #14](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/14).
+No. The manifest runs `stress-ng` as a CPU workload with an HPA. Running talker/listener requires separate manual commands (and verification), as explained in the [ROS 2 walkthrough](./ROS2/README.md). A tested automatic cross-worker demonstration is tracked in [issue #14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14).
 
 ### Can I use Prometheus and Grafana to study Kubernetes autoscaling?
 
@@ -274,7 +274,7 @@ If you use this project or its components in your research or in developing soft
   title = {Vagrant-Kubernetes-ROS2 Deployment},
   year = {2024},
   publisher = {GitHub},
-  howpublished = {\url{https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment}}
+  howpublished = {\url{https://github.com/MSKazemi/ros2-kubernetes-lab}}
 }
 ```
 
@@ -283,7 +283,7 @@ If you use this project or its components in your research or in developing soft
 Distributed under the Apache License 2.0. See [LICENSE](./LICENSE) for more information.
 
 ## Contributing
-We welcome first-time contributors, educators, ROS 2 users and Kubernetes engineers. The easiest place to start is a labeled [good first issue](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/good%20first%20issue), or a scoped [help wanted issue](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/help%20wanted). Read the [contribution guide](./CONTRIBUTING.md) or the [Claude Code/Codex step-by-step guide](./docs/AI_ASSISTED_CONTRIBUTING.md) before claiming a task or opening a PR. Documentation and simple static-check contributions do not require VirtualBox or a running Kubernetes cluster.
+We welcome first-time contributors, educators, ROS 2 users and Kubernetes engineers. The easiest place to start is a labeled [good first issue](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue), or a scoped [help wanted issue](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/help%20wanted). Read the [contribution guide](./CONTRIBUTING.md) or the [Claude Code/Codex step-by-step guide](./docs/AI_ASSISTED_CONTRIBUTING.md) before claiming a task or opening a PR. Documentation and simple static-check contributions do not require VirtualBox or a running Kubernetes cluster.
 
 ## Acknowledgments
 - Kubernetes

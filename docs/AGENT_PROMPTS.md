@@ -8,7 +8,7 @@ Agents must follow [AGENTS.md](../AGENTS.md) and [CONTRIBUTING.md](../CONTRIBUTI
 
 ```text
 I am contributing to issue #25:
-https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/25
+https://github.com/MSKazemi/ros2-kubernetes-lab/issues/25
 
 First read AGENTS.md and the current issue body, asking me to paste it if you lack GitHub access.
 Inspect MonitoringSystem/README.md and the committed images/ directory.
@@ -23,7 +23,7 @@ validation you performed, and what you did not verify.
 
 **Human check:** Compare every image path with `images/` and visually inspect any screenshot whose description changed. Do not accidentally publish secrets shown in screenshots.
 
-**Coordinate first:** PR [#36](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/pull/36) is already open for this issue. Review or comment on it rather than opening a duplicate PR.
+**Coordinate first:** PR [#36](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/36) is already open for this issue. Review or comment on it rather than opening a duplicate PR.
 
 ## 2. Documentation + accuracy: issue #24 — ROS 2 workload guide
 

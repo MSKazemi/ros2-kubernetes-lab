@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/sitemap.xml
+Sitemap: https://mskazemi.com/ros2-kubernetes-lab/sitemap.xml

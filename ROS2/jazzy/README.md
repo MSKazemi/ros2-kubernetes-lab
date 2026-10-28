@@ -22,7 +22,7 @@ docker run --rm -i --platform linux/amd64 ros-jazzy-lab:local bash -s < scripts/
 
 The smoke script checks Ubuntu 24.04, `ROS_DISTRO=jazzy`, the ROS C++ talker/listener executables and `stress-ng`. It launches both ROS 2 example processes **inside one container**, and fails if the listener receives no message in 45 seconds. The complete smoke test is automated on PRs by [`.github/workflows/ros2-image-ci.yml`](../../.github/workflows/ros2-image-ci.yml).
 
-The smoke test is **not** a Kubernetes, multi-pod, cross-worker or DDS-discovery-server test. Those release gates are tracked in [#14](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/14) and [#15](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/15).
+The smoke test is **not** a Kubernetes, multi-pod, cross-worker or DDS-discovery-server test. Those release gates are tracked in [#14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14) and [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15).
 
 To inspect the image without starting Kubernetes:
 
@@ -35,7 +35,7 @@ stress-ng --version
 
 ## First verified published image (12 October 2026)
 
-The [post-merge GitHub Actions run](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/actions/runs/38228962264) passed the amd64 image smoke test **and** Docker Hub publication. The workflow recorded:
+The [post-merge GitHub Actions run](https://github.com/MSKazemi/ros2-kubernetes-lab/actions/runs/38228962264) passed the amd64 image smoke test **and** Docker Hub publication. The workflow recorded:
 
 - Source commit: `475988ae383e361ebbc60c1c6e0614ecd93694d1`.
 - Repository: `<configured-Docker-Hub-namespace>/ros-jazzy-with-stress-ng`.
@@ -66,7 +66,7 @@ kubectl -n ros get pods -l app=ros-jazzy-stress -o wide
 kubectl -n ros delete deployment ros-jazzy-stress
 ```
 
-No working Kubernetes setup is provided by this container-only migration. The first verified lightweight installation is a separate project task [#16](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/16).
+No working Kubernetes setup is provided by this container-only migration. The first verified lightweight installation is a separate project task [#16](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16).
 
 ## Image provenance, version pinning and limits
 
@@ -75,13 +75,13 @@ No working Kubernetes setup is provided by this container-only migration. The fi
 | ROS distribution | Jazzy Jalisco, LTS to May 2029 | Official upstream support documented |
 | Ubuntu | Noble 24.04 | Docker base target; enforced by smoke script |
 | Base image | `docker.io/library/ros:jazzy-ros-base-noble` with fixed `sha256` index in Dockerfile | Digest recorded in source, image pull/build verified by CI when green |
-| Repository-built image | `ros-jazzy-with-stress-ng:sha-475988ae383e361ebbc60c1c6e0614ecd93694d1` | Published and smoke-tested in [run 38228962264](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/actions/runs/38228962264); digest recorded above; public pull access not yet independently checked |
+| Repository-built image | `ros-jazzy-with-stress-ng:sha-475988ae383e361ebbc60c1c6e0614ecd93694d1` | Published and smoke-tested in [run 38228962264](https://github.com/MSKazemi/ros2-kubernetes-lab/actions/runs/38228962264); digest recorded above; public pull access not yet independently checked |
 | Architectures | `linux/amd64` | CI-covered when green; arm64 not validated |
 | Additional apt packages | `ros-jazzy-demo-nodes-cpp=0.33.11-1noble.20260920.235420`, `stress-ng=0.17.06-1build1` | Direct package versions pinned from the successful 2026-10-12 CI installation; **transitive dependency versions are not locked** |
 | Full Kubernetes environment | Legacy Kubernetes 1.29 / Weave Net | **Not modernized or tested** in this PR |
 | Lyrical profile | Ubuntu 26.04 platform | Deferred; no claim of support |
 
-**Reproducibility caveat:** The base-image digest is fixed, and a pushed image is referenced by a content digest and a source-commit tag. However, apt repositories can update. A rebuild from the same Git commit may resolve different apt package versions; fully hermetic/reproducible rebuilds require an apt snapshot or version lock and are still future work under [#7](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/7) / [#6](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/6). Consume a **published image digest** when an exact artifact matters.
+**Reproducibility caveat:** The base-image digest is fixed, and a pushed image is referenced by a content digest and a source-commit tag. However, apt repositories can update. A rebuild from the same Git commit may resolve different apt package versions; fully hermetic/reproducible rebuilds require an apt snapshot or version lock and are still future work under [#7](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7) / [#6](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/6). Consume a **published image digest** when an exact artifact matters.
 
 **Original Foxy reference:** [`ROS2/legacy/foxy/Dockerfile`](../legacy/foxy/Dockerfile). The existing root-level Kubernetes YAML files still refer to the old Foxy stress image and **have deliberately not been silently migrated to an untested modern cluster**.
 

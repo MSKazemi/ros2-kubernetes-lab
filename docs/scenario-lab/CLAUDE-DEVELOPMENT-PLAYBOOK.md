@@ -17,7 +17,7 @@
 
 ```text
 You are implementing one bounded improvement to issue #89 for
-MSKazemi/Vagrant-Kubernetes-ROS2-Deployment.
+MSKazemi/ros2-kubernetes-lab.
 First read the current AGENTS.md, CONTRIBUTING.md, issue #83 and #89.
 Inspect site/BRAND.md, site/scenarios/, site/assets/scenarios.css,
 site/assets/scenarios.js, scripts/validate-site.py, .github/workflows/pages.yml.
@@ -70,13 +70,13 @@ Only after an actual valid run and human review may a numeric result appear.
 
 | Issue | Domain | Expected contributor output |
 | --- | --- | --- |
-| [#83](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/83) | Umbrella | Roadmap, acceptance, cross-dependency review |
-| [#84](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/84) | Fault triage | Synthetic fixture casebook and offline diagnostic baseline |
-| [#85](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/85) | Edge/cloud | Network/placement experiment matrix and eligibility contract |
-| [#86](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/86) | Agents | High-level simulator-skill review threat fixtures |
-| [#87](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/87) | Fleet | Synthetic task/fleet scheduling fairness protocol |
-| [#88](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/88) | Reproducibility | Evidence metadata validator, measured/failed run publication |
-| [#89](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/89) | SEO, a11y | Responsive/keyboard/reduced-motion/browser/SEO audit |
+| [#83](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83) | Umbrella | Roadmap, acceptance, cross-dependency review |
+| [#84](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/84) | Fault triage | Synthetic fixture casebook and offline diagnostic baseline |
+| [#85](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/85) | Edge/cloud | Network/placement experiment matrix and eligibility contract |
+| [#86](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/86) | Agents | High-level simulator-skill review threat fixtures |
+| [#87](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/87) | Fleet | Synthetic task/fleet scheduling fairness protocol |
+| [#88](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/88) | Reproducibility | Evidence metadata validator, measured/failed run publication |
+| [#89](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/89) | SEO, a11y | Responsive/keyboard/reduced-motion/browser/SEO audit |
 
 **Dependencies:** Jev PoC #74 and benchmark #75, general scientific manifest #60, typed contract #55, safety gate #59, network/ROS verification #14/#15/#16, research tracks #62/#64/#69.
 

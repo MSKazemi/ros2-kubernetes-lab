@@ -2,7 +2,7 @@
 
 The static website for **ROS 2 Kubernetes Lab**, designed as an honest, accessible learning and research portal. The site is located under `site/` and does **not** rename or replace the public repository.
 
-**Proposed live URL (verify after Pages deployment):** https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/
+**Proposed live URL (verify after Pages deployment):** https://mskazemi.com/ros2-kubernetes-lab/
 
 ## What is included?
 
@@ -76,7 +76,7 @@ This is an educational/research project and not a safety-critical robotics runti
 - **Technical docs source:** `site/docs/*.html`. Every page has distinct metadata and a stable canonical URL.
 - **Brand source of truth:** `site/BRAND.md`.
 - **Content/discoverability plan:** `docs/WEBSITE-GROWTH-AND-CONTENT.md`.
-- **Full future documentation system:** issue [#19](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/19) remains open for versioned MkDocs if/when a static multi-page site becomes insufficient.
+- **Full future documentation system:** issue [#19](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/19) remains open for versioned MkDocs if/when a static multi-page site becomes insufficient.
 - **Status changes:** verify end-to-end behavior and update README, guides, labels and site in one reviewed PR.
 - **Changing the repo name/domain:** update every canonical, sitemap and robots entry and check GitHub redirects.
 
