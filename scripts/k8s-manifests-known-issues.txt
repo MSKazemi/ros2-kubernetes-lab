@@ -1,0 +1,21 @@
+# Known, reviewed exceptions for scripts/validate-k8s-manifests.py.
+# Format: <path relative to repo root>:<Kind or *> -- <reason>
+#   <Kind>  tolerates ONLY a "could not find schema" result for that resource kind
+#           in that file. Any other error for the same resource still fails CI.
+#           The resource is reported as UNCHECKED, never as valid.
+#   *       excludes the whole file (it is not a Kubernetes manifest).
+# Lines starting with '#' are comments. Remove an entry once it is no longer
+# needed; the validator warns about stale entries.
+
+# VerticalPodAutoscaler is a CustomResourceDefinition from the kubernetes/autoscaler
+# project, not a built-in API, so the built-in 1.29 schemas contain no schema for it.
+# The lab does not install or pin any VPA version (ROS2/README.md only says the VPA
+# components must be installed), so there is no matching CRD schema to pin honestly.
+# The Namespace and Deployment in the same file ARE validated. Do not read a green
+# CI run as proof that the VPA object is valid.
+ROS2/VPA.yaml:VerticalPodAutoscaler -- CRD from kubernetes/autoscaler; no built-in schema and no VPA version pinned by the lab
+
+# Helm values files for the kube-prometheus-stack chart, not Kubernetes objects
+# (they have no apiVersion/kind). The rendered chart output is not stored in this repo.
+MonitoringSystem/values.yaml:* -- Helm values file (kube-prometheus-stack defaults), not a Kubernetes manifest
+MonitoringSystem/kube-prometheus-stack-values.yaml:* -- Helm values file (kube-prometheus-stack overrides), not a Kubernetes manifest
