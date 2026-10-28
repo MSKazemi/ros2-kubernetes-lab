@@ -1,0 +1,43 @@
+name: Offline analysis
+
+on:
+  pull_request:
+    paths:
+      - 'DataAnalysis/**'
+      - 'scripts/run-analysis-offline.sh'
+      - 'Makefile'
+      - '.github/workflows/analysis-offline.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'DataAnalysis/**'
+      - 'scripts/run-analysis-offline.sh'
+      - 'Makefile'
+      - '.github/workflows/analysis-offline.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  offline-analysis:
+    name: Offline sample analysis and tests (CPU only, no Kubernetes)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout source
+        # actions/checkout v4.2.2: same pinned commit as the other workflows.
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Set up Python
+        # actions/setup-python v7.1.0: same pinned commit as validate-markdown-links.yml.
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - name: Install pinned dependencies
+        shell: bash
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -r DataAnalysis/requirements-offline.txt
+      - name: Run offline analysis and tests
+        shell: bash
+        run: bash scripts/run-analysis-offline.sh

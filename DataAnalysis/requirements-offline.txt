@@ -1,0 +1,32 @@
+# Pinned environment for the OFFLINE analysis in DataAnalysis/ (no cluster, no Prometheus).
+# Supported/tested interpreter: Python 3.12 (numpy 2.5 requires >=3.12). Verified 2026-10-28
+# on Python 3.12.3 / Linux; versions below are the latest stable releases on PyPI on that date.
+# Install:  python3 -m venv .venv && .venv/bin/pip install -r DataAnalysis/requirements-offline.txt
+#
+# Direct dependencies (latest stable, no older pin needed):
+#   matplotlib  - only for plot_namespace_cpu.py
+#   numpy       - matplotlib dependency, pinned for reproducibility
+#   pytest      - only for DataAnalysis/tests
+# analyze_sample.py itself uses the standard library only.
+#
+# NOT included on purpose: prometheus-api-client, requests, pandas, jupyter. They are needed only
+# by the historical, cluster-dependent notebooks (see DataAnalysis/README.md), which cannot run
+# offline, so they are not part of this environment.
+#
+# Transitive dependencies are pinned too (pip freeze of the verified environment).
+matplotlib==3.11.2
+numpy==2.5.4
+pytest==9.2.0
+contourpy==1.4.0
+cycler==0.12.1
+fonttools==4.68.0
+iniconfig==2.3.1
+kiwisolver==1.5.1
+packaging==26.3
+pillow==13.0.0
+pluggy==1.7.0
+Pygments==2.21.0
+pyparsing==3.3.3
+python-dateutil==3.0.0
+six==1.17.0
+tzdata==2026.6
