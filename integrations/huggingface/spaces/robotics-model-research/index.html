@@ -1,0 +1,46 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROS 2 & Hugging Face Robotics Model Research Explorer</title>
+<meta name="description" content="Read-only guide to ROS 2, Kubernetes, LeRobot and Hugging Face models for cloud-edge research. Static teaching content, no model predictions or results.">
+<style>
+:root{color-scheme:dark;font-family:system-ui,Arial,sans-serif}*{box-sizing:border-box}body{margin:0;background:#081321;color:#edf5ff;line-height:1.65}
+a{color:#7ee8d8}a:focus-visible,button:focus-visible{outline:3px solid #ffd392;outline-offset:3px}
+header,main,footer{max-width:1100px;margin:auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.logo{font-weight:750;color:#77ead9;letter-spacing:-.02em}.tag{font:700 .72rem monospace;letter-spacing:.1em;color:#9f9af5;text-transform:uppercase}
+h1{font-size:clamp(2.1rem,5vw,3.8rem);letter-spacing:-.045em;line-height:1.13;max-width:900px;margin:.6em 0}
+.lead{font-size:1.06rem;max-width:830px;color:#bbcee3}.warning{display:inline-block;padding:8px 15px;background:#483322;color:#ffe1a8;border-radius:100px;margin:20px 0}
+.flow{display:flex;gap:12px;flex-wrap:wrap;margin:25px 0}.flow span{padding:11px 14px;border:1px solid #315e74;border-radius:11px;background:#112c41;color:#c5faf2;font-size:.9rem}
+h2{margin-top:50px;font-size:1.8rem}.filters{display:flex;gap:10px;flex-wrap:wrap;padding:10px 0 20px}.filters button{cursor:pointer;border-radius:40px;padding:10px 16px;background:#1a3148;color:#e5f6ff;border:1px solid #53708a}.filters button[aria-pressed=true]{background:#70e8d9;color:#092a36;font-weight:750}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:15px}.card{background:linear-gradient(150deg,#122a3d,#0d1b2e);border:1px solid #2e4c63;border-radius:15px;padding:22px}.card[hidden]{display:none}.card h3{margin:8px 0}.card p{color:#bed2e4}.card small{color:#a8a1ff;text-transform:uppercase;letter-spacing:.08em}
+.panel{margin:24px 0;background:#12243a;padding:20px;border-radius:14px;border:1px solid #34495d}.panel p{color:#c5d6e4}
+footer{border-top:1px solid #2b4760;color:#a5b8cb;font-size:.85rem;margin-top:45px}.skip{position:absolute;left:-10000px}.skip:focus{left:12px;top:12px;background:#fff;color:#000;padding:8px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style></head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header><span class="logo">◈ ROS 2 / Cloud Robotics Research</span><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment">Source and research issues ↗</a></header>
+<main id="main"><span class="tag">Hugging Face × ROS 2 × Kubernetes · Educational explorer</span><h1>Choose a model. Form a hypothesis. Measure the real system.</h1>
+<p class="lead">This read-only showcase explores seven upstream Hugging Face model candidates for cloud-edge robotics: robot action policies and perception systems. It does not download model weights, call inference APIs, control robots, or show invented benchmarks.</p>
+<p class="warning">Source-only educational template · Experiments unmeasured</p>
+<div class="flow" aria-label="Conceptual research workflow"><span>01 · Check model & license</span><span>02 · Match simulator contract</span><span>03 · Test network failures</span><span>04 · Publish reproducible evidence</span></div>
+<h2 id="models">Explore model families</h2><div class="filters" role="group" aria-label="Model category filter">
+<button type="button" aria-pressed="true" data-filter="all">All models</button><button type="button" aria-pressed="false" data-filter="policy">Robot policies</button><button type="button" aria-pressed="false" data-filter="perception">Perception</button></div>
+<p id="status" role="status" aria-live="polite">7 models shown</p>
+<section class="cards" aria-label="Linked upstream model cards">
+<article class="card" data-type="policy"><small>Action policy</small><h3>SmolVLA base</h3><p>Compact VLA for task-adapted simulated actions; explore edge vs remote inference only with compatible observations and actions.</p><a href="https://huggingface.co/lerobot/smolvla_base">Official model card</a></article>
+<article class="card" data-type="policy"><small>Action policy</small><h3>X-VLA base</h3><p>Cross-embodiment soft-prompt adaptation. Different robot action spaces still require strict checks and domain adaptation.</p><a href="https://huggingface.co/lerobot/xvla-base">Official model card</a></article>
+<article class="card" data-type="policy"><small>Simulator policy</small><h3>X-VLA LIBERO</h3><p>Study compatible simulation checkpoint, task success, seeds and action contract; no claim of reproducing upstream scores.</p><a href="https://huggingface.co/lerobot/xvla-libero">Official model card</a></article>
+<article class="card" data-type="policy"><small>Large policy</small><h3>π₀.₅ LIBERO base</h3><p>Resource-aware simulation research requiring GPU capacity, verified policy license and gated tokenizer dependencies.</p><a href="https://huggingface.co/lerobot/pi05_libero_base">Official model card</a></article>
+<article class="card" data-type="perception"><small>Text-guided detection</small><h3>Grounding DINO Tiny</h3><p>Evaluate image-to-detection accuracy, deadline, transfer costs and fault recovery. Detection is not actuation.</p><a href="https://huggingface.co/IDEA-Research/grounding-dino-tiny">Official model card</a></article>
+<article class="card" data-type="perception"><small>Relative depth</small><h3>Depth Anything V2 Small</h3><p>Compare relative-depth outputs and latency. Do not assume metric distance without independent calibration.</p><a href="https://huggingface.co/depth-anything/Depth-Anything-V2-Small-hf">Official model card</a></article>
+<article class="card" data-type="perception"><small>Segmentation</small><h3>SAM 2 Small</h3><p>Investigate mask continuity with frame loss, image quality changes and controlled compute placement.</p><a href="https://huggingface.co/facebook/sam2-hiera-small">Official model card</a></article>
+</section>
+<h2 id="participate">Four suggested experiments</h2>
+<div class="panel"><h3>Action freshness</h3><p>Compare a task-compatible local policy with verified LeRobot remote inference in simulation. Measure p95 sensor-to-valid-action age, missed deadlines and recovery from disconnection, never only HTTP latency.</p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/96">Research issue #96</a></div>
+<div class="panel"><h3>VLA simulator reproducibility</h3><p>Pin simulator, dataset, policy, processor, action units, seeds and hardware before a controlled rollout. A generic base checkpoint does not prove task success.</p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/95">Research issue #95</a></div>
+<div class="panel"><h3>Perception under failure</h3><p>Investigate text-guided detection and relative-depth estimation from licensed images while injecting network delay, compression and timeouts. New experiment; no measurements here.</p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/92">HF epic #92</a></div>
+<div class="panel"><h3>Hardware-free baseline</h3><p>Write a deterministic ROS 2 mock-policy fixture and reject bad shapes, units and stale actions before expensive or safety-sensitive integrations.</p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/55">Starter issue #55</a></div>
+<p class="lead">The RoboLattice name is under consideration only; brand clearance is incomplete. This Space template is independent of upstream model creators and provides no commercial or safety certification.</p>
+</main><footer>Open-source educational research · ROS 2 Kubernetes Lab · <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment">GitHub repository</a> · <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/SAFETY.md">Safety notes</a></footer>
+<script>
+(()=>{const b=[...document.querySelectorAll('[data-filter]')],c=[...document.querySelectorAll('[data-type]')],s=document.getElementById('status');b.forEach(x=>x.addEventListener('click',()=>{const t=x.dataset.filter;b.forEach(y=>y.setAttribute('aria-pressed',String(x===y)));let n=0;c.forEach(y=>{y.hidden=t!=='all'&&t!==y.dataset.type;if(!y.hidden)n++});s.textContent=n+' models shown'}))})();
+</script></body></html>
