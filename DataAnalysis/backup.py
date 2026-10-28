@@ -5,7 +5,7 @@ from prometheus_api_client import PrometheusConnect
 from datetime import datetime, timedelta
 
 # Setup connection
-prom = PrometheusConnect(url ="http://192.168.56.10:30090", disable_ssl=True)
+prom = PrometheusConnect(url="http://192.168.56.10:30090", disable_ssl=True)
 
 # Fetch all metric names
 all_metrics = prom.all_metrics()
@@ -20,7 +20,6 @@ path = f"../data_json/{datetime.now().strftime('%Y%m%d')}/"
 
 os.makedirs(path, exist_ok=True)
 
-
 for metric in all_metrics:
     # Perform a range query for each metric
     result_range = prom.custom_query_range(
@@ -31,10 +30,8 @@ for metric in all_metrics:
     )
 
     # Define file path with .gz extension
-    file_path = path+f'{metric.replace("/", "_").replace(":","_")}.json.gz'  # Replace '/' with '_' to avoid path issues
+    file_path = path + f'{metric.replace("/", "_").replace(":","_")}.json.gz'  # Replace '/' with '_' to avoid path issues
 
     # Write data to a gzipped JSON file
     with gzip.open(file_path, 'wt', encoding='utf-8') as file:
-        json.dump(result_range, file, indent=4)
-
-    print(f"Data for {metric} has been saved to {file_path}.")
+        json.dump(result_range
