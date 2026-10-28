@@ -19,11 +19,22 @@
 
 ## New research proposals not duplicates of existing issues
 
-**P1 — Perception at the edge vs Kubernetes**: a focused Grounding DINO and Depth Anything study (independent of robot action control). Use a redistributable image fixture, test image size/compression, controlled delay/loss, precision/recall where labeled, CPU/GPU cost, image privacy and dropouts. Never call relative depth metric without calibration.
+**P1 — [Issue #106: Perception at the edge vs Kubernetes](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/106)**: a focused Grounding DINO and Depth Anything study (independent of robot action control). Use a redistributable image fixture, test image size/compression, controlled delay/loss, precision/recall where labeled, CPU/GPU cost, image privacy and dropouts. Never call relative depth metric without calibration.
 
-**P2 — Multi-robot model-serving fairness**: extend existing simulated fleet scheduling (#87) with GPU model-load/memory pressure and batching, pinned artifacts, budgets and fairness baselines. Start with deterministic queue simulator. Avoid equating throughput with robot task safety.
+**P2 — [Issue #107: Multi-robot model-serving fairness](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/107)**: extend existing simulated fleet scheduling (#87) with GPU model-load/memory pressure and batching, pinned artifacts, budgets and fairness baselines. Start with deterministic queue simulator. Avoid equating throughput with robot task safety.
 
 **P3 — Evidence-first contributor journey**: model explorer → issue page → local fixture → test report → reproducibility evidence. Each page links to exact issues and levels (BSc/MSc/PhD). Search indexing and traffic metrics are optional measured outcomes, not assumptions.
+
+## Validated scope checks
+
+The research-only catalog manifest and linked pages are checked offline by:
+
+~~~sh
+python3 scripts/validate-hf-model-catalog.py --self-test
+python3 scripts/validate-site.py
+~~~
+
+This validates **metadata and web structure only**, never real HF inference, robot policy semantics or task-success measurements. Current public research release remains unmeasured.
 
 ## Pre-registration table template
 
