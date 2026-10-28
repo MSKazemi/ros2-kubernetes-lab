@@ -58,7 +58,7 @@ Use this as a **triage register**, not a substitute for the issue bodies or GitH
 
 | PR | Observed state | Recommendation |
 | --- | --- | --- |
-| [#97](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/97) kind demo | Ready for review; GitHub shows mergeable clean | **Highest code review priority.** Inspect cross-worker logs, CI, resource requirements, network/security assumptions. Merge only after human approval and required checks; issue #14/#16 may remain partly open |
+| [#97](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/97) kind demo | Ready/clean; [GitHub Actions run 40587051848](https://github.com/MSKazemi/ros2-kubernetes-lab/actions/runs/40587051848) passed `make demo`, `make verify`, negative discovery fault, restoration and `make clean` | **Highest code review priority.** CI logs show talker on `ros2k8s-demo-worker`, listener on `ros2k8s-demo-worker2`, delivered ROS messages, verifier failing on deliberately broken discovery, then delivery restored. This supports **one isolated kind/amd64 PR configuration**, not Vagrant or real robotics/AI; human review/merge and broader security/resource requirements still pending |
 | [#91](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/91) stale docs | Ready/clean | Review and incorporate early; normalizes README status and gitignore. May conflict later with #72/#76/#101/#105 README hunks |
 | [#36](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/36) monitoring alt text | Ready/clean | Small focused accessibility fix, verify screenshots and links |
 | [#50](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/50) academic/industry strategy | Ready/clean | Preserve as reference; avoid turning into a rival roadmap |
@@ -92,7 +92,7 @@ PR 'clean' is only a mergeability metadata signal and does **not** establish tes
 
 ## Immediate reviewer checklist
 
-- [ ] Review #97 CI and cross-worker output; do not infer verified results from green Markdown checks.
+- [x] Inspect #97 successful kind CI cross-worker output and deliberately failing negative verifier ([run 40587051848](https://github.com/MSKazemi/ros2-kubernetes-lab/actions/runs/40587051848)); **still [ ] review/merge PR after human approval** and verify other operating environments separately.
 - [ ] Reject/rework #102 mismatch with #65.
 - [ ] Review/land #91, #36 and dated #50/#51 individually; rebase #41.
 - [ ] Choose one main HF website track for #101/#105 and reconcile paths before merge.
