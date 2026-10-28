@@ -22,6 +22,7 @@ This file is shared guidance for Codex, Claude Code, and other repository-aware 
 - `Vagrantfile`, `KubernetesClusterSetup/` — VM sizing, provisioning, Kubernetes setup.
 - `Network/` — historical Weave Net CNI.
 - `ROS2/` — modern Jazzy Dockerfile and container-only test (`ROS2/jazzy/`); old Foxy manifests remain legacy examples (old recipe under `ROS2/legacy/foxy/`).
+- `examples/cloud-robotics/mock-policy/` — CPU-only, simulated, non-actuating observation/action contract, validator and MOCK policy (stdlib `unittest`; no ROS, GPU or cluster). Test: `python3 -m unittest discover -s examples/cloud-robotics/mock-policy/tests`.
 - `MonitoringSystem/` — Prometheus/Grafana/Dashboard configuration; permissions require scrutiny.
 - `DataAnalysis/` — historical measurements, Python scripts and notebooks; do not invent performance results.
 - `README.md` and component READMEs — user-facing instructions.

@@ -1,0 +1,42 @@
+name: Mock policy contract tests
+
+# CPU-only, stdlib-only unit tests of the simulated observation/action contract
+# (issue #55). No ROS, GPU, Docker, Kubernetes, network model access or secrets.
+on:
+  pull_request:
+    paths:
+      - 'examples/cloud-robotics/mock-policy/**'
+      - '.github/workflows/mock-policy-contract.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'examples/cloud-robotics/mock-policy/**'
+      - '.github/workflows/mock-policy-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contract-tests:
+    name: Schema and rejection tests (simulated, non-actuating)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout source
+        # actions/checkout v4.2.2: pinned for a reproducible, least-privilege check.
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Set up Python
+        # actions/setup-python v7.1.0: pinned to a commit SHA like the checkout step.
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - name: Run contract unit tests
+        shell: bash
+        run: python3 -m unittest discover -s examples/cloud-robotics/mock-policy/tests -v
+      - name: Check committed fixtures are reproducible
+        shell: bash
+        run: python3 examples/cloud-robotics/mock-policy/fixture_gen.py --check
+      - name: Run the non-actuating example
+        shell: bash
+        run: python3 examples/cloud-robotics/mock-policy/example.py
