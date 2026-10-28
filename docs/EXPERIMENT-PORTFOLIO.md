@@ -115,7 +115,7 @@ No command in this block should be added to README as a real command until imple
 
 **Baselines:** stable topology; restart; one deliberately incompatible/disconnected scenario. Alternative discovery/Zenoh bridge only after G1 and with distinct transport experimental arms (#48).
 
-**Acceptance:** Green reproducible CI with deterministic cleanup and independently inspected logs; no inference experiment is allowed to claim end-to-end distributed ROS until this is verified. **Issues:** #14/#15/#16/#18; pending PR #97.
+**Acceptance:** A [GitHub Actions run for PR #97](https://github.com/MSKazemi/ros2-kubernetes-lab/actions/runs/40587051848) has already shown successful cross-worker messages, a negative discovery failure, restoration and deterministic cleanup on one kind/amd64 host. Review and merge are still pending, and repeat/restart/other RMW or K8s profiles remain experiments, not demonstrated generality. **Issues:** #14/#15/#16/#18; pending PR #97.
 
 ## E03 — LeRobotDataset v3 sensor/actor conversion
 
