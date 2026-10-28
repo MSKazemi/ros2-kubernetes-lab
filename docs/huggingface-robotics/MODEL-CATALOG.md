@@ -25,6 +25,19 @@ For a first reproducible *real policy* experiment, prefer a task-matched checkpo
 - LeRobot remote inference uses its documented Zenoh-based policy transport; this does **not** demonstrate ROS 2 DDS discovery between Kubernetes workers.
 - Kubernetes throughput, HTTP timings or successful image builds alone cannot prove robotic task success or valid action freshness.
 
+## Machine-readable catalog and offline integrity check
+
+The **planning-only** source manifest is [integrations/huggingface/model-catalog.json](../../integrations/huggingface/model-catalog.json). Its seven model entries deliberately have null revisions and null results; they **cannot** be used for a publishable model run without separate exact model and processor commit pinning.
+
+From repository root:
+
+~~~sh
+python3 scripts/validate-hf-model-catalog.py --self-test
+python3 scripts/validate-site.py
+~~~
+
+The first command checks candidate metadata, no manufactured results, exact static model links and five negative mutations. This does not download weights or test HF model compatibility. The GitHub Pages PR workflow runs it without credentials or GPU. Follow up in [perception issue #106](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/106) and [model-serving fairness issue #107](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/107).
+
 ## Mandatory immutable experiment manifest
 
 Record: source Git SHA; image digest; HF model repository **and immutable commit**; processor/config hashes; dataset repository+revision and license; robot/camera/action schema (names, units, action order); simulator and LeRobot version; random seeds; hardware; action FPS; transport and network profile; metric implementation and raw trace path; limitations and human reviewer.
