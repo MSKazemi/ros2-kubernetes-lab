@@ -6,11 +6,17 @@ on:
     paths:
       - 'site/**'
       - 'scripts/validate-site.py'
+      - 'scripts/validate-hf-model-catalog.py'
+      - 'integrations/huggingface/model-catalog.json'
+      - 'integrations/huggingface/spaces/robotics-model-research/**'
       - '.github/workflows/pages.yml'
   pull_request:
     paths:
       - 'site/**'
       - 'scripts/validate-site.py'
+      - 'scripts/validate-hf-model-catalog.py'
+      - 'integrations/huggingface/model-catalog.json'
+      - 'integrations/huggingface/spaces/robotics-model-research/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -34,6 +40,8 @@ jobs:
           persist-credentials: false
       - name: Validate website assets and links
         run: python3 scripts/validate-site.py
+      - name: Validate offline Hugging Face research model catalog
+        run: python3 scripts/validate-hf-model-catalog.py --self-test
       - name: Check JavaScript syntax
         run: |
           node --check site/script.js
