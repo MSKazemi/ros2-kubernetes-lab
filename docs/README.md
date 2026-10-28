@@ -17,7 +17,7 @@
 | Work with existing Prometheus data | [Offline dataset guide](../DataAnalysis/dataset/README.md) | Historical sample; not a current benchmark |
 | See conceptual research scenarios | [Scenario Lab](scenario-lab/README.md), [website source](../site/scenarios/index.html) | Animated conceptual cases, **not measurements** |
 | Publish genuine evidence later | [Results and provenance contract](scenario-lab/RESULTS-PUBLICATION.md) | Schema/policy proposed |
-| Contribute with Claude Code or Codex | [AI-assisted contributing](AI_ASSISTED_CONTRIBUTING.md), [agent prompts](AGENT_PROMPTS.md) | Current contributor instructions |
+| Contribute with Claude Code or Codex | [AI-assisted contributing](AI_ASSISTED_CONTRIBUTING.md), [agent prompts](AGENT_PROMPTS.md), [work-package handoffs](AGENT-ROADMAP-HANDOFF.md) | Current agent rules + proposed research tasks |
 | Verify website work before publishing | [Static site guide](../site/README.md), [brand rules](../site/BRAND.md) | Site code in repository |
 
 ## Canonical ownership: do not create a second source of truth
