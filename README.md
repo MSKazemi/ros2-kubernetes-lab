@@ -283,7 +283,7 @@ If you use this project or its components in your research or in developing soft
 Distributed under the Apache License 2.0. See [LICENSE](./LICENSE) for more information.
 
 ## Contributing
-We welcome first-time contributors, educators, ROS 2 users and Kubernetes engineers. The easiest place to start is a labeled [good first issue](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue), or a scoped [help wanted issue](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/help%20wanted). Read the [contribution guide](./CONTRIBUTING.md) or the [Claude Code/Codex step-by-step guide](./docs/AI_ASSISTED_CONTRIBUTING.md) before claiming a task or opening a PR. Documentation and simple static-check contributions do not require VirtualBox or a running Kubernetes cluster.
+We welcome first-time contributors, educators, ROS 2 users and Kubernetes engineers. The easiest place to start is a labeled [good first issue](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue), or a scoped [help wanted issue](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/help%20wanted). Read the [contribution guide](./CONTRIBUTING.md) or the [Claude Code/Codex step-by-step guide](./docs/AI_ASSISTED_CONTRIBUTING.md) before claiming a task or opening a PR. Documentation and simple static-check contributions do not require VirtualBox or a running Kubernetes cluster. Thank you to everyone listed in [CONTRIBUTORS.md](./CONTRIBUTORS.md).
 
 ## Acknowledgments
 - Kubernetes

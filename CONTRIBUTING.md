@@ -11,7 +11,7 @@ Welcome! Contributions from robotics engineers, Kubernetes users, students, rese
 - [Project modernization roadmap](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/23) — proposed longer-term goals and dependencies. The roadmap may change before it merges.
 - [All open issues](https://github.com/MSKazemi/ros2-kubernetes-lab/issues).
 
-**Please read the full issue description before starting.** For first contributions, choose one small issue and comment “I'd like to work on this.” Issues are intentionally left unassigned initially so contributors can volunteer; a comment is an invitation to coordinate, not a guarantee of exclusive ownership. If someone else is already working on the task, coordinate in the issue instead of duplicating work.
+**Please read the full issue description before starting.** For first contributions, choose one small issue and comment “I'd like to work on this.” Issues are intentionally left unassigned initially so contributors can volunteer; a comment is an invitation to coordinate, not a guarantee of exclusive ownership. If someone else is already working on the task, coordinate in the issue instead of duplicating work. Merged contributors are listed in [CONTRIBUTORS.md](./CONTRIBUTORS.md).
 
 ### Suggested first contributions
 

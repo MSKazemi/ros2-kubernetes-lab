@@ -4,45 +4,25 @@ These are **copy-and-paste prompts** for Claude Code and OpenAI Codex. Start eit
 
 Agents must follow [AGENTS.md](../AGENTS.md) and [CONTRIBUTING.md](../CONTRIBUTING.md). If they cannot access the GitHub issue, paste the current description. They should not invent issue requirements, skip review, or claim tests were run without evidence.
 
-## 1. First documentation PR: issue #25 — screenshot links
+## 1. Website audit: issue #89 — student scenario usability and accessibility
 
 ```text
-I am contributing to issue #25:
-https://github.com/MSKazemi/ros2-kubernetes-lab/issues/25
+I am contributing to issue #89:
+https://github.com/MSKazemi/ros2-kubernetes-lab/issues/89
 
-First read AGENTS.md and the current issue body, asking me to paste it if you lack GitHub access.
-Inspect MonitoringSystem/README.md and the committed images/ directory.
-Find broken local image paths; check whether images/k8s1.png actually exists.
-If a referenced file is missing and no matching screenshot exists, remove that image
-reference while keeping the explanation readable. Don't invent screenshot files.
-Make meaningful, concise alt text for the remaining images based on their actual content.
-Edit only the necessary Markdown. Check the affected local image links and show your findings.
-Do not run Vagrant or modify Kubernetes manifests. At the end, show the diff,
-validation you performed, and what you did not verify.
+First read AGENTS.md, the current issue body and its parent epic #83, asking me to paste
+them if you lack GitHub access. Inspect site/scenarios, site/assets and scripts/validate-site.py.
+Audit accessibility and technical SEO for the content that actually exists: headings,
+link names, focus order, contrast, reduced-motion behavior, titles, meta descriptions and canonicals.
+Test responsive or keyboard behavior in a browser only if a real browser is available;
+otherwise say clearly that it was not tested. Do not report invented Lighthouse scores or search rankings.
+Propose small, scoped fixes and wait for my approval before editing.
+No autonomous push to main, no merge, and no spam outreach.
 ```
 
-**Human check:** Compare every image path with `images/` and visually inspect any screenshot whose description changed. Do not accidentally publish secrets shown in screenshots.
+**Human check:** Open the pages yourself at a narrow and a wide viewport and with the keyboard only. Every finding needs the exact URL, viewport and observed behavior, and any screenshot must be free of secrets.
 
-**Coordinate first:** PR [#36](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/36) is already open for this issue. Review or comment on it rather than opening a duplicate PR.
-
-## 2. Documentation + accuracy: issue #24 — ROS 2 workload guide
-
-```text
-Help me complete the currently open issue #24. Read AGENTS.md, ROS2/README.md,
-README.md and the three existing ROS2/ros_dep_*.yaml manifests first.
-Check the issue body before making changes.
-Identify the nonexistent ros_dep.yaml reference, namespace omissions and
-the fact that these manifests start stress-ng rather than talker/listener.
-Propose a documentation-only correction. Avoid claiming successful DDS messages
-or upgrading the stack; the actual runtime fix is tracked in issue #14.
-After approval, make only the minimal docs edits, check local references
-against committed files, and summarize remaining runtime limitations.
-Do not start Vagrant or change cluster security settings.
-```
-
-**Human check:** The commands should refer to real files, namespaces and workload behavior. Do not mark the issue as fixed if acceptance criteria are unmet.
-
-## 3. First coding PR: issue #55 — CPU-only mock policy
+## 2. First coding PR: issue #55 — CPU-only mock policy
 
 ```text
 I want to implement open issue #55 with a small PR.
@@ -58,7 +38,9 @@ and show checks actually run and ones still awaiting GitHub CI.
 
 **Human check:** Confirm the issue's acceptance criteria are met and that no check implies a cluster, DDS or hardware test passed.
 
-## 4. Kubernetes validation: issue #29 — manifest schemas
+**Coordinate first:** PR [#113](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/113) already references this issue. Read it and comment there before starting, rather than opening a duplicate.
+
+## 3. Kubernetes validation: issue #29 — manifest schemas
 
 ```text
 I want to work on issue #29. Read AGENTS.md and the open issue first.
@@ -73,7 +55,9 @@ After approval, implement minimal CI/doc changes and report actual validation.
 
 **Human check:** Any VPA schema exception must be deliberate and documented, not a fake green test.
 
-## 5. Advanced issue #14 — ROS 2 talker/listener integration
+**Coordinate first:** PR [#112](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/112) already addresses this issue. Read it and comment there before starting, rather than opening a duplicate.
+
+## 4. Advanced issue #14 — ROS 2 talker/listener integration
 
 ```text
 I want to plan (not immediately implement) issue #14.
@@ -90,7 +74,7 @@ Wait for human approval before editing.
 
 **Human check:** A listener receiving a message is not cross-worker evidence unless node placement and middleware configuration are also verified.
 
-## 6. Skeptical pre-PR review (any issue)
+## 5. Skeptical pre-PR review (any issue)
 
 ```text
 Review my uncommitted changes against AGENTS.md and the selected GitHub issue.
