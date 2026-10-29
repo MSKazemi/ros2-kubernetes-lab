@@ -18,7 +18,7 @@ Treat these as candidate search phrases, **not verified keyword volumes or ranki
 ## 2. Technical SEO already designed for the scenario pages
 
 - Unique, human-readable `<title>`, `<h1>`, meta descriptions; no keyword stuffing.
-- Stable, accurate canonical URLs under the site's existing `/Vagrant-Kubernetes-ROS2-Deployment/` base. **Do not** change to `github.io` or another domain without verifying deployment and planning redirects/canonical updates.
+- Stable, accurate canonical URLs under the site's existing `/ros2-kubernetes-lab/` base. **Do not** change to `github.io` or another domain without verifying deployment and planning redirects/canonical updates.
 - Semantic static HTML content with hypotheses, methods, metrics, evidence limitations and human contribution links. Animations are progressive enhancement and not the only place where information exists.
 - BreadcrumbList schema.org JSON-LD and suitable `CollectionPage`/`TechArticle` types; structured data does **not** guarantee enhanced search results.
 - Main homepage and docs link to scenario hub and detailed pages; internal scenario cross-links use descriptive anchor text; sitemap enumerates all exact pages.
