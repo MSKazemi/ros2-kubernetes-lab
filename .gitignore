@@ -145,8 +145,8 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
-/site
+# site/ is the hand-written GitHub Pages source and must stay tracked.
+# If MkDocs is adopted (issue #19), point its site_dir at another folder and ignore that.
 
 # mypy
 .mypy_cache/
