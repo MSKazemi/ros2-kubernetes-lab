@@ -60,6 +60,17 @@ ROS 2 DDS discovery behavior depends on RMW configuration, network transport and
 
 **No verified Jev integration, cloud/edge model benchmark, real robot control, live simulator or cross-worker DDS is established by these web pages.** Animated step flows use synthetic, preauthored text and do not contact a model provider.
 
+## Hugging Face / LeRobot research proposals (not implemented)
+
+- [S5 LeRobot Dataset Integrity](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/hf-lerobot-dataset.html): synthetic metadata, data rights, versioned Dataset v3 contract.
+- [S6 Jev vs HF Classifier](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/hf-jev-classifier.html): rules versus pinned open classifier versus optional hosted Jev.
+- [S7 SmolVLA and LIBERO](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/hf-smolvla-libero.html): verified model-policy/simulator compatibility before task evaluation.
+- [S8 LeRobot Remote Policy](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/hf-robotics-remote-inference.html): Zenoh-based policy service, deterministic stale-action rejection and K8s network study.
+- [Research guide, capabilities and Claude prompts](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/docs/huggingface-robotops/README.md).
+- [HF epic #92](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/92): open contributions and related issues.
+
+**No Hugging Face Space, trained model, licensed LeRobotDataset v3 conversion or published measured result is established by these pages.** Existing scenario website PR #90 and HF extension are under human review; this reference describes pending work; availability under main and Pages depends on human-reviewed merges and deployment.
+
 ## Repository identity
 
 - **Canonical repository:** https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment

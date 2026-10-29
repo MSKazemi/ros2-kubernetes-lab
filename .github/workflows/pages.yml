@@ -38,6 +38,7 @@ jobs:
         run: |
           node --check site/script.js
           node --check site/assets/scenarios.js
+          node --check site/assets/hf-scenarios.js
 
   deploy:
     name: Publish website

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#081422">
+<title>ROS 2 × Hugging Face | Open RobotOps Research Explorer</title>
+<meta name="description" content="Synthetic-only student research explorer for Hugging Face LeRobot datasets, Jev comparisons, VLA simulation and cloud-edge robotics.">
+<style>
+:root{color-scheme:dark;--bg:#081422;--panel:#11253a;--line:#35526e;--ink:#edf8ff;--sub:#b4c8d8;--cyan:#75eddc;--purple:#a599ff;--amber:#ffd39e}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:radial-gradient(ellipse at 85% 10%,#213e6a,#081422 65%);font:16px/1.65 system-ui,-apple-system,sans-serif}
+a{color:var(--cyan)}a:focus-visible,button:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+.shell{width:min(1050px,calc(100% - 36px));margin:0 auto}.skip{position:absolute;top:-100px;left:12px;background:var(--cyan);color:#071826;padding:10px}.skip:focus{top:12px}
+header{border-bottom:1px solid var(--line);padding:19px 0;display:flex;justify-content:space-between;gap:15px;align-items:center}
+.brand{font-weight:800;letter-spacing:.8px}.brand span{color:var(--cyan)}.small{font-size:13px;color:var(--sub)}
+.hero{padding:63px 0 45px}h1{font-size:clamp(35px,6.7vw,65px);line-height:1.1;letter-spacing:-1.8px;margin:13px 0 21px}h1 strong{color:var(--cyan)}
+h2{font-size:clamp(25px,4vw,36px);margin:13px 0 22px;line-height:1.2}h3{font-size:19px;margin:12px 0}
+.eyebrow{font:700 11px/1.4 ui-monospace,monospace;color:var(--cyan);letter-spacing:1.5px;text-transform:uppercase}
+p{color:var(--sub)}.hero p{max-width:750px;font-size:17px}.warning{background:#302a2a;border:1px solid #956b43;color:#ffddbb;border-radius:10px;padding:17px 21px;margin:26px 0}
+.warning strong{color:#ffebd5}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card,.panel{border:1px solid var(--line);border-radius:15px;background:linear-gradient(150deg,#152f49,#101c30);padding:24px}
+.card a{font-weight:700}.card p{font-size:14px;min-height:83px}.number{font:700 12px ui-monospace,monospace;color:var(--cyan)}
+.tags{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}.tags span{border:1px solid #4e6681;color:#a9c8da;border-radius:100px;padding:4px 8px;font-size:11px}
+section{padding-bottom:43px}.trace{border:1px solid #38617b;background:#0c1e30;border-radius:16px;padding:25px;margin:10px 0}
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0}button{font:700 13px system-ui,sans-serif;background:#142f49;color:#edfaff;border:1px solid #6684a1;border-radius:8px;padding:10px 16px;cursor:pointer}
+button[aria-pressed=true]{border-color:var(--cyan);background:#1c5256}.observation{border:1px solid #46728d;background:#172e43;border-radius:9px;padding:17px;margin-top:15px}
+.path{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between;margin:22px 0}
+.node{flex:1;min-width:150px;text-align:center;border:1px solid #52718b;border-radius:10px;background:#193147;padding:15px;font:700 12px ui-monospace,monospace}
+.arrow{color:var(--cyan);font-weight:700}
+.active{border-color:var(--cyan);box-shadow:0 0 21px #4cd3c72b;animation:glow 2.5s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 0 #4cd3c700}50%{box-shadow:0 0 24px #4cd3c744}}
+[hidden]{display:none!important}footer{border-top:1px solid var(--line);padding:23px 0;color:var(--sub);font-size:12px}
+@media(max-width:690px){.grid{grid-template-columns:1fr}.hero{padding-top:37px}.card p{min-height:unset}.path{display:grid;grid-template-columns:1fr;gap:8px}.arrow{text-align:center;transform:rotate(90deg)}header{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}
+html[data-motion=paused] .active{animation:none!important}
+</style></head>
+<body><a class="skip" href="#main">Skip to research explorer</a>
+<div class="shell"><header><div class="brand">ROS 2 <span>×</span> HUGGING FACE <span>/</span> ROBOTOPS</div><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/92">Research epic ↗</a></header>
+<main id="main"><section class="hero"><div class="eyebrow">Open research · Student-focused · Independent project</div>
+<h1>Turn robotics questions into <strong>reproducible experiments.</strong></h1>
+<p>Explore four proposed ways to connect ROS 2/Kubernetes with Hugging Face datasets, LeRobot policies, Jev comparison studies, and safe cloud–edge research. This demo is intentionally lightweight and does not need a robot, GPU or API key.</p>
+<div class="warning"><strong>Research preview, not model inference:</strong> every scenario below is a preauthored synthetic example. No LeRobot policy was run, no Jev result was predicted, and no robot or Kubernetes system is controlled from this Space.</div></section>
+<section id="scenarios"><div class="eyebrow">Four experiments to build</div><h2>Choose a contribution</h2><div class="grid">
+<article class="card"><span class="number">S5 · DATASETS</span><h3>ROS 2 → LeRobotDataset v3</h3><p>Learn how units, timestamps, feature maps and license checks determine whether synthetic robot episodes are ready for conversion and a Hub dataset card.</p><div class="tags"><span>Beginner</span><span>Data quality</span><span>No GPU</span></div><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/93">Contribute to #93 ↗</a></article>
+<article class="card"><span class="number">S6 · JEV + OPEN MODELS</span><h3>HF classifier versus Jev</h3><p>Compare offline rules and a pinned open Hugging Face text classifier with optional Jev Choice using held-out synthetic DDS/QoS incident families.</p><div class="tags"><span>MSc</span><span>Benchmark</span><span>Opt-in API</span></div><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/94">Contribute to #94 ↗</a></article>
+<article class="card"><span class="number">S7 · PHYSICAL AI</span><h3>SmolVLA in LIBERO</h3><p>Choose a genuinely compatible checkpoint and simulator before evaluating task success, action representation, camera mapping and repeatability.</p><div class="tags"><span>PhD</span><span>LeRobot</span><span>Optional GPU</span></div><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/95">Contribute to #95 ↗</a></article>
+<article class="card"><span class="number">S8 · CLOUD EDGE</span><h3>Remote policy inference</h3><p>Study immutable Hub checkpoints, secure Zenoh-based LeRobot serving, bounded simulator actions and Kubernetes network-failure measurement.</p><div class="tags"><span>Kubernetes</span><span>Simulation</span><span>No real actuation</span></div><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/96">Contribute to #96 ↗</a></article></div></section>
+<section id="trace"><div class="eyebrow">Interactive conceptual pipeline</div><h2>Why the hard validation gate matters</h2>
+<div class="trace"><div class="controls" role="group" aria-label="Choose an educational case"><button type="button" data-case="valid" aria-pressed="true">Licensed synthetic metadata</button><button type="button" data-case="invalid" aria-pressed="false">Mixed units / unknown rights</button><button type="button" id="motion" aria-pressed="false">Pause motion</button></div>
+<div class="observation" id="observation" role="status" aria-live="polite">Synthetic episode: task, timestamps and units are declared. Only an actual official LeRobotDataset conversion and reload could validate v3 compatibility.</div>
+<div class="path" aria-label="Data-flow concept"><div class="node" id="n1">Synthetic ROS 2 input</div><div class="arrow" aria-hidden="true">→</div><div class="node active" id="n2">Deterministic gates</div><div class="arrow" aria-hidden="true">→</div><div class="node" id="n3">Optional HF artifact</div><div class="arrow" aria-hidden="true">→</div><div class="node" id="n4">Human review</div></div>
+<p class="small">Diagram illustrates a proposed workflow; neither branch actually runs a validator or uploads a dataset. On invalid input, a future validator would reject before any publication.</p></div></section>
+<section><h2>Evidence first, always</h2><div class="panel"><p>All published scenario outcomes are currently <strong>not measured</strong>. When a contributor has a real run, the project requests immutable model/data revisions, raw positive and failed attempts, code, seeds, measured metrics and independent review.</p><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/88">How to contribute reproducible results ↗</a></div></section></main>
+<footer>Independent educational project · Apache-2.0 · No physical robotics control · No secrets, telemetry uploads, analytics or model calls</footer></div>
+<script>
+(() => {
+"use strict";
+const messages = {
+valid: "Synthetic episode: task, timestamps and units are declared. Only an actual official LeRobotDataset conversion and reload could validate v3 compatibility.",
+invalid: "Synthetic episode: action units are mixed and redistribution rights are unknown. A future deterministic converter MUST reject this metadata before any Hub upload."
+};
+const buttons = document.querySelectorAll("[data-case]");
+const panel = document.getElementById("observation");
+function pick(key) {
+  if (!Object.prototype.hasOwnProperty.call(messages, key)) return;
+  panel.textContent = messages[key];
+  buttons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.case === key)));
+  document.getElementById("n3").textContent = key === "invalid" ? "Reject publication" : "Optional HF artifact";
+}
+buttons.forEach(b => b.addEventListener("click", () => pick(b.dataset.case)));
+const motion = document.getElementById("motion");
+let off = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function showMotion() {
+ document.documentElement.dataset.motion = off ? "paused" : "active";
+ motion.setAttribute("aria-pressed", String(off));
+ motion.textContent = off ? "Enable motion" : "Pause motion";
+}
+motion.addEventListener("click", () => { off = !off; showMotion(); });
+showMotion();
+})();
+</script></body></html>
