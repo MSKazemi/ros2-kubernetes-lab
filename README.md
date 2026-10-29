@@ -13,7 +13,7 @@
 
 **Explore:** [Jazzy image build and test](./ROS2/jazzy/README.md) · [Requirements](#prerequisites) · [Legacy Vagrant setup](#quickstart) · [Legacy ROS 2 tutorial](./ROS2/README.md) · [DDS networking guide](./docs/ROS2-KUBERNETES-DDS-GUIDE.md) · [Monitoring](./MonitoringSystem/README.md) · [Metrics analysis](./DataAnalysis/README.md) · [Good first issues](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue)
 
-**New website (review/preview source):** [ROS 2 Kubernetes Lab landing page](./site/index.html) · [Technical field guide](./site/docs/index.html) · [Website setup and publication guide](./site/README.md) · [Visual identity](./site/BRAND.md). GitHub Pages becomes a public website only after its deployment workflow is enabled and verified; do not assume the planned URL is live until that check succeeds.
+**Website:** [ROS 2 Kubernetes Lab](https://mskazemi.com/ros2-kubernetes-lab/) (live; HTTP 200 checked 2026-10-29) · [Technical field guide](https://mskazemi.com/ros2-kubernetes-lab/docs/) · Source: [landing page](./site/index.html), [website setup and publication guide](./site/README.md), [visual identity](./site/BRAND.md).
 
 **Cloud–Edge Robotics research scenarios (proposed, not benchmarked):** [interactive scenario gallery](./site/scenarios/index.html) · [ROS 2 DDS/QoS fault triage](./site/scenarios/ros2-fault-triage.html) · [edge/cloud inference placement](./site/scenarios/edge-cloud-inference.html) · [agent skill review](./site/scenarios/robot-agent-safety.html) · [fair simulated robot scheduling](./site/scenarios/multi-robot-scheduling.html) · [no-results-yet evidence registry](./site/scenarios/results.html). Students and researchers can join [epic #83](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83) and scoped issues #84–#89. These pages are synthetic educational illustrations; they do not run Jev, robots, or Kubernetes experiments.
 
@@ -138,7 +138,7 @@ kubectl -n ros get pods -o wide
 kubectl -n ros scale deployment ros --replicas=3
 ```
 
-To run a **manual ROS 2 talker/listener** demonstration, use the separate [ROS2/README.md](./ROS2/README.md) guide. Its outdated filename/namespace examples are being addressed in [issue #24](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/24). Scaling the stress workload alone does not demonstrate DDS message delivery.
+To run a **manual ROS 2 talker/listener** demonstration, use the separate [ROS2/README.md](./ROS2/README.md) guide. Its filename/namespace examples were corrected under [issue #24](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/24) by static review; the manual steps themselves were not re-run. Scaling the stress workload alone does not demonstrate DDS message delivery.
 
 > **Do not share provisioning logs or kubeconfig files.** The original monitoring scripts may include privileged Kubernetes Dashboard tokens in terminal output. Credential/RBAC hardening is tracked in [issue #6](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/6).
 

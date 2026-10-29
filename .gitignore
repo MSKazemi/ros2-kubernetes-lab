@@ -171,3 +171,6 @@ cython_debug/
 
 # Editor settings and caches
 .vscode/
+
+# Claude Code plans, memory and skills (never committed)
+.claude/
