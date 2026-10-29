@@ -27,7 +27,7 @@ This guide will walk you through the process of setting up a Kubernetes cluster 
 
 ## Prerequisites
 
-Before beginning, ensure you have VirtualBox and Vagrant installed on your machine.
+Before beginning, ensure you have VirtualBox and Vagrant installed on your machine. The host does not have to be Ubuntu: see the [Windows and macOS guide](../docs/WINDOWS-AND-MAC.md) for Windows, Intel Mac and Apple Silicon (not supported by this lab's VirtualBox box) notes.
 
 ### Installation of VirtualBox
 

@@ -64,6 +64,8 @@ bash scripts/check-shell.sh KubernetesClusterSetup/create_cluster.sh
 
 The [shell validation workflow](.github/workflows/validate-shell.yml) runs the same checker on every pull request and push to `main`, with no VirtualBox, cluster or Docker Hub credentials. It reports a failure when a tracked `.sh` file contains a Bash **syntax** error; it does **not** verify Kubernetes provisioning, script behavior, shell lint best practices, or ROS 2 DDS messaging. ShellCheck can provide additional lint feedback but is not part of this check.
 
+On **Windows or macOS**, the same static checks run without VirtualBox: `python scripts/doctor.py`, `python scripts/check-markdown-links.py`, and `bash scripts/check-shell.sh` (Git Bash or WSL on Windows). The repository's [`.gitattributes`](.gitattributes) keeps shell scripts and YAML on LF line endings, so do not override it with editor settings that convert them to CRLF. See the [Windows and macOS guide](docs/WINDOWS-AND-MAC.md).
+
 For Markdown changes, check each modified relative link against a committed file and verify that commands match filenames, namespaces, images and paths in the repository. Do not add images that reveal credentials. There is not yet a full documentation validation workflow.
 
 For sample data changes, provide a small local command or script to verify that the checked-in files parse correctly. Do not change historical measurements to make results look better.
@@ -71,6 +73,8 @@ For sample data changes, provide a small local command or script to verify that 
 ### GitHub Actions workflow scope
 
 The lightweight [shell syntax workflow](.github/workflows/validate-shell.yml) checks tracked Bash scripts on pull requests and `main` pushes without cloud or Docker Hub credentials.
+
+The [cross-platform workflow](.github/workflows/cross-platform.yml) runs the same static checks on Ubuntu, Windows and macOS runners, with `core.autocrlf=true` forced to prove the line-ending protection. It does not start Vagrant, Docker or Kubernetes.
 
 The separate [Jazzy image verification workflow](.github/workflows/ros2-image-ci.yml) builds an **amd64 ROS 2 Jazzy container** and tests local talker/listener communication **in one container**, without Docker Hub credentials. The [Docker build/publish workflow](.github/workflows/main.yaml) verifies first, then publishes the **Jazzy image** to Docker Hub using a source-commit tag **only on relevant image/test/workflow changes on `main`** (or authorized manual dispatch). The old Foxy image recipe is retained under `ROS2/legacy/foxy/Dockerfile`, but no longer published by the default workflow. README, tutorial, issue-template and agent-instruction changes must not cause needless image publishing. A successful image build or same-container smoke test **does not prove cross-worker Kubernetes/DDS communication**. This remains an explicit release gate.
 
