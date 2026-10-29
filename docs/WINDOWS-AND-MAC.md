@@ -2,7 +2,7 @@
 
 This lab was built on Linux. This guide explains what works on **Windows**, **Intel Macs** and **Apple Silicon Macs**, which path to pick, and how to avoid the problems that most often break a first attempt.
 
-> **Do not overclaim.** The checks listed under [What has and has not been verified](#what-has-and-has-not-been-verified) were run on Linux. The Windows and macOS steps below follow the vendors' documentation and a simulated Windows checkout; they have not yet been run end to end on real Windows or macOS machines. If a step fails for you, please [open an issue](https://github.com/MSKazemi/ros2-kubernetes-lab/issues) with the output of `python scripts/doctor.py`.
+> **Do not overclaim.** The checks listed under [What has and has not been verified](#what-has-and-has-not-been-verified) were run on Linux. The Windows and macOS steps below follow the vendors' documentation and a simulated Windows checkout; they have not yet been run end to end on real Windows or macOS machines (only the static tooling has run there, on CI runners). If a step fails for you, please [open an issue](https://github.com/MSKazemi/ros2-kubernetes-lab/issues) with the output of `python scripts/doctor.py`.
 
 ## 1. Pick your path
 
@@ -172,7 +172,7 @@ Values must be positive whole numbers; anything else stops `vagrant up` with a c
 | Same checkout **with** `.gitattributes` | 0 CRLF lines in scripts, `Vagrantfile`, YAML; the CRLF data CSV is left byte-identical (local, Linux) |
 | `Vagrantfile` sizing variables, validation and Arm stop | Exercised against a stub of the Vagrant API with several environment combinations (local, Linux). Real Vagrant was **not** run |
 | Container smoke test, both invocation forms | Passed on Linux amd64 (Docker 29.9.2) |
-| `scripts/doctor.py`, Markdown-link, shell-syntax and site checks | Pass on Linux. The [cross-platform workflow](../.github/workflows/cross-platform.yml) runs them on Ubuntu, Windows and macOS runners; **its first results are pending** |
+| `scripts/doctor.py`, Markdown-link, shell-syntax, site and `ruby -c Vagrantfile` checks | Pass on Linux **and** on GitHub's `windows-2025` (amd64) and `macos-15` (arm64) runners with `core.autocrlf=true` forced ([PR #119](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/119) run). Scripts stayed LF on Windows; RAM/CPU detection worked on both. These runners have no Vagrant or VirtualBox, so this covers the tooling only |
 | `vagrant up` on Windows, Intel Mac or Apple Silicon | **Not run** |
 | PowerShell command, Docker Desktop, VirtualBox on Windows/macOS | **Not run** |
 | Native arm64 image | **Not tested** |
