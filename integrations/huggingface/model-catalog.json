@@ -1,0 +1,85 @@
+{
+  "schema_version": "hf-robotics-catalog-v1",
+  "reviewed_on": "2026-10-28",
+  "catalog_status": "research-shortlist",
+  "claim": "Planning metadata only. Model existence checked from upstream cards; no local model inference or benchmark performed.",
+  "models": [
+    {
+      "repo_id": "lerobot/smolvla_base",
+      "family": "policy",
+      "role": "VLA base policy",
+      "track": "simulated robot action",
+      "revision": null,
+      "processor_revision": null,
+      "experiment_status": "planned",
+      "result": null,
+      "run_count": 0
+    },
+    {
+      "repo_id": "lerobot/xvla-base",
+      "family": "policy",
+      "role": "cross-embodiment VLA base",
+      "track": "domain adaptation",
+      "revision": null,
+      "processor_revision": null,
+      "experiment_status": "planned",
+      "result": null,
+      "run_count": 0
+    },
+    {
+      "repo_id": "lerobot/xvla-libero",
+      "family": "policy",
+      "role": "LIBERO task-adapted VLA",
+      "track": "simulator evaluation",
+      "revision": null,
+      "processor_revision": null,
+      "experiment_status": "planned",
+      "result": null,
+      "run_count": 0
+    },
+    {
+      "repo_id": "lerobot/pi05_libero_base",
+      "family": "policy",
+      "role": "large LIBERO VLA",
+      "track": "GPU/latency tradeoffs",
+      "revision": null,
+      "processor_revision": null,
+      "experiment_status": "planned",
+      "result": null,
+      "run_count": 0
+    },
+    {
+      "repo_id": "IDEA-Research/grounding-dino-tiny",
+      "family": "perception",
+      "role": "open-vocabulary detection",
+      "track": "image to boxes",
+      "revision": null,
+      "processor_revision": null,
+      "experiment_status": "planned",
+      "result": null,
+      "run_count": 0
+    },
+    {
+      "repo_id": "depth-anything/Depth-Anything-V2-Small-hf",
+      "family": "perception",
+      "role": "relative monocular depth",
+      "track": "image to relative depth",
+      "revision": null,
+      "processor_revision": null,
+      "experiment_status": "planned",
+      "result": null,
+      "run_count": 0
+    },
+    {
+      "repo_id": "facebook/sam2-hiera-small",
+      "family": "perception",
+      "role": "image/video segmentation",
+      "track": "image to masks",
+      "revision": null,
+      "processor_revision": null,
+      "experiment_status": "planned",
+      "result": null,
+      "run_count": 0
+    }
+  ]
+}
