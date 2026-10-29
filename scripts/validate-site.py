@@ -18,6 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 BASE_URL = "https://mskazemi.com/ros2-kubernetes-lab/"
 ERRORS: list[str] = []
+# Error pages are served at any depth and must stay out of search: no canonical, no sitemap entry.
+NOINDEX_PAGES = {"404.html"}
 
 
 class PageParser(HTMLParser):
@@ -29,6 +31,10 @@ class PageParser(HTMLParser):
         self.canonical: str | None = None
         self.description: str | None = None
         self.title = False
+        self.title_text = ""  # text of the document <title> (not SVG <title>)
+        self.robots: str | None = None
+        self._in_body = False
+        self._in_title = False
         self.h1 = 0
         self.lang: str | None = None
         self.alt_missing = 0
@@ -49,8 +55,13 @@ class PageParser(HTMLParser):
             self.lang = a.get("lang")
         if tag == "h1":
             self.h1 += 1
-        if tag == "title":
+        if tag == "body":
+            self._in_body = True
+        if tag == "title" and not self._in_body:
             self.title = True
+            self._in_title = True
+        if tag == "meta" and a.get("name") == "robots":
+            self.robots = a.get("content")
         if tag == "meta" and a.get("name") == "description":
             self.description = a.get("content")
         if tag == "link" and a.get("rel") == "canonical":
@@ -77,8 +88,12 @@ class PageParser(HTMLParser):
     def handle_endtag(self, tag: str) -> None:
         if tag == "script":
             self._inside_ld = False
+        if tag == "title":
+            self._in_title = False
 
     def handle_data(self, data: str) -> None:
+        if self._in_title:
+            self.title_text += data
         if self._inside_ld:
             self.jsonld[-1] += data
 
@@ -131,7 +146,10 @@ for page in pages:
     if relative_url.endswith("index.html"):
         relative_url = relative_url[:-len("index.html")]
     expected_url = BASE_URL + relative_url
-    if parser.canonical != expected_url:
+    if page.relative_to(SITE).as_posix() in NOINDEX_PAGES:
+        if "noindex" not in (parser.robots or ""):
+            ERRORS.append(f"{label}: error page must set <meta name=\"robots\" content=\"noindex\">")
+    elif parser.canonical != expected_url:
         ERRORS.append(f"{label}: canonical mismatch ({parser.canonical} vs {expected_url})")
     if parser.duplicates:
         ERRORS.append(f"{label}: duplicate ids {parser.duplicates}")
@@ -173,6 +191,27 @@ for page, parser in parsed_pages.items():
                 if message not in ERRORS:
                     ERRORS.append(message)
 
+seen_titles: dict[str, str] = {}
+seen_descriptions: dict[str, str] = {}
+for page, parser in parsed_pages.items():
+    rel = page.relative_to(SITE.resolve()).as_posix()
+    if rel in NOINDEX_PAGES:
+        continue
+    title = " ".join(parser.title_text.split())
+    if not title:
+        ERRORS.append(f"site/{rel}: empty or missing document <title>")
+    elif title in seen_titles:
+        ERRORS.append(f"site/{rel}: duplicate <title> also used by site/{seen_titles[title]}")
+    else:
+        seen_titles[title] = rel
+    description = " ".join((parser.description or "").split())
+    if description in seen_descriptions:
+        ERRORS.append(f"site/{rel}: duplicate meta description also used by site/{seen_descriptions[description]}")
+    elif description:
+        seen_descriptions[description] = rel
+    if rel != "index.html" and not any('"BreadcrumbList"' in block for block in parser.jsonld):
+        ERRORS.append(f"site/{rel}: inner page needs BreadcrumbList JSON-LD")
+
 social_png = SITE / "assets/social-card.png"
 if not social_png.is_file():
     ERRORS.append("Missing social preview PNG")
@@ -205,7 +244,8 @@ if sitemap.exists():
         root = ET.parse(sitemap).getroot()
         namespace = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
         urls = {e.text for e in root.findall(".//s:loc", namespace)}
-        expected = {p.canonical for p in parsed_pages.values()}
+        expected = {p.canonical for path, p in parsed_pages.items()
+                    if path.relative_to(SITE.resolve()).as_posix() not in NOINDEX_PAGES}
         if urls != expected:
             ERRORS.append(f"Sitemap mismatch: missing={sorted(expected - urls)}, unexpected={sorted(urls - expected)}")
     except ET.ParseError:

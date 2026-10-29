@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<meta name="color-scheme" content="dark">
+<title>Days 15–30: make it runnable and safe | ROS 2 Kubernetes Lab</title>
+<meta name="description" content="Phase 2 of the plan: a planned make demo, verify and clean flow on a light cluster, plus safer defaults. These commands do not exist yet.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Mohsen Seyedkazemi Ardebili">
+<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs.css">
+<link rel="stylesheet" href="../assets/scenarios.css">
+<link rel="stylesheet" href="../assets/lab-anim.css">
+<link rel="stylesheet" href="../assets/anim/runnable-and-safe.css">
+<script defer src="../assets/lab-anim.js"></script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ROS 2 Kubernetes Lab">
+<meta property="og:title" content="Days 15–30: make ROS 2 on Kubernetes runnable and safe">
+<meta property="og:description" content="A planned three-command flow on a light cluster, safer defaults for the dashboard and storage, and the gate for a public quickstart. All of it is planned.">
+<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html">
+<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Days 15–30: make it runnable and safe">
+<meta name="twitter:description" content="Phase 2 of the ROS 2 Kubernetes Lab plan: a planned demo, verify and clean flow, plus safer defaults. A proposal.">
+<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Days 15 to 30: make it runnable and safe","headline":"Days 15 to 30: make ROS 2 on Kubernetes runnable and safe","description":"Phase 2 of the ROS 2 Kubernetes Lab plan: a planned make demo, make verify and make clean flow on a light cluster, plus safer default permissions. A proposal.","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"isPartOf":{"@type":"WebPage","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Role-based access control"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Roadmap","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},{"@type":"ListItem","position":3,"name":"Days 15 to 30: make it runnable and safe","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html"}]}]}</script>
+</head><body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="docs-nav"><div class="sc-shell docs-nav-inner">
+<a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Roadmap</a><a href="../scenarios/">Research scenarios</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab">GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+
+<section class="sc-hero"><div class="sc-shell">
+<nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Roadmap</a><span>/</span>Make it runnable and safe</nav>
+<span class="sc-kicker">Phase 2 · days 15–30</span>
+<h1>Make it runnable and safe</h1>
+<p class="sc-lead">Phase 1 picks the target. Phase 2 plans three things: a short command flow that proves messages cross workers, a lighter cluster that fits on an ordinary laptop, and safer defaults than the historical setup. None of it exists yet.</p>
+<div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · planning targets, not promises</span><span class="sc-pill">Issues #14, #16, #6, #4</span></div>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>What exists today and what does not</h2>
+<p class="sc-intro">The repository has no Makefile, so <code>make demo</code>, <code>make verify</code> and <code>make clean</code> are planned names, not working commands. Do not try to run them.</p>
+<div class="sc-grid sc-grid--3">
+<div class="sc-panel"><span class="lab-chip lab-chip--planned">Planned</span><h3>Three make targets</h3><p>Issue #16 proposes them for a lightweight kind or k3d profile (small Kubernetes clusters that run inside containers). The Vagrant lab would stay for the full three-VM setup.</p></div>
+<div class="sc-panel"><span class="lab-chip lab-chip--legacy">Legacy</span><h3>Risky defaults in the monitoring setup</h3><p>The historical setup binds a dashboard account to <code>cluster-admin</code> and applies <code>chmod -R 777</code> to host storage folders. Both are listed in the roadmap for replacement.</p></div>
+<div class="sc-panel"><span class="lab-chip lab-chip--planned">Not yet passed</span><h3>The quickstart gate</h3><p>A public modern quickstart waits for one gate. Nothing has passed it, so no modern quickstart is published.</p></div>
+</div>
+</div></section>
+
+<section class="sc-section sc-section--shade" id="flow"><div class="sc-shell">
+<h2>Three commands and a safer setup</h2>
+<p class="sc-intro">Step through the planned flow, then the defaults it would replace. Every box here is a plan.</p>
+
+<figure class="lab-anim run-safe" data-anim="run-safe" data-interval="3400" aria-labelledby="rs-title">
+<div class="lab-anim__head"><h3 class="lab-anim__title" id="rs-title">Planned: demo, verify, clean, and safer defaults</h3><span class="lab-anim__tag">Illustration · all planned</span></div>
+<div class="lab-anim__stage">
+<svg viewBox="0 0 640 450" role="img" aria-labelledby="rs-svg-t rs-svg-d" focusable="false">
+<title id="rs-svg-t">Planned command flow and safer defaults for phase 2</title>
+<desc id="rs-svg-d">A row of three dashed boxes, each labelled Planned: make demo, make verify and make clean, joined by arrows. Below them, two rows compare a risky default today with its planned replacement: a dashboard token with cluster-admin becomes Headlamp with read-only default access, and chmod 777 on host storage becomes scoped permissions for storage. At the bottom a dashed box reads Public quickstart gate, Not yet passed.</desc>
+
+<g class="b0"><rect class="cmd" x="10" y="10" width="180" height="100" rx="14"/><text class="t-mono" x="100" y="56" text-anchor="middle">make demo</text><text class="t-amber" x="100" y="92" text-anchor="middle">Planned</text></g>
+<g class="a1"><path class="arrow a1" d="M194 60H224M216 51l9 9-9 9"/></g>
+<g class="b1"><rect class="cmd" x="230" y="10" width="180" height="100" rx="14"/><text class="t-mono" x="320" y="56" text-anchor="middle">make verify</text><text class="t-amber" x="320" y="92" text-anchor="middle">Planned</text></g>
+<g class="a2"><path class="arrow a2" d="M414 60H444M436 51l9 9-9 9"/></g>
+<g class="b2"><rect class="cmd" x="450" y="10" width="180" height="100" rx="14"/><text class="t-mono" x="540" y="56" text-anchor="middle">make clean</text><text class="t-amber" x="540" y="92" text-anchor="middle">Planned</text></g>
+
+<g class="k3">
+<text class="t-sub" x="10" y="148">Risky default today</text><text class="t-sub" x="340" y="148">Planned replacement</text>
+<rect class="risk" x="10" y="160" width="290" height="88" rx="12"/><text class="t" x="24" y="192">Dashboard token</text><text class="t-amber" x="24" y="226">cluster-admin</text>
+<path class="shift" d="M304 204H334M326 195l9 9-9 9"/>
+<rect class="safe" x="340" y="160" width="290" height="88" rx="12"/><text class="t-strong" x="354" y="192">Headlamp</text><text class="t" x="354" y="226">read-only default</text>
+<rect class="risk" x="10" y="262" width="290" height="88" rx="12"/><text class="t" x="24" y="294">chmod 777</text><text class="t-amber" x="24" y="328">on host storage</text>
+<path class="shift" d="M304 306H334M326 297l9 9-9 9"/>
+<rect class="safe" x="340" y="262" width="290" height="88" rx="12"/><text class="t-strong" x="354" y="294">Scoped permissions</text><text class="t" x="354" y="328">for storage</text>
+</g>
+
+<g class="k4"><rect class="gate-box" x="10" y="368" width="620" height="74" rx="12"/><text class="t-strong" x="320" y="398" text-anchor="middle">Public quickstart gate</text><text class="t-amber" x="320" y="430" text-anchor="middle">Not yet passed</text></g>
+</svg>
+</div>
+<div class="lab-anim__bar">
+<button type="button" data-anim-prev>Back</button>
+<button type="button" data-anim-play aria-pressed="false"><span>Play</span></button>
+<button type="button" data-anim-next>Next</button>
+<button type="button" data-anim-replay>Replay</button>
+<output class="lab-anim__status" data-anim-status aria-live="polite">Step 1 of 5</output>
+</div>
+<ol class="lab-anim__steps">
+<li data-step-text><button type="button"><b>make demo (planned)</b><span>One command would create a light local cluster with kind or k3d and start the talker and listener without manual steps (#16). The full Vagrant lab would remain.</span></button></li>
+<li data-step-text><button type="button"><b>make verify (planned)</b><span>A script would check that messages arrive between different workers, stop after a time limit and exit with a truthful pass or fail (#14).</span></button></li>
+<li data-step-text><button type="button"><b>make clean (planned)</b><span>One command would remove the demo cluster, so the next run starts from a clean state.</span></button></li>
+<li data-step-text><button type="button"><b>Safer defaults replace risky ones</b><span>The plan swaps the archived Kubernetes Dashboard for Headlamp with read-only default access (#4), and replaces world-writable storage with scoped permissions (#6).</span></button></li>
+<li data-step-text><button type="button"><b>The quickstart gate</b><span>A clean host must run the supported install, show messages between different workers and pass the documented verification. Not yet passed.</span></button></li>
+</ol>
+<p class="lab-anim__note">The make targets are shown as planned because the repository has no Makefile today. The safer defaults describe the plan, not a change that has been made.</p>
+</figure>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>Why the defaults matter</h2>
+<p class="sc-intro">RBAC (role-based access control) is how Kubernetes decides who may do what. The cluster-admin role allows everything, so a long-lived token for it is a standing risk, even in a teaching lab.</p>
+<div class="sc-detail-grid">
+<div class="sc-panel"><h3>What the historical setup does</h3>
+<ul>
+<li><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/MonitoringSystem/admin-user.yaml">admin-user.yaml ↗</a> binds a dashboard service account to <code>cluster-admin</code>.</li>
+<li><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/MonitoringSystem/monitoring.sh">monitoring.sh ↗</a> saves that account's token to a file and applies <code>chmod -R 777</code> to storage folders.</li>
+<li>The roadmap calls these unnecessarily broad for a default educational install.</li>
+</ul></div>
+<div class="sc-panel"><h3>What the plan asks for instead</h3>
+<ul>
+<li>Headlamp, a maintained dashboard, with read-only default access and no standing tokens left exposed (#4).</li>
+<li>Safe storage permissions, least-privilege RBAC and careful secrets handling, with pinned dependencies and test CI (#6).</li>
+<li>A UI smoke test and a ROS integration check before either is called done.</li>
+</ul></div>
+</div>
+</div></section>
+
+<section class="sc-section sc-section--shade"><div class="sc-shell">
+<h2>The gate for a public modern quickstart</h2>
+<div class="sc-callout"><h3>Not yet passed</h3><p>A clean host runs the supported installation, shows messages between different workers and passes the documented verification. Until all three are true, the modern quickstart stays unpublished and the Vagrant lab remains the historical example. A Docker build or a lint pass does not count as that verification.</p><p><a class="sc-link-button sc-link-button--ghost" href="release-gates.html">See all eight release gates</a></p></div>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>Issues in this phase</h2>
+<p class="sc-intro">Status labels come from what the repository's files show, not from the state of the issue on GitHub.</p>
+<ul class="phase-issues">
+<li><span class="issue-no">#14</span><div><h3>Verified talker and listener across workers</h3><p>The scripted check behind <code>make verify</code>: correct namespace and manifest names, pod readiness checks, and delivery across nodes. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14">Issue #14 ↗</a></p></div><span class="lab-chip lab-chip--planned">Not yet verified</span></li>
+<li><span class="issue-no">#16</span><div><h3>Lightweight kind or k3d profile</h3><p>A small cluster with <code>make demo</code>, <code>make verify</code> and <code>make clean</code>. No Makefile exists yet. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16">Issue #16 ↗</a></p></div><span class="lab-chip lab-chip--planned">Planned</span></li>
+<li><span class="issue-no">#6</span><div><h3>Test CI, pinned dependencies, least-privilege defaults</h3><p>An image CI workflow exists. Cluster-level tests and the safer permission defaults do not. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/6">Issue #6 ↗</a></p></div><span class="lab-chip lab-chip--planned">Planned</span></li>
+<li><span class="issue-no">#4</span><div><h3>Headlamp instead of the archived Dashboard</h3><p>Today the monitoring setup still installs the Kubernetes Dashboard with a cluster-admin account. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/4">Issue #4 ↗</a></p></div><span class="lab-chip lab-chip--legacy">Legacy</span></li>
+</ul>
+<p class="phase-hub-link">Source of truth: <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">docs/ROADMAP-2026.md ↗</a>, section 4. Back to the <a href="./">roadmap hub</a>.</p>
+</div></section>
+
+<section class="sc-section sc-section--shade"><div class="sc-shell">
+<nav class="phase-pager" aria-label="Previous and next phase">
+<a href="define-reference-path.html"><small>Previous</small><strong>Days 1–14: define the reference path</strong></a>
+<a class="next" href="package-and-document.html"><small>Next</small><strong>Days 31–60: package and document</strong></a>
+</nav>
+</div></section>
+
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Plans are proposals; illustrations show sequence, not progress</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">Full roadmap source ↗</a></div></footer></body></html>

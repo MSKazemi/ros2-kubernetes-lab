@@ -16,6 +16,9 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/docs.css">
 <link rel="stylesheet" href="../assets/scenarios.css">
+<link rel="stylesheet" href="../assets/lab-anim.css">
+<link rel="stylesheet" href="../assets/anim/s1-fault-triage.css">
+<script defer src="../assets/lab-anim.js"></script>
 <script defer src="../assets/scenarios.js"></script>
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ROS 2 Kubernetes Lab">
@@ -28,12 +31,12 @@
 <meta name="twitter:title" content="ROS 2 Fault Diagnosis + Jev | DDS, QoS &amp; Kubernetes Lab">
 <meta name="twitter:description" content="Proposal, not benchmarked: a synthetic ROS 2 DDS/QoS fault-diagnosis study comparing deterministic rules with optional Jev advice. Open student tasks.">
 <meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"ROS 2 Fault Diagnosis + Jev | DDS, QoS & Kubernetes Lab","headline":"ROS 2 Fault Diagnosis + Jev | DDS, QoS & Kubernetes Lab","description":"Study a Jev-assisted ROS 2 and Kubernetes fault diagnosis experiment: synthetic DDS/QoS incidents, baseline rules, research metrics and open student tasks.","url":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/ros2-fault-triage.html","isAccessibleForFree":true,"dateModified":"2026-10-27","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/"},{"@type":"ListItem","position":3,"name":"Fault triage","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/ros2-fault-triage.html"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"ROS 2 Fault Diagnosis + Jev | DDS, QoS & Kubernetes Lab","headline":"ROS 2 Fault Diagnosis + Jev | DDS, QoS & Kubernetes Lab","description":"Study a Jev-assisted ROS 2 and Kubernetes fault diagnosis experiment: synthetic DDS/QoS incidents, baseline rules, research metrics and open student tasks.","url":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/ros2-fault-triage.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/"},{"@type":"ListItem","position":3,"name":"Fault triage","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/ros2-fault-triage.html"}]}]}</script>
 </head><body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="docs-nav"><div class="sc-shell docs-nav-inner">
 <a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
-<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
 <section class="sc-hero"><div class="sc-shell sc-hero-inner">
 <div><nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Scenarios</a><span>/</span>Fault triage</nav>
 <span class="sc-kicker">SCENARIO 01 · P1 / FIRST EXPERIMENT</span>
@@ -55,6 +58,56 @@
 <circle class="sc-pulse" cx="160" cy="88" r="5" /><circle class="sc-pulse" cx="335" cy="88" r="5" />
 </svg><div class="sc-visual-foot"><span>SIMULATED / RESEARCH BLUEPRINT</span><strong>NO ACTUATION</strong><button type="button" class="sc-button sc-button--ghost" data-motion-toggle aria-pressed="false">Pause decorative motion</button></div>
 </div></div></section>
+<section class="sc-section" id="see-it"><div class="sc-shell">
+<h2>See the idea in a minute</h2>
+<p class="sc-intro">A listener goes quiet. Clues pile up, plain code sorts the cause, and a person reviews it. Press play or pick a step. Every part of this picture is made up for teaching.</p>
+
+<figure class="lab-anim s1-fault" data-anim="s1-fault-triage" data-interval="3200" aria-labelledby="s1-title">
+<div class="lab-anim__head"><h3 class="lab-anim__title" id="s1-title">Why did the listener go quiet?</h3><span class="lab-anim__tag">Illustration · synthetic</span></div>
+<div class="lab-anim__stage">
+<svg viewBox="0 0 960 580" role="img" aria-labelledby="s1-svg-t s1-svg-d" focusable="false">
+<title id="s1-svg-t">A made-up ROS 2 listener goes quiet, and the cause is sorted in five steps</title>
+<desc id="s1-svg-d">A publisher on the left sends messages toward a subscriber on the right. The publisher is set to best-effort delivery and the subscriber asks for reliable delivery, so the messages stop at a marker labelled Messages stop here. An evidence strip then holds two clues: a log line saying incompatible QoS and the two QoS settings. A hard gate made of ordinary code names the family as QoS incompatibility. An optional Jev advice slot is marked advisory only. A person then reviews and decides what to do. All of it is synthetic. No real ROS 2 traffic and no Jev answer is shown.</desc>
+<g><rect class="box" x="40" y="40" width="260" height="130" rx="14"/><text class="box-title" x="170" y="92" text-anchor="middle">Publisher</text><text class="box-sub" x="170" y="130" text-anchor="middle">sends</text></g>
+<g><rect class="box" x="660" y="40" width="260" height="130" rx="14"/><text class="box-title" x="790" y="92" text-anchor="middle">Subscriber</text><text class="box-sub" x="790" y="130" text-anchor="middle">listens</text></g>
+<path class="wire" d="M300 105H660"/>
+<circle class="msg" style="--i:0" cx="330" cy="105" r="9"/><circle class="msg" style="--i:1" cx="365" cy="105" r="9"/><circle class="msg" style="--i:2" cx="400" cy="105" r="9"/><circle class="msg" style="--i:3" cx="435" cy="105" r="9"/>
+<g class="stop"><circle cx="480" cy="105" r="27"/><path d="M468 93l24 24M492 93l-24 24"/></g>
+<text class="stop-label" x="480" y="60" text-anchor="middle">Messages stop here</text>
+<g class="c1"><rect class="pill" x="70" y="150" width="200" height="40" rx="20"/><text class="pill-text" x="170" y="178" text-anchor="middle">best-effort</text><rect class="pill" x="690" y="150" width="200" height="40" rx="20"/><text class="pill-text" x="790" y="178" text-anchor="middle">reliable</text></g>
+<text class="qos-label c2" x="480" y="162" text-anchor="middle">QoS mismatch</text>
+<g><rect class="slot" x="40" y="222" width="430" height="108" rx="14"/><text class="slot-label" x="62" y="256">Evidence: log line</text><g class="c1"><text class="clue" x="62" y="294">incompatible QoS</text><text class="clue-sub" x="62" y="320">made-up log text</text></g></g>
+<g><rect class="slot" x="490" y="222" width="430" height="108" rx="14"/><text class="slot-label" x="512" y="256">Evidence: QoS settings</text><g class="c1"><text class="clue" x="512" y="292">publisher: best-effort</text><text class="clue" x="512" y="320">subscriber: reliable</text></g></g>
+<g class="c2"><rect class="row" x="40" y="350" width="880" height="60" rx="14"/><text class="row-tag" x="64" y="388">Hard gate</text><text class="row-text" x="300" y="388">Family: QoS incompatibility</text></g>
+<g class="c3"><rect class="row row--jev" x="40" y="424" width="880" height="60" rx="14"/><text class="row-tag jev-tag" x="64" y="462">Jev advice</text><text class="row-text" x="300" y="462">Optional · advisory only</text></g>
+<g class="c4"><rect class="row row--human" x="40" y="498" width="880" height="60" rx="14"/><text class="row-tag" x="64" y="536">Human review</text><text class="row-text" x="300" y="536">A person decides what to do</text></g>
+</svg>
+</div>
+<div class="lab-anim__bar">
+<button type="button" data-anim-prev>Back</button>
+<button type="button" data-anim-play aria-pressed="false"><span>Play</span></button>
+<button type="button" data-anim-next>Next</button>
+<button type="button" data-anim-replay>Replay</button>
+<output class="lab-anim__status" data-anim-status aria-live="polite">Step 1 of 5</output>
+</div>
+<ol class="lab-anim__steps">
+<li data-step-text><button type="button"><b>The listener goes quiet</b><span>A publisher sends messages. They stop before they reach the subscriber, and nobody yet knows why.</span></button></li>
+<li data-step-text><button type="button"><b>Collect the clues</b><span>The evidence strip fills with a log line and the QoS settings. The publisher is best-effort. The subscriber asks for reliable.</span></button></li>
+<li data-step-text><button type="button"><b>Hard gate names the family</b><span>Ordinary code, not a model, checks the clues and labels the problem as QoS incompatibility.</span></button></li>
+<li data-step-text><button type="button"><b>Optional Jev advice</b><span>Jev could add a second opinion. It is optional and advisory only. No Jev answer is shown here.</span></button></li>
+<li data-step-text><button type="button"><b>A person reviews</b><span>A human reads the report and decides what to change. Nothing is fixed automatically.</span></button></li>
+</ol>
+<p class="lab-anim__note">Made up for teaching. No real ROS 2 traffic, no Jev inference, no result and no robot. The study that would measure Jev against a rule baseline is a proposal and has not been run.</p>
+</figure>
+
+<div class="sc-panel plain-guide"><h3>Plain-language guide</h3>
+<dl>
+<div><dt>QoS (quality of service)</dt><dd>Settings in ROS 2 that say how a topic delivers messages, such as best-effort or reliable. A subscriber that asks for reliable delivery cannot connect to a best-effort publisher, so it receives nothing.</dd></div>
+<div><dt>DDS discovery</dt><dd>The way ROS 2 programs find each other over DDS, the messaging layer under ROS 2. If discovery fails, a listener may never learn that a publisher exists.</dd></div>
+<div><dt>Hard gate</dt><dd>An ordinary code check that must pass first. Here it reads the clues and names the family of problem. Jev cannot override it.</dd></div>
+<div><dt>Jev</dt><dd>A structured decision model this research proposes to try as an optional adviser. Its answers are advice, never permissions or commands, and a person still reviews the result.</dd></div>
+</dl></div>
+</div></section>
 <section class="sc-section"><div class="sc-shell">
 <span class="sc-overline">01 / What are we studying?</span><h2>One real research question, not a product claim.</h2>
 <div class="sc-detail-grid">

@@ -1,0 +1,36 @@
+/* Phase 3 page: claims linked to evidence. Visuals keyed on the framework's .s-ge-K classes. */
+.pkg .col-h{font:600 20px var(--mono);fill:var(--sub)}
+/* Row state: a row is "linked" (cyan) once its step is reached, "unlinked" (amber) before. */
+.pkg .row{--c:var(--cyan);--f:rgba(102,235,218,.09);--on:1;--off:0;--dash:1 0}
+.pkg.is-ready .r0,.pkg.is-ready .r1,.pkg.is-ready .r2,.pkg.is-ready .r3,.pkg .rx{
+  --c:var(--amber);--f:rgba(255,166,110,.09);--on:0;--off:1;--dash:8 7}
+.pkg.s-ge-0 .r0,.pkg.s-ge-1 .r1,.pkg.s-ge-2 .r2,.pkg.s-ge-3 .r3{
+  --c:var(--cyan);--f:rgba(102,235,218,.09);--on:1;--off:0;--dash:1 0}
+.pkg .card{fill:var(--f);stroke:var(--c);stroke-width:2.5;transition:stroke .5s var(--ease),fill .5s var(--ease)}
+.pkg .ev-card{stroke-dasharray:var(--dash)}
+.pkg .ttl{font:600 24px var(--display);fill:var(--ink)}
+.pkg .det{font:400 18px var(--body);fill:var(--sub)}
+.pkg .st{font:700 19px var(--mono);fill:var(--c);transition:fill .5s var(--ease),opacity .5s var(--ease)}
+.pkg .st-ok{opacity:var(--on)}
+.pkg .st-no{opacity:var(--off)}
+.pkg .link{fill:none;stroke:var(--cyan);stroke-width:4;stroke-linecap:round}
+.pkg .stub{fill:none;stroke:var(--amber);stroke-width:4;stroke-linecap:round;stroke-dasharray:3 9;
+  opacity:var(--off);transition:opacity .5s var(--ease)}
+.pkg.s-ge-0 .r0 .link,.pkg.s-ge-1 .r1 .link,.pkg.s-ge-2 .r2 .link,.pkg.s-ge-3 .r3 .link{stroke-dashoffset:0}
+.pkg .rx .link{display:none}
+/* Highlight the row for the current step. */
+.pkg .claim,.pkg .ev{transition:filter .4s var(--ease)}
+.pkg[data-step="0"] .r0 .card,.pkg[data-step="1"] .r1 .card,.pkg[data-step="2"] .r2 .card,.pkg[data-step="3"] .r3 .card{stroke-width:5}
+.pkg[data-step="0"] .r0 .claim,.pkg[data-step="1"] .r1 .claim,.pkg[data-step="2"] .r2 .claim,.pkg[data-step="3"] .r3 .claim{filter:drop-shadow(0 0 10px rgba(102,235,218,.4))}
+
+.sc-table caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pager .sc-card h3{margin-top:12px}
+
+
+/* Small screens: the SVG scales to roughly 0.4x, so enlarge text in viewBox units and drop secondary detail. */
+@media (max-width:640px){
+  .pkg .col-h{font-size:28px}
+  .pkg .ttl{font-size:29px}
+  .pkg .st{font-size:28px}
+  .pkg .det{display:none}
+}

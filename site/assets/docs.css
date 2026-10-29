@@ -77,3 +77,5 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--cyan);outline-offse
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.doc-tile{transition:none}}
 .skip-link{position:absolute;z-index:100;background:var(--cyan);color:#08111d;padding:9px;transform:translateY(-130%)}
 .skip-link:focus{transform:none}
+/* Phones: the wrapped header is three rows tall, so let it scroll away instead of covering ~15% of the screen. */
+@media(max-width:640px){.docs-nav{position:static}.docs-nav-inner{min-height:0}.docs-nav-links{gap:2px 16px}.docs-nav-links a{padding:9px 0}.docs-nav-links .github-link{padding:9px 14px}}

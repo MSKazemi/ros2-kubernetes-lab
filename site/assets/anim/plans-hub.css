@@ -1,0 +1,28 @@
+/* Roadmap hub timeline. Visuals keyed on the framework's .s-ge-K classes. */
+.plans-hub .track{fill:none;stroke:var(--line);stroke-width:6;stroke-linecap:round}
+.plans-hub .seg{fill:none;stroke:var(--cyan);stroke-width:6;stroke-linecap:round}
+.plans-hub .node{--c:var(--cyan)}
+.plans-hub.is-ready .node{--c:var(--dim)}
+.plans-hub.s-ge-0 .n0,.plans-hub.s-ge-1 .n1,.plans-hub.s-ge-2 .n2,.plans-hub.s-ge-3 .n3{--c:var(--cyan)}
+.plans-hub .node circle{fill:var(--panel);stroke:var(--c);stroke-width:4;transition:stroke .5s var(--ease),fill .5s var(--ease)}
+.plans-hub .node .num{font:700 30px var(--display);fill:var(--c);transition:fill .5s var(--ease)}
+.plans-hub .node .days{font:600 22px var(--mono);fill:var(--c);transition:fill .5s var(--ease)}
+.plans-hub .node .name{font:600 28px var(--display);fill:var(--ink);opacity:.55;transition:opacity .5s var(--ease)}
+.plans-hub:not(.is-ready) .node .name,.plans-hub.s-ge-0 .n0 .name,.plans-hub.s-ge-1 .n1 .name,.plans-hub.s-ge-2 .n2 .name,.plans-hub.s-ge-3 .n3 .name{opacity:1}
+.plans-hub .gate path{fill:rgba(255,166,110,.12);stroke:var(--amber);stroke-width:3.5}
+.plans-hub .gate-label{font:700 24px var(--mono);fill:var(--amber)}
+.plans-hub .gate-note{font:500 20px var(--body);fill:var(--sub)}
+.plans-hub .dot{fill:var(--amber);filter:drop-shadow(0 0 8px rgba(255,166,110,.8));
+  transition:transform 1.1s var(--ease);transform:translateX(calc(var(--step,3) * 253.33px))}
+.plans-hub:not(.is-ready) .dot{transform:translateX(760px)}
+.plans-hub .seg1{transition-delay:.05s}
+.plans-hub.s-ge-1 .seg1,.plans-hub.s-ge-2 .seg2,.plans-hub.s-ge-3 .seg3{stroke-dashoffset:0}
+
+/* Small screens: the SVG scales down, so enlarge its text in viewBox units to stay near 12px+. */
+@media (max-width:640px){
+  .plans-hub .node .days{font-size:34px}
+  .plans-hub .node .name{font-size:36px}
+  .plans-hub .node .num{font-size:34px}
+  .plans-hub .gate-label{font-size:34px}
+  .plans-hub .gate-note{font-size:32px}
+}
