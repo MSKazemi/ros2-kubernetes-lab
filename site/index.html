@@ -29,18 +29,53 @@
   <script defer src="./script.js"></script>
   <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
+  "@context": "https://schema.org",
+  "@graph": [
+    {
       "@type": "SoftwareSourceCode",
       "name": "ROS 2 Kubernetes Lab",
       "description": "An educational and research lab for ROS 2 and Kubernetes, with a historical Vagrant cluster, a ROS 2 Jazzy container baseline, DDS guides and monitoring experiments.",
       "codeRepository": "https://github.com/MSKazemi/ros2-kubernetes-lab",
       "url": "https://mskazemi.com/ros2-kubernetes-lab/",
-      "programmingLanguage": ["Python", "Bash", "Ruby", "Dockerfile"],
+      "programmingLanguage": [
+        "Python",
+        "Bash",
+        "Ruby",
+        "Dockerfile"
+      ],
       "license": "https://www.apache.org/licenses/LICENSE-2.0",
-      "author": { "@type": "Person", "name": "Mohsen Seyedkazemi Ardebili" },
+      "author": {
+        "@type": "Person",
+        "name": "Mohsen Seyedkazemi Ardebili",
+        "url": "https://mskazemi.github.io",
+        "sameAs": [
+          "https://github.com/MSKazemi",
+          "https://mskazemi.github.io",
+          "https://gitlab.com/mskazemi"
+        ]
+      },
       "keywords": "ROS 2, Kubernetes, robotics, DDS, Vagrant, cloud robotics, monitoring",
       "isAccessibleForFree": true
+    },
+    {
+      "@type": "WebSite",
+      "name": "ROS 2 Kubernetes Lab",
+      "url": "https://mskazemi.com/ros2-kubernetes-lab/",
+      "inLanguage": "en",
+      "description": "Educational and research lab for ROS 2 on Kubernetes: guides, a roadmap and research scenarios.",
+      "publisher": {
+        "@type": "Person",
+        "name": "Mohsen Seyedkazemi Ardebili",
+        "url": "https://mskazemi.github.io",
+        "sameAs": [
+          "https://github.com/MSKazemi",
+          "https://mskazemi.github.io",
+          "https://gitlab.com/mskazemi"
+        ]
+      }
     }
+  ]
+}
   </script>
 </head>
 <body>
@@ -80,7 +115,7 @@
         <a href="./scenarios/">Scenarios</a>
         <a href="#architecture">Architecture</a>
         <a href="#start">Get started</a>
-        <a href="#roadmap">Roadmap</a>
+        <a href="./plans/">Roadmap</a>
         <button class="motion-toggle" type="button" aria-pressed="false">Pause motion</button>
         <a class="nav-github" href="https://github.com/MSKazemi/ros2-kubernetes-lab" target="_blank" rel="noopener noreferrer">
           <svg aria-hidden="true" focusable="false" class="icon"><use href="#i-github"/></svg> GitHub <svg aria-hidden="true" focusable="false" class="icon icon-small"><use href="#i-up"/></svg>
@@ -395,7 +430,8 @@ kubectl get pods -A</code></pre></div>
           <a class="roadmap-card" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16" target="_blank" rel="noopener noreferrer"><span class="roadmap-number">03 / TARGET</span><span class="roadmap-icon"><svg aria-hidden="true" focusable="false" class="icon"><use href="#i-cube"/></svg></span><h3>Lightweight local labs</h3><p>Explore a planned kind/k3d entry point for smaller developer machines.</p><span class="roadmap-link">Track issue #16 <svg aria-hidden="true" focusable="false" class="icon"><use href="#i-up"/></svg></span></a>
           <a class="roadmap-card" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/18" target="_blank" rel="noopener noreferrer"><span class="roadmap-number">04 / TARGET</span><span class="roadmap-icon"><svg aria-hidden="true" focusable="false" class="icon"><use href="#i-activity"/></svg></span><h3>Reproducible benchmarks</h3><p>Measured DDS, recovery and scaling experiments with raw evidence.</p><span class="roadmap-link">Track issue #18 <svg aria-hidden="true" focusable="false" class="icon"><use href="#i-up"/></svg></span></a>
         </div>
-        <p class="roadmap-footnote">Interested in future edge robotics and AI experiments? Share a <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/new/choose" target="_blank" rel="noopener noreferrer">scoped proposal</a>; those integrations are not part of the current validated lab.</p>
+        <div class="roadmap-actions"><a class="btn btn-primary" href="./plans/">Step through the 90-day plan <svg aria-hidden="true" focusable="false" class="icon"><use href="#i-arrow"/></svg></a><a class="btn btn-outline" href="./plans/release-gates.html">See the release gates</a></div>
+        <p class="roadmap-footnote">Each phase has its own page with an animation, the issues behind it and what done means. Interested in future edge robotics and AI experiments? Share a <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/new/choose" target="_blank" rel="noopener noreferrer">scoped proposal</a>; those integrations are not part of the current validated lab.</p>
       </div>
     </section>
 

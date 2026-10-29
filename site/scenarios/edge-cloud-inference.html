@@ -16,6 +16,9 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/docs.css">
 <link rel="stylesheet" href="../assets/scenarios.css">
+<link rel="stylesheet" href="../assets/lab-anim.css">
+<link rel="stylesheet" href="../assets/anim/s2-edge-cloud.css">
+<script defer src="../assets/lab-anim.js"></script>
 <script defer src="../assets/scenarios.js"></script>
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ROS 2 Kubernetes Lab">
@@ -28,12 +31,12 @@
 <meta name="twitter:title" content="Edge vs Cloud Robotics AI | Jev Placement Experiments">
 <meta name="twitter:description" content="Proposal, not benchmarked: a synthetic ROS 2 edge/cloud AI placement study with deterministic constraints and optional Jev advisory rankings.">
 <meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Edge vs Cloud Robotics AI | Jev Placement Experiments","headline":"Edge vs Cloud Robotics AI | Jev Placement Experiments","description":"Design a network-aware ROS 2 edge/cloud AI inference placement study with Jev advisory rankings, deterministic constraints and reproducible latency experiments.","url":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/edge-cloud-inference.html","isAccessibleForFree":true,"dateModified":"2026-10-27","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/"},{"@type":"ListItem","position":3,"name":"Edge/cloud placement","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/edge-cloud-inference.html"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Edge vs Cloud Robotics AI | Jev Placement Experiments","headline":"Edge vs Cloud Robotics AI | Jev Placement Experiments","description":"Design a network-aware ROS 2 edge/cloud AI inference placement study with Jev advisory rankings, deterministic constraints and reproducible latency experiments.","url":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/edge-cloud-inference.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/"},{"@type":"ListItem","position":3,"name":"Edge/cloud placement","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/edge-cloud-inference.html"}]}]}</script>
 </head><body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="docs-nav"><div class="sc-shell docs-nav-inner">
 <a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
-<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
 <section class="sc-hero"><div class="sc-shell sc-hero-inner">
 <div><nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Scenarios</a><span>/</span>Edge/cloud placement</nav>
 <span class="sc-kicker">SCENARIO 02 · P2 / NETWORK RESEARCH</span>
@@ -55,6 +58,66 @@
 <circle class="sc-pulse" cx="160" cy="88" r="5" /><circle class="sc-pulse" cx="335" cy="88" r="5" />
 </svg><div class="sc-visual-foot"><span>SIMULATED / RESEARCH BLUEPRINT</span><strong>NO ACTUATION</strong><button type="button" class="sc-button sc-button--ghost" data-motion-toggle aria-pressed="false">Pause decorative motion</button></div>
 </div></div></section>
+<section class="sc-section" id="see-it"><div class="sc-shell">
+<h2>See the idea in a minute</h2>
+<p class="sc-intro">A robot has a sensor and a model to run. The model could run on a nearby edge box or in a faraway cloud. Press play or pick a step to see how a time budget decides. The picture is a sketch, and no timing has been measured.</p>
+
+<figure class="lab-anim s2-place" data-anim="s2-edge-cloud" data-interval="3200" aria-labelledby="s2-title">
+<div class="lab-anim__head"><h3 class="lab-anim__title" id="s2-title">Where should the model run?</h3><span class="lab-anim__tag">Illustration · synthetic</span></div>
+<div class="lab-anim__stage">
+<svg viewBox="0 0 960 580" role="img" aria-labelledby="s2-svg-t s2-svg-d" focusable="false">
+<defs><pattern id="s2-hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="12" height="12" fill="#3a2a22"/><rect width="5" height="12" fill="#ffa66e"/></pattern></defs>
+<title id="s2-svg-t">A made-up comparison of running a model on an edge box or in the cloud</title>
+<desc id="s2-svg-d">A robot with a sensor sits on the left, an edge box beside it and a cloud far to the right. Two bars show how long each placement takes, drawn as lengths only with no numbers, against a dashed budget line. Step one: the network is good and both bars end before the budget line, so both are within budget. Step two: the network degrades, the cloud bar grows past the budget line and is marked over budget, while the edge bar stays short and within budget. Step three: a placement rule chooses the edge box. Step four: the loop is reported as a measurement to collect later. The picture is illustrative and no measured latency exists.</desc>
+<g><rect class="box" x="40" y="70" width="180" height="120" rx="14"/><circle class="sensor" cx="76" cy="104" r="11"/><text class="box-sub" x="98" y="112">Sensor</text><text class="box-title" x="130" y="165" text-anchor="middle">Robot</text></g>
+<g><rect class="box edge-box" x="290" y="70" width="210" height="120" rx="14"/><text class="box-title" x="395" y="122" text-anchor="middle">Edge box</text><text class="box-sub" x="395" y="158" text-anchor="middle">nearby</text></g>
+<g><path class="box cloud-box" d="M715 195H885A38 38 0 0 0 885 119A50 50 0 0 0 800 88A40 40 0 0 0 735 112A45 45 0 0 0 715 195Z"/><text class="box-title" x="800" y="148" text-anchor="middle">Cloud</text><text class="box-sub" x="800" y="182" text-anchor="middle">far away</text></g>
+<path class="link link-edge" d="M222 130H288"/>
+<path class="link link-cloud" d="M130 192V247H735V197"/>
+<circle class="pkt" cx="130" cy="247" r="10"/>
+<g class="pick"><rect class="pill" x="280" y="172" width="230" height="38" rx="19"/><text class="pill-text" x="395" y="199" text-anchor="middle">Chosen: edge</text></g>
+<text class="net net-good n-a" x="430" y="290" text-anchor="middle">Network: good</text>
+<text class="net net-bad n-b" x="430" y="290" text-anchor="middle">Network: degraded</text>
+<text class="panel-title" x="40" y="335">Time budget · bar length only, no numbers</text>
+<text class="row-label" x="40" y="386">Edge</text>
+<rect class="bar-ok" x="140" y="360" width="190" height="36" rx="6"/>
+<g class="e-a"><path class="ico-ok" d="M142 417l9 10 17-19"/><text class="st" x="182" y="428">within budget</text></g>
+<g class="e-b"><path class="ico-ok" d="M142 417l9 10 17-19"/><text class="st" x="182" y="428">within budget · chosen</text></g>
+<text class="row-label" x="40" y="482">Cloud</text>
+<rect class="bar-ok bar-fit" x="140" y="456" width="420" height="36" rx="6"/>
+<rect class="bar-over" x="560" y="456" width="320" height="36" rx="6"/>
+<g class="c-a"><path class="ico-ok" d="M142 513l9 10 17-19"/><text class="st" x="182" y="524">within budget</text></g>
+<g class="c-b"><path class="ico-bad" d="M142 503l22 22M164 503l-22 22"/><text class="st" x="182" y="524">over budget</text></g>
+<g class="c-c"><path class="ico-bad" d="M142 503l22 22M164 503l-22 22"/><text class="st" x="182" y="524">over budget · not chosen</text></g>
+<path class="budget" d="M560 345V540"/>
+<text class="budget-label" x="560" y="566" text-anchor="middle">Budget limit</text>
+<g class="collect-g"><rect class="collect" x="610" y="352" width="310" height="78" rx="14"/><text class="collect-t1" x="632" y="387">To collect later</text><text class="collect-t2" x="632" y="416">measured timings</text></g>
+</svg>
+</div>
+<div class="lab-anim__bar">
+<button type="button" data-anim-prev>Back</button>
+<button type="button" data-anim-play aria-pressed="false"><span>Play</span></button>
+<button type="button" data-anim-next>Next</button>
+<button type="button" data-anim-replay>Replay</button>
+<output class="lab-anim__status" data-anim-status aria-live="polite">Step 1 of 4</output>
+</div>
+<ol class="lab-anim__steps">
+<li data-step-text><button type="button"><b>Good network</b><span>Both bars end before the budget line. The cloud fits, and so does the edge box.</span></button></li>
+<li data-step-text><button type="button"><b>The network degrades</b><span>The cloud bar grows past the budget line and is marked over budget. The edge bar stays short.</span></button></li>
+<li data-step-text><button type="button"><b>A rule picks the edge</b><span>A plain rule drops any placement that misses the budget, so the edge box stays. Any Jev advice would only rank what is left.</span></button></li>
+<li data-step-text><button type="button"><b>Report it as a measurement</b><span>Real timings are still to be collected, with raw data. The study does not claim any speed today.</span></button></li>
+</ol>
+<p class="lab-anim__note">Illustrative only. Bar lengths are invented and carry no units. No latency has been measured, and no real robot, camera, model or network is involved. The edge/cloud study is a proposal.</p>
+</figure>
+
+<div class="sc-panel plain-guide"><h3>Plain-language guide</h3>
+<dl>
+<div><dt>Edge and cloud</dt><dd>The edge box is a computer close to the robot. The cloud is a faraway service, here a Kubernetes cluster or a hosted model service, reached over a network that can slow down or drop.</dd></div>
+<div><dt>Latency budget</dt><dd>The longest time a result may take to come back and still be useful. A placement that goes past the budget is over budget.</dd></div>
+<div><dt>Hard gate</dt><dd>An ordinary code check that removes placements that cannot work, such as ones that are unreachable, too slow or not allowed, before any ranking happens.</dd></div>
+<div><dt>Jev</dt><dd>A structured decision model this research proposes to try as an optional adviser. It would only rank placements that already pass the gate. Its answers are advice, not commands.</dd></div>
+</dl></div>
+</div></section>
 <section class="sc-section"><div class="sc-shell">
 <span class="sc-overline">01 / What are we studying?</span><h2>One real research question, not a product claim.</h2>
 <div class="sc-detail-grid">

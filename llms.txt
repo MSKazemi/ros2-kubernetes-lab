@@ -63,7 +63,7 @@ ROS 2 DDS discovery behavior depends on RMW configuration, network transport and
 ## Repository identity
 
 - **Canonical repository:** https://github.com/MSKazemi/ros2-kubernetes-lab
-- **Proposed future name (not yet adopted):** ROS 2 Kubernetes Lab / `ros2-kubernetes-lab`.
+- **Name:** ROS 2 Kubernetes Lab (repository slug `ros2-kubernetes-lab`). Its website is https://mskazemi.com/ros2-kubernetes-lab/.
 - **Author:** Mohsen Seyedkazemi Ardebili.
 - **License:** Apache-2.0 — see `LICENSE`.
 - **Citation:** `CITATION.cff`.

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<meta name="color-scheme" content="dark">
+<title>Days 31–60: package and document | ROS 2 Kubernetes Lab</title>
+<meta name="description" content="Phase 3 of the 90-day plan: a truthful README, reproducible benchmarks, versioned tutorials and a first release only after validation. A proposal.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Mohsen Seyedkazemi Ardebili">
+<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/plans/package-and-document.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs.css">
+<link rel="stylesheet" href="../assets/scenarios.css">
+<link rel="stylesheet" href="../assets/lab-anim.css">
+<link rel="stylesheet" href="../assets/anim/package-and-document.css">
+<script defer src="../assets/lab-anim.js"></script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ROS 2 Kubernetes Lab">
+<meta property="og:title" content="Days 31–60: package and document">
+<meta property="og:description" content="Phase 3 of the roadmap: every README command, benchmark figure, tutorial page and release tag needs evidence before it ships. A proposal, not a promise.">
+<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/plans/package-and-document.html">
+<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Days 31–60: package and document">
+<meta name="twitter:description" content="Phase 3 of the roadmap: no claim ships without evidence. A proposal, not a promise.">
+<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Days 31–60: package and document","description":"Phase 3 of the 90-day plan: a truthful README, reproducible benchmarks, versioned tutorials and a first release only after validation. A proposal.","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/package-and-document.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"isPartOf":{"@type":"WebPage","name":"Roadmap","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Roadmap","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},{"@type":"ListItem","position":3,"name":"Days 31–60: package and document","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/package-and-document.html"}]}]}</script>
+</head><body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="docs-nav"><div class="sc-shell docs-nav-inner">
+<a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Roadmap</a><a href="../scenarios/">Research scenarios</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab">GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+
+
+<section class="sc-hero"><div class="sc-shell">
+<nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Roadmap</a><span>/</span>Days 31–60</nav>
+<span class="sc-kicker">Phase 3 · days 31–60</span>
+<h1>Package and document, with evidence for every claim</h1>
+<p class="sc-lead">By this phase the lab should have a proven cross-worker path to describe. Now the job is to explain it truthfully: a clear README, benchmarks anyone can rerun, tutorials that stay correct as versions change, and a first release that comes only after validation.</p>
+<div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · planning targets, not promises</span><span class="sc-pill">Issues #17, #18, #19, #20</span><span class="sc-pill">Source: docs/ROADMAP-2026.md</span></div>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>Where this phase starts</h2>
+<p class="sc-intro">The roadmap's audit (10 to 11 October 2026) found gaps that this phase exists to close. These are starting points, not results.</p>
+<div class="sc-grid sc-grid--3">
+<div class="sc-panel"><span class="lab-chip lab-chip--planned">Gap</span><h3>No proof-of-function demo yet</h3><p>The root README has no central demo animation and no validated modern install profile. Its main example starts a CPU stress test (<code>stress-ng</code>), not a ROS 2 talker and listener.</p></div>
+<div class="sc-panel"><span class="lab-chip lab-chip--planned">Gap</span><h3>No tagged release</h3><p>At the audit the repository had no GitHub release. The plan holds the first one back until a clean install has been validated.</p></div>
+<div class="sc-panel"><span class="lab-chip lab-chip--legacy">Historical</span><h3>Old measurements exist</h3><p>The <code>DataAnalysis/</code> folder holds sample monitoring files from a single recording on 2024-04-20 on the historical Vagrant lab cluster. They stay labelled historical and are never quoted as modern results.</p></div>
+</div>
+</div></section>
+
+<section class="sc-section sc-section--shade" id="evidence"><div class="sc-shell">
+<h2>Every claim carries its evidence</h2>
+<p class="sc-intro">This phase follows one rule: a statement the lab publishes must point to something that backs it. Step through the four artifacts and watch each claim get its evidence. The last row shows a claim with nothing behind it, which stays out.</p>
+
+<figure class="lab-anim pkg" data-anim="package-evidence" data-interval="3400" aria-labelledby="pkg-title">
+<div class="lab-anim__head"><h3 class="lab-anim__title" id="pkg-title">No evidence, no shipping</h3><span class="lab-anim__tag">Illustration · the rule, not progress</span></div>
+<div class="lab-anim__stage">
+<svg viewBox="0 0 720 548" role="img" aria-labelledby="pkg-svg-t pkg-svg-d" focusable="false">
+<title id="pkg-svg-t">Claims linked to the evidence that backs them</title>
+<desc id="pkg-svg-d">Two columns. On the left are claims: a README command, a benchmark figure, a tutorial page and a release tag. On the right is the evidence each needs: a test that ran, raw data with method, a checked link, and a clean install. One step at a time a line joins each claim to its evidence and the claim changes from cannot ship to can ship. A fifth claim, runs everywhere, has nothing attached and stays marked cannot ship.</desc>
+<text class="col-h" x="10" y="26">Claim</text><text class="col-h" x="410" y="26">Evidence</text>
+<g class="row r0" transform="translate(0 44)">
+<path class="stub" d="M310 44H356" />
+<path class="draw link" style="--len:100" d="M310 44H410" />
+<g class="claim"><rect class="card" x="10" y="0" width="300" height="88" rx="12" /><text class="ttl" x="28" y="34">README command</text><text class="det" x="28" y="56">Issue #17</text><text class="st st-no" x="28" y="78">cannot ship</text><text class="st st-ok" x="28" y="78">can ship</text></g>
+<g class="ev"><rect class="card ev-card" x="410" y="0" width="300" height="88" rx="12" /><text class="ttl" x="428" y="34">A test that ran</text><text class="det" x="428" y="56">exit code and log</text><text class="st st-no" x="428" y="78">missing</text><text class="st st-ok" x="428" y="78">attached</text></g>
+</g>
+<g class="row r1" transform="translate(0 144)">
+<path class="stub" d="M310 44H356" />
+<path class="draw link" style="--len:100" d="M310 44H410" />
+<g class="claim"><rect class="card" x="10" y="0" width="300" height="88" rx="12" /><text class="ttl" x="28" y="34">Benchmark figure</text><text class="det" x="28" y="56">Issue #18</text><text class="st st-no" x="28" y="78">cannot ship</text><text class="st st-ok" x="28" y="78">can ship</text></g>
+<g class="ev"><rect class="card ev-card" x="410" y="0" width="300" height="88" rx="12" /><text class="ttl" x="428" y="34">Raw data, method</text><text class="det" x="428" y="56">repeats and limits</text><text class="st st-no" x="428" y="78">missing</text><text class="st st-ok" x="428" y="78">attached</text></g>
+</g>
+<g class="row r2" transform="translate(0 244)">
+<path class="stub" d="M310 44H356" />
+<path class="draw link" style="--len:100" d="M310 44H410" />
+<g class="claim"><rect class="card" x="10" y="0" width="300" height="88" rx="12" /><text class="ttl" x="28" y="34">Tutorial page</text><text class="det" x="28" y="56">Issue #19</text><text class="st st-no" x="28" y="78">cannot ship</text><text class="st st-ok" x="28" y="78">can ship</text></g>
+<g class="ev"><rect class="card ev-card" x="410" y="0" width="300" height="88" rx="12" /><text class="ttl" x="428" y="34">A checked link</text><text class="det" x="428" y="56">links and versions</text><text class="st st-no" x="428" y="78">missing</text><text class="st st-ok" x="428" y="78">attached</text></g>
+</g>
+<g class="row r3" transform="translate(0 344)">
+<path class="stub" d="M310 44H356" />
+<path class="draw link" style="--len:100" d="M310 44H410" />
+<g class="claim"><rect class="card" x="10" y="0" width="300" height="88" rx="12" /><text class="ttl" x="28" y="34">Release tag</text><text class="det" x="28" y="56">Issue #20</text><text class="st st-no" x="28" y="78">cannot ship</text><text class="st st-ok" x="28" y="78">can ship</text></g>
+<g class="ev"><rect class="card ev-card" x="410" y="0" width="300" height="88" rx="12" /><text class="ttl" x="428" y="34">Clean install</text><text class="det" x="428" y="56">validated first</text><text class="st st-no" x="428" y="78">missing</text><text class="st st-ok" x="428" y="78">attached</text></g>
+</g>
+<g class="row rx" transform="translate(0 444)">
+<path class="stub" d="M310 44H356" />
+<path class="draw link" style="--len:100" d="M310 44H410" />
+<g class="claim"><rect class="card" x="10" y="0" width="300" height="88" rx="12" /><text class="ttl" x="28" y="34">Runs everywhere</text><text class="det" x="28" y="56">Example only</text><text class="st st-no" x="28" y="78">cannot ship</text></g>
+<g class="ev"><rect class="card ev-card" x="410" y="0" width="300" height="88" rx="12" /><text class="ttl" x="428" y="34">Nothing to show</text><text class="det" x="428" y="56">this claim stays out</text><text class="st st-no" x="428" y="78">missing</text></g>
+</g>
+</svg>
+</div>
+<div class="lab-anim__bar">
+<button type="button" data-anim-prev>Back</button>
+<button type="button" data-anim-play aria-pressed="false"><span>Play</span></button>
+<button type="button" data-anim-next>Next</button>
+<button type="button" data-anim-replay>Replay</button>
+<output class="lab-anim__status" data-anim-status aria-live="polite">Step 1 of 4</output>
+</div>
+<ol class="lab-anim__steps">
+<li data-step-text><button type="button"><b>A README command</b><span>Every featured command and diagram must match code that is checked in and has been run. A command with no test behind it stays out of the quickstart (issue #17).</span></button></li>
+<li data-step-text><button type="button"><b>A benchmark figure</b><span>A figure ships with its raw data, the method, the repeat count and the limits. Historical sample data stays labelled historical (issue #18).</span></button></li>
+<li data-step-text><button type="button"><b>A tutorial page</b><span>Pages are versioned and searchable, every link is checked, and the support matrix says honestly what works where (issue #19).</span></button></li>
+<li data-step-text><button type="button"><b>A release tag</b><span>The first tagged release waits for a validated clean install, and comes with contributor guides and a changelog (issue #20).</span></button></li>
+</ol>
+<p class="lab-anim__note">The amber row at the bottom is an invented example of a claim with no evidence. The picture shows the rule the plan will follow. It does not report that any of this evidence exists yet.</p>
+</figure>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>The four issues and what finishes each</h2>
+<p class="sc-intro">The completion gates below come straight from the roadmap. They describe what must be true before an issue counts as done. None is met yet.</p>
+<div class="sc-table-wrap"><table class="sc-table">
+<caption class="sr-only">Phase 3 issues, required outcomes and completion gates</caption>
+<thead><tr><th scope="col">Issue</th><th scope="col">Required outcome</th><th scope="col">Completion gate</th><th scope="col">Status</th></tr></thead>
+<tbody>
+<tr><td><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/17" aria-label="Issue 17 on GitHub">#17 ↗</a></td><td><strong>Visual README and accurate quickstart</strong></td><td>Every featured command and diagram matches checked-in, tested code.</td><td><span class="lab-chip lab-chip--planned">Planned</span></td></tr>
+<tr><td><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/18" aria-label="Issue 18 on GitHub">#18 ↗</a></td><td><strong>Reproducible DDS, autoscaling and monitoring benchmarks</strong></td><td>A runnable protocol, raw data, regenerated plots and stated limitations.</td><td><span class="lab-chip lab-chip--planned">Planned</span></td></tr>
+<tr><td><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/19" aria-label="Issue 19 on GitHub">#19 ↗</a></td><td><strong>Searchable, versioned tutorials and troubleshooting</strong></td><td>A built and published docs site, verified links and an honest support matrix.</td><td><span class="lab-chip lab-chip--planned">Planned</span></td></tr>
+<tr><td><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/20" aria-label="Issue 20 on GitHub">#20 ↗</a></td><td><strong>First verified release and a contributor-friendly workflow</strong></td><td>A versioned release with integration proof, and contribution guides.</td><td><span class="lab-chip lab-chip--planned">Planned</span></td></tr>
+</tbody></table></div>
+</div></section>
+
+<section class="sc-section sc-section--shade"><div class="sc-shell">
+<h2>Three rules this phase keeps</h2>
+<div class="sc-grid sc-grid--3">
+<div class="sc-panel"><h3>Historical stays historical</h3><p>New benchmarks come from controlled new runs. Old sample files are kept and clearly labelled as old. They never appear as results for the modern profile.</p></div>
+<div class="sc-panel"><h3>Release only after validation</h3><p>The first tagged release follows the validation of a clean install. If that takes longer, the release waits. The plan holds a milestone rather than skip a gate.</p></div>
+<div class="sc-panel"><h3>Legacy steps are separated</h3><p>The old Foxy steps stay available but are marked as historical, and the phase adds a migration note for people still on them.</p></div>
+</div>
+<p class="sc-intro" style="margin-top:28px">Read the full list of checks in the <a href="./release-gates.html">release gates</a>.</p>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>Keep going</h2>
+<div class="sc-grid pager">
+<a class="sc-card sc-card--link" href="./runnable-and-safe.html"><span class="sc-card-index">Previous · days 15–30</span><h3>Make it runnable and safe</h3><p>One command, a lighter cluster and safer defaults.</p><span class="sc-card-cta">Back to phase 2</span></a>
+<a class="sc-card sc-card--link" href="./grow-with-evidence.html"><span class="sc-card-index">Next · days 61–90</span><h3>Grow with evidence</h3><p>Demo, posts, real user reports and honest measurement.</p><span class="sc-card-cta">On to phase 4</span></a>
+</div>
+<p class="sc-intro" style="margin-top:24px"><a href="./">Back to the roadmap hub</a> · <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/17">Phase 3 issues on GitHub ↗</a> · <a href="../docs/contribute.html">How to contribute</a></p>
+</div></section>
+
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Plans are proposals; illustrations show sequence, not progress</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">Full roadmap source ↗</a></div></footer></body></html>

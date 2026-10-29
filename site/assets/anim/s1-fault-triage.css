@@ -1,0 +1,55 @@
+/* Scenario 1 animation: why did the listener go quiet?
+ * Default (no JS / not ready) = finished picture. Once the framework adds .is-ready,
+ * items are hidden until their step (.s-ge-K) is reached. All SVG text is sized in viewBox units. */
+.s1-fault .box{fill:var(--panel);stroke:var(--line);stroke-width:3}
+.s1-fault .box-title{font:600 30px var(--display);fill:var(--ink)}
+.s1-fault .box-sub{font:400 24px var(--body);fill:var(--sub)}
+.s1-fault .wire{fill:none;stroke:var(--dim);stroke-width:4;stroke-linecap:round}
+.s1-fault .msg{fill:var(--cyan)}
+.s1-fault .stop circle{fill:rgba(255,166,110,.14);stroke:var(--amber);stroke-width:4}
+.s1-fault .stop path{fill:none;stroke:var(--amber);stroke-width:5;stroke-linecap:round}
+.s1-fault .stop-label{font:600 26px var(--body);fill:var(--amber)}
+.s1-fault .qos-label{font:600 24px var(--mono);fill:var(--amber)}
+.s1-fault .pill{fill:var(--panel2);stroke:var(--amber);stroke-width:3}
+.s1-fault .pill-text{font:600 24px var(--mono);fill:var(--ink)}
+.s1-fault .slot{fill:rgba(16,27,46,.7);stroke:var(--cyan);stroke-width:3;transition:stroke .5s var(--ease)}
+.s1-fault .slot-label{font:500 22px var(--body);fill:var(--sub)}
+.s1-fault .clue{font:500 26px var(--mono);fill:var(--ink)}
+.s1-fault .clue-sub{font:400 22px var(--body);fill:var(--sub)}
+.s1-fault .row{fill:var(--panel);stroke:var(--cyan);stroke-width:3}
+.s1-fault .row--jev{stroke:var(--violet);stroke-dasharray:12 8;fill:rgba(161,147,255,.08)}
+.s1-fault .row--human{stroke:var(--blue)}
+.s1-fault .row-tag{font:600 28px var(--display);fill:var(--ink)}
+.s1-fault .row-text{font:500 26px var(--body);fill:var(--ink)}
+.s1-fault .jev-tag{fill:#c9b3ff}
+
+/* Message dots flow toward the barrier only while the first step is showing. */
+@keyframes s1-flow{0%{transform:translateX(0);opacity:0}12%{opacity:1}85%{opacity:1}100%{transform:translateX(105px);opacity:0}}
+.s1-fault.is-ready:not(.s-ge-1) .msg{animation:s1-flow 2.2s linear infinite;animation-delay:calc(var(--i) * -.55s)}
+
+/* Reveal by step; each group fades in when its step is reached. */
+.s1-fault .c1,.s1-fault .c2,.s1-fault .c3,.s1-fault .c4{transition:opacity .6s var(--ease)}
+.s1-fault.is-ready:not(.s-ge-1) .c1{opacity:0}
+.s1-fault.is-ready:not(.s-ge-2) .c2{opacity:0}
+.s1-fault.is-ready:not(.s-ge-3) .c3{opacity:0}
+.s1-fault.is-ready:not(.s-ge-4) .c4{opacity:0}
+.s1-fault.is-ready:not(.s-ge-1) .slot{stroke:var(--dim);stroke-dasharray:10 8}
+
+/* Small screens: the SVG scales down, so enlarge its text in viewBox units to stay near 12px+. */
+@media (max-width:640px){
+  /* sizes are in viewBox units: ~0.34 px per unit at a 390px viewport, so 1 unit = ~0.34px */
+  .s1-fault .box-title{font-size:43px}
+  .s1-fault .box-sub{font-size:36px}
+  .s1-fault .stop-label{font-size:37px}
+  .s1-fault .qos-label{font-size:35px}
+  .s1-fault .pill-text{font-size:34px}
+  .s1-fault .slot-label{font-size:34px}
+  .s1-fault .clue,.s1-fault .clue-sub{font-size:34px}
+  .s1-fault .row-tag{font-size:38px}
+  .s1-fault .row-text{font-size:37px}
+}
+
+/* Plain-language guide beside the animation. */
+.plain-guide dl{margin:0;display:grid;gap:14px}
+.plain-guide dt{font:600 15px/1.4 var(--display);color:#ebf5ff}
+.plain-guide dd{margin:2px 0 0;color:#b1c2d7;font-size:14px;line-height:1.65}
