@@ -14,12 +14,11 @@ Suggested starting points (only if still open):
 
 | Issue | Task | What you need |
 |---|---|---|
-| [#25](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/25) | Fix broken monitoring screenshot links and alt text | Markdown and file inspection |
-| [#24](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/24) | Clarify ROS 2 tutorial filenames/namespace and current stress workload | Markdown and basic Kubernetes concepts |
+| [#89](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/89) | Student scenario usability, accessibility and search audit | A browser, basic HTML/accessibility knowledge |
+| [#77](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/77) | Offline CI checks for Jev JSON fixtures and Markdown links | Python or GitHub Actions; wait until draft PR [#76](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/76) has landed |
 | [#55](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/55) | CPU-only simulated ROS 2 observation/action contract and mock policy | Beginner coding; check the issue for the tools it needs. A first simulated version exists, see [the contract guide](OBSERVATION-ACTION-CONTRACT.md); extend it rather than duplicating |
-| [#29](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/29) | Add offline Kubernetes manifest validation | Kubernetes YAML and CI |
 
-Issue #25 already has an open PR ([#36](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/36)). Coordinate there, or pick another issue, rather than opening a duplicate.
+Issues change quickly. Before you start, read the live issue and check its linked pull requests, so you do not duplicate work that is already open or merged. The lab's first community contributions (the glossary, the quickstart cleanup and the monitoring screenshots) are listed in [CONTRIBUTORS.md](../CONTRIBUTORS.md).
 
 A documentation-only contribution does not require launching Vagrant. The historical full VM profile needs approximately **30 GB VM RAM and 18 vCPUs**.
 
@@ -30,11 +29,11 @@ On GitHub click **Fork** on the [project repository](https://github.com/MSKazemi
 ```bash
 git clone https://github.com/YOUR_GITHUB_USERNAME/ros2-kubernetes-lab.git
 cd ros2-kubernetes-lab
-git switch -c docs/issue-25-monitoring-images
+git switch -c docs/issue-NNN-short-description
 git status --short
 ```
 
-Choose a branch name that matches **your** issue. The existing repository name is used here; a rename to `ros2-kubernetes-lab` is **proposed but has not happened**.
+Choose a branch name that matches **your** issue. The repository is now named `ros2-kubernetes-lab`; older links and clones may still use the previous name, `Vagrant-Kubernetes-ROS2-Deployment`.
 
 If you have write access to the original repository or use a connected cloud agent, you can work in its own feature branch instead of forking. In either case, **never make your contribution directly on `main`**.
 
@@ -69,7 +68,7 @@ Follow the interactive sign-in instructions for your account, or the official se
 Inside **Claude Code or Codex**, paste the following message, substituting your actual issue number:
 
 ```text
-I want to contribute to issue #25 in this repository.
+I want to contribute to issue #NNN in this repository.
 Read AGENTS.md, the CONTRIBUTING guide, the issue body and its acceptance criteria.
 If you cannot access the GitHub issue, ask me to paste its contents; do not guess.
 Inspect only the files needed for the issue.
@@ -85,7 +84,7 @@ Why this works: the agent gets **a bounded issue**, **current repository rules**
 After reviewing the plan, prompt:
 
 ```text
-Proceed with the approved change for issue #25 only.
+Proceed with the approved change for issue #NNN only.
 Keep the patch small. Update related documentation if needed.
 Do not change the license, rename the repository, push commits,
 disable safety checks, or claim full ROS/DDS integration was tested.
@@ -145,12 +144,12 @@ Once your changes are reviewed:
 git status --short
 git add path/to/changed-file.md
 git commit -m "docs: clarify monitoring screenshot references"
-git push -u origin docs/issue-25-monitoring-images
+git push -u origin docs/issue-NNN-short-description
 ```
 
 Replace the example path, commit message, and branch name with yours; stage only your intended files. Open your fork on GitHub and select **Compare & pull request**, targeting the original repository's `main` branch.
 
-In the PR describe the **problem and fix**, link the issue (`Fixes #25` only if fully solved), name the **checks you actually ran**, list untested steps, and disclose the AI assistance using the PR template. Prefer small PRs—**one issue per PR**.
+In the PR describe the **problem and fix**, link the issue (`Fixes #NNN` only if fully solved), name the **checks you actually ran**, list untested steps, and disclose the AI assistance using the PR template. Prefer small PRs—**one issue per PR**.
 
 A human maintainer will review the result. Do not ask your coding agent to merge or close other issues without explicit permission.
 
