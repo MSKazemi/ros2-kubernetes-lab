@@ -12,7 +12,7 @@ Run it from the repository (any directory inside it works).
 |---|---|
 | Linux, macOS (bash, zsh, fish) | `./lab` |
 | Windows PowerShell | `.\lab.cmd` |
-| Windows `cmd.exe` | `lab.cmd` |
+| Windows `cmd.exe` | `lab.cmd` (or just `lab` once the repository folder is on `PATH`) |
 | Any shell, no launcher | `python scripts/lab.py` (Windows: `py -3 scripts\lab.py`) |
 | Linux, macOS with `make` | `make` lists shortcuts such as `make check` or `make image-test` |
 
@@ -141,4 +141,10 @@ For `make`, your shell's own `make` completion lists the targets (bash-completio
 - **Safety behaviour:** the confirmation gates, `VAGRANT_CWD` override, first Ctrl-C not killing the child (also with a real SIGINT sent to a real process), closed-pipe handling and the Windows `PATH`-only lookup have tests, and each was confirmed to fail when the protection is removed.
 - **Against the real tools:** `lab check` (five checks), `lab doctor`, `lab image build` (all layers were cached) and `lab image test`, which passed with the script piped from Python.
 
-**Not verified:** `lab cluster up` and every other Vagrant command (Vagrant is not installed on the test machine; they are covered only by mocks, `--dry-run` and the prompt tests), a from-scratch `lab image build`, and any behaviour on real Windows or macOS hardware. Windows and macOS are exercised only by the CI workflow [`lab-cli.yml`](../.github/workflows/lab-cli.yml): unit tests, both launchers, PowerShell 5.1 and 7 completion on Windows, and the Python version matrix. Interactive tab completion in zsh, and using `lab` by hand on Windows and macOS, have not been tried by a person. If something fails for you, please [open an issue](https://github.com/MSKazemi/ros2-kubernetes-lab/issues) with the output of `lab doctor` and the command you ran with `--dry-run`.
+**Run in CI** on GitHub-hosted runners (workflow [`lab-cli.yml`](../.github/workflows/lab-cli.yml), all jobs green on its first full run):
+
+- **Windows Server 2025 (x64):** the unit tests (including PowerShell 7 completion and the `lab.cmd` launcher), both launchers from Windows PowerShell 5.1 and `cmd.exe`, bare `lab` in `cmd.exe` with the folder on `PATH`, and PowerShell 5.1 tab completion for both `lab` and `.\lab.cmd`.
+- **macOS 15 (arm64):** the unit tests (including the bash, fish and zsh completion tests), the POSIX launcher, and the Arm guard, which stops `lab cluster up` with exit 3 on a real Arm host.
+- **Ubuntu 24.04:** the same tests plus a Python 3.8 to 3.14 matrix in official `python` containers, and a check that `cluster up` and `cluster destroy` refuse without a terminal or `--yes` (the check was confirmed to fail when the gate is removed).
+
+**Not verified:** `lab cluster up` and every other Vagrant command (Vagrant is not installed on the test machines; they are covered only by mocks, `--dry-run` and the prompt tests), a from-scratch `lab image build`, Docker on Windows or macOS, and zsh's own completion machinery (only the generated function is exercised). Nobody has yet used `lab` by hand on real Windows or macOS hardware or tried interactive tab completion in zsh. If something fails for you, please [open an issue](https://github.com/MSKazemi/ros2-kubernetes-lab/issues) with the output of `lab doctor` and the command you ran with `--dry-run`.
