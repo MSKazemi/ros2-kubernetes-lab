@@ -148,6 +148,7 @@ Values must be positive whole numbers; anything else stops `vagrant up` with a c
 | `NAME=value command` | `$env:NAME = "value"; command` |
 | `cmd < file` | `Get-Content file \| cmd` is **not** byte-safe; use a mount (`-v`) or WSL |
 | `$(pwd)` | `${PWD}` |
+| `python3 script.py`, `python3 -m http.server 8000 --directory site` (website preview) | `py -3 script.py`, `py -3 -m http.server 8000 --directory site`; `python3` is often missing or a Microsoft Store shortcut on Windows |
 | `ls`, `cat`, `rm` | work as aliases, but flags differ; prefer `Get-ChildItem`, `Get-Content`, `Remove-Item` |
 | `sudo ...` | not needed on the host; only used inside the Linux VMs |
 
