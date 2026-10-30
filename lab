@@ -1,0 +1,21 @@
+#!/bin/sh
+# Launcher for Linux and macOS: finds a Python 3.8+ interpreter and runs scripts/lab.py.
+# On Windows use lab.cmd. Run `./lab --help` for the command overview.
+self=$0
+while [ -h "$self" ]; do  # resolve symlinks so `ln -s ~/src/lab ~/bin/lab` works
+  target=$(readlink "$self")
+  case $target in
+    /*) self=$target ;;
+    *) self=$(dirname "$self")/$target ;;
+  esac
+done
+here=$(CDPATH= cd -- "$(dirname -- "$self")" && pwd)
+
+for py in python3 python; do
+  if command -v "$py" >/dev/null 2>&1 &&
+    "$py" -c 'import sys; sys.exit(sys.version_info < (3, 8))' >/dev/null 2>&1; then
+    exec "$py" "$here/scripts/lab.py" "$@"
+  fi
+done
+echo "lab: error: Python 3.8 or newer was not found on PATH. Install it from https://www.python.org/downloads/" >&2
+exit 3

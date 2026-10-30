@@ -20,6 +20,7 @@ This file is shared guidance for Codex, Claude Code, and other repository-aware 
 ## File map and targeted verification
 
 - `Vagrantfile`, `KubernetesClusterSetup/` — VM sizing, provisioning, Kubernetes setup.
+- `lab`, `lab.cmd`, `scripts/lab.py`, `Makefile`, `tests/` — the `lab` command line ([docs/CLI.md](docs/CLI.md)); `Makefile` only delegates to `./lab`. Keep new commands ASCII-only, `--dry-run`-able, and with an `Examples:` help section (the tests enforce this). Do not make it start the Vagrant cluster without the existing confirmation gate.
 - `Network/` — historical Weave Net CNI.
 - `ROS2/` — modern Jazzy Dockerfile and container-only test (`ROS2/jazzy/`); old Foxy manifests remain legacy examples (old recipe under `ROS2/legacy/foxy/`).
 - `MonitoringSystem/` — Prometheus/Grafana/Dashboard configuration; permissions require scrutiny.
@@ -29,6 +30,8 @@ This file is shared guidance for Codex, Claude Code, and other repository-aware 
 Useful low-cost checks:
 
 ```sh
+# Unit tests for the lab command line (no Docker or Vagrant needed):
+python3 -m unittest discover -s tests
 git diff --check
 git status --short
 # Bash provisioning scripts (GNU/Linux):

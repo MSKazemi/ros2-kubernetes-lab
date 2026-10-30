@@ -11,6 +11,8 @@
 # Explicit LF for files executed or parsed on Linux (belt and braces).
 *.sh        text eol=lf
 Vagrantfile text eol=lf
+lab         text eol=lf
+Makefile    text eol=lf
 Dockerfile  text eol=lf
 *.yaml      text eol=lf
 *.yml       text eol=lf

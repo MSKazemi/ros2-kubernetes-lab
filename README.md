@@ -11,7 +11,7 @@
 
 > **Compatibility and test status:** The **Vagrant/Kubernetes configuration and original root-level ROS manifests remain a historical ROS 2 Foxy / Kubernetes 1.29 / Weave Net lab**, **not a validated current-version or production deployment**. Foxy reached end of life in June 2023. The original Kubernetes workload manifests start `stress-ng`; the ROS 2 talker/listener example requires separate interactive commands and is **not** automatically launched by `vagrant up`. A **separate ROS 2 Jazzy / Ubuntu 24.04 container build and local message smoke test** now exist in [the Jazzy image guide](./ROS2/jazzy/README.md). This does **not** establish multi-node Kubernetes or DDS compatibility. Cross-worker integration remains tracked in [issue #14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14).
 
-**Explore:** [Windows and macOS guide](./docs/WINDOWS-AND-MAC.md) · [Jazzy image build and test](./ROS2/jazzy/README.md) · [Requirements](#prerequisites) · [Legacy Vagrant setup](#quickstart) · [Legacy ROS 2 tutorial](./ROS2/README.md) · [DDS networking guide](./docs/ROS2-KUBERNETES-DDS-GUIDE.md) · [Monitoring](./MonitoringSystem/README.md) · [Metrics analysis](./DataAnalysis/README.md) · [Good first issues](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue)
+**Explore:** [Windows and macOS guide](./docs/WINDOWS-AND-MAC.md) · [`lab` command line](./docs/CLI.md) · [Jazzy image build and test](./ROS2/jazzy/README.md) · [Requirements](#prerequisites) · [Legacy Vagrant setup](#quickstart) · [Legacy ROS 2 tutorial](./ROS2/README.md) · [DDS networking guide](./docs/ROS2-KUBERNETES-DDS-GUIDE.md) · [Monitoring](./MonitoringSystem/README.md) · [Metrics analysis](./DataAnalysis/README.md) · [Good first issues](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue)
 
 **Website:** [ROS 2 Kubernetes Lab](https://mskazemi.com/ros2-kubernetes-lab/) (live; HTTP 200 checked 2026-10-29) · [Technical field guide](https://mskazemi.com/ros2-kubernetes-lab/docs/) · Source: [landing page](./site/index.html), [website setup and publication guide](./site/README.md), [visual identity](./site/BRAND.md).
 
@@ -80,6 +80,8 @@ The control plane is initialized with `kubeadm init --apiserver-advertise-addres
 ### Prerequisites
 
 > **Windows or macOS?** Read the [Windows and macOS guide](./docs/WINDOWS-AND-MAC.md) first. It explains which path fits your machine (Apple Silicon Macs cannot run the VirtualBox lab), how to avoid CRLF line-ending failures on Windows, and how to size the VMs. Run `python scripts/doctor.py` for a read-only check of your machine.
+
+> **Prefer one command?** The [`lab` command line](./docs/CLI.md) wraps the checks, the Jazzy image build/test and the Vagrant cluster for Linux, macOS and Windows, with `--help` examples, `--dry-run` and tab completion: `./lab` (Windows: `.\lab.cmd`), or `make` on Linux/macOS. Its commands call the same tools described below.
 
 Before beginning, ensure you have VirtualBox and Vagrant installed on your machine. Because the default cluster requests roughly **30 GB of RAM and 18 vCPUs** across the three VMs, a host with ample resources is recommended; set `LAB_PROFILE=small` (or the individual `LAB_*` variables described in the [guide](./docs/WINDOWS-AND-MAC.md#6-sizing-the-vms-for-your-machine)) for smaller machines. The `small` profile is not validated end to end.
 

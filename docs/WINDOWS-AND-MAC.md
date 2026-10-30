@@ -21,6 +21,8 @@ python scripts/doctor.py          # macOS / Linux, or Windows with Python on PAT
 py -3 scripts/doctor.py           # Windows, if `python` is not found
 ```
 
+The same check is available as `lab doctor` (`.\lab.cmd doctor` in PowerShell); see the [`lab` command line guide](./CLI.md).
+
 ## 2. Windows only: fix line endings before anything else
 
 Windows Git often converts `LF` to `CRLF` when it checks files out (`core.autocrlf=true`). Shell scripts with `CRLF` endings fail inside the Linux VMs with `/bin/bash^M: bad interpreter`. This repository now ships a [`.gitattributes`](../.gitattributes) that forces `LF` for scripts, the `Vagrantfile`, `Dockerfile` and YAML, so a **fresh clone is safe regardless of your git settings**.

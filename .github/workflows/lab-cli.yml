@@ -1,0 +1,131 @@
+name: lab command line
+
+# Tests the `lab` CLI and its launchers on the host operating systems contributors use.
+# Like cross-platform.yml this starts no VM, cluster or container: it covers the CLI itself
+# (help, --dry-run, safety gates, shell completion), not the lab running on Windows or macOS.
+on:
+  pull_request:
+    paths:
+      - lab
+      - lab.cmd
+      - Makefile
+      - scripts/lab.py
+      - tests/**
+      - docs/CLI.md
+      - .github/workflows/lab-cli.yml
+  push:
+    # Every branch, so a feature branch gets its Windows/macOS results before a PR exists.
+    paths:
+      - lab
+      - lab.cmd
+      - Makefile
+      - scripts/lab.py
+      - tests/**
+      - .github/workflows/lab-cli.yml
+
+permissions:
+  contents: read
+
+jobs:
+  lab-cli:
+    name: lab CLI on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025, macos-15]
+    steps:
+      - name: Simulate the default Windows git setting on every OS
+        shell: bash
+        run: git config --global core.autocrlf true
+      - name: Checkout source
+        # actions/checkout v4.2.2: pinned for a reproducible, least-privilege check.
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Set up Python
+        # actions/setup-python v7.1.0: pinned to a commit SHA like the checkout step.
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - name: Install zsh and fish so their completion syntax is checked (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y zsh fish
+      - name: Install fish so its completion syntax is checked (macOS; zsh is preinstalled)
+        if: runner.os == 'macOS'
+        run: brew install fish
+      - name: Unit tests
+        shell: bash
+        run: python -m unittest discover -s tests -v
+      - name: Launcher, POSIX
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          ./lab --help
+          ./lab image build --dry-run
+          ./lab cluster up --profile small --dry-run
+          make help
+      - name: Launcher, Windows PowerShell 5.1 and cmd.exe
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          # In PowerShell only the last native command decides the step result, so check each one.
+          foreach ($line in @('--help', 'image build --dry-run', 'cluster up --profile small --dry-run')) {
+            Invoke-Expression ".\lab.cmd $line"
+            if ($LASTEXITCODE -ne 0) { throw "lab.cmd $line (PowerShell) exited with $LASTEXITCODE" }
+            cmd /c "lab.cmd $line"
+            if ($LASTEXITCODE -ne 0) { throw "lab.cmd $line (cmd.exe) exited with $LASTEXITCODE" }
+          }
+      - name: Tab completion in Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          python scripts/lab.py completion powershell | Out-String | Invoke-Expression
+          foreach ($line in @('lab cluster s', '.\lab.cmd cluster s')) {
+            $got = (TabExpansion2 -inputScript $line -cursorColumn $line.Length).CompletionMatches.CompletionText
+            if ((($got | Sort-Object) -join ',') -ne 'ssh,status') { throw "unexpected completion for '$line': $got" }
+            "$line -> $got"
+          }
+      - name: Bare `lab` on PATH (informational; decides what docs/CLI.md may promise)
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        shell: cmd
+        run: |
+          set "PATH=%CD%;%PATH%"
+          lab --help
+      - name: Mutating commands refuse without a terminal or --yes
+        # A fake vagrant on PATH gets us past the "is vagrant installed" check to the confirmation
+        # gate itself; it exits 99 if the gate ever lets it run. The gate is OS-independent code.
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          mkdir fakebin
+          printf '#!/bin/sh\necho "vagrant must not run" >&2\nexit 99\n' > fakebin/vagrant
+          chmod +x fakebin/vagrant
+          for sub in "cluster up" "cluster destroy"; do
+            set +e
+            PATH="$PWD/fakebin:$PATH" python scripts/lab.py $sub </dev/null 2>err.txt
+            code=$?
+            set -e
+            [ "$code" -eq 1 ] || { echo "'lab $sub': expected exit 1, got $code"; cat err.txt; exit 1; }
+            grep -q -- '--yes' err.txt || { echo "'lab $sub': no --yes hint"; cat err.txt; exit 1; }
+            if grep -q 'vagrant must not run' err.txt; then echo "'lab $sub' ran vagrant"; exit 1; fi
+          done
+
+  python-versions:
+    name: Python ${{ matrix.python }} (container)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+    steps:
+      - name: Checkout source
+        # actions/checkout v4.2.2: pinned for a reproducible, least-privilege check.
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Unit tests on Python ${{ matrix.python }}
+        # The official python:<version>-slim image, repository mounted read-only. These images are
+        # referenced by tag, so a rebuilt tag can change results; that is acceptable for a test.
+        run: |
+          docker run --rm -e PYTHONDONTWRITEBYTECODE=1 -v "$PWD":/src:ro -w /src \
+            python:${{ matrix.python }}-slim python -m unittest discover -s tests -v
