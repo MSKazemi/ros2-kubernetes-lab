@@ -85,17 +85,29 @@ jobs:
             if ((($got | Sort-Object) -join ',') -ne 'ssh,status') { throw "unexpected completion for '$line': $got" }
             "$line -> $got"
           }
-      - name: Bare `lab` on PATH (informational; decides what docs/CLI.md may promise)
+      - name: Bare `lab` in cmd.exe with the repository folder on PATH
         if: runner.os == 'Windows'
-        continue-on-error: true
         shell: cmd
         run: |
           set "PATH=%CD%;%PATH%"
           lab --help
+      - name: Arm hosts are stopped before any prompt (Arm runners only)
+        if: runner.arch == 'ARM64'
+        shell: bash
+        run: |
+          set +e
+          python scripts/lab.py cluster up --yes </dev/null 2>err.txt
+          code=$?
+          set -e
+          [ "$code" -eq 3 ] || { echo "expected exit 3 on an Arm host, got $code"; cat err.txt; exit 1; }
+          grep -q 'Arm host' err.txt || { echo "no Arm explanation"; cat err.txt; exit 1; }
       - name: Mutating commands refuse without a terminal or --yes
         # A fake vagrant on PATH gets us past the "is vagrant installed" check to the confirmation
         # gate itself; it exits 99 if the gate ever lets it run. The gate is OS-independent code.
+        # LAB_ALLOW_ARM lifts only the Arm stop (tested above) so Arm runners reach the gate too.
         if: runner.os != 'Windows'
+        env:
+          LAB_ALLOW_ARM: '1'
         shell: bash
         run: |
           mkdir fakebin
