@@ -64,29 +64,7 @@ bash scripts/check-shell.sh KubernetesClusterSetup/create_cluster.sh
 
 The [shell validation workflow](.github/workflows/validate-shell.yml) runs the same checker on every pull request and push to `main`, with no VirtualBox, cluster or Docker Hub credentials. It reports a failure when a tracked `.sh` file contains a Bash **syntax** error; it does **not** verify Kubernetes provisioning, script behavior, shell lint best practices, or ROS 2 DDS messaging. ShellCheck can provide additional lint feedback but is not part of this check.
 
-For Kubernetes YAML under `ROS2/`, `MonitoringSystem/`, `Network/` or `KubernetesClusterSetup/`, from the repository root:
-
-```sh
-python3 scripts/validate-k8s-manifests.py            # every tracked manifest
-python3 scripts/validate-k8s-manifests.py ROS2/ros_dep_1.yaml   # one file
-```
-
-The [Kubernetes manifest workflow](.github/workflows/validate-k8s.yml) runs the same script on pull requests and `main` pushes that touch YAML, with no cluster or credentials. The script downloads a pinned [kubeconform](https://github.com/yannh/kubeconform) release (v0.8.0), verifies its SHA-256 against the checksum recorded in the script (copied from the release's `CHECKSUMS` file), and validates each document in **strict** mode against the built-in **Kubernetes 1.29.0** schemas from a pinned commit of `yannh/kubernetes-json-schema`. It needs network access to GitHub; it does not need Vagrant, Docker or `kubectl`.
-
-What it does and does not tell you:
-
-- It **is** a static schema check: it catches YAML syntax errors, wrong field types, missing required fields and misspelled fields in built-in objects (`Namespace`, `Deployment`, `HorizontalPodAutoscaler`, `PersistentVolume`, RBAC, ...). The old Foxy manifests are validated against 1.29 schemas as they are; none are rewritten.
-- It does **not** prove that a workload schedules, that its image exists, that pods start, that metrics-server or the autoscalers act, or that ROS 2/DDS messages cross nodes. Those still need a real cluster and a cross-node integration test, which no CI job here performs.
-- `ROS2/VPA.yaml` contains a `VerticalPodAutoscaler`, which is a custom resource with no built-in schema (the lab pins no VPA version). It is **not validated**: the script prints it as `UNCHECKED` rather than passing it, and `-ignore-missing-schemas` is intentionally not used because it would hide such gaps. The `Namespace` and `Deployment` in the same file are validated.
-- The two Helm values files in `MonitoringSystem/` are not Kubernetes objects and are excluded. The VPA and values-file exceptions, each with a reason, are listed in [`scripts/k8s-manifests-known-issues.txt`](scripts/k8s-manifests-known-issues.txt); new exceptions need a reason and review. There are no Helm charts or Kustomize overlays to render in this repository.
-
-For Markdown changes, check each modified relative link against a committed file and verify that commands match filenames, namespaces, images and paths in the repository. Do not add images that reveal credentials. There is not yet a full documentation validation workflow.
-
-For sample data changes, provide a small local command or script to verify that the checked-in files parse correctly. Do not change historical measurements to make results look better.
-
-### GitHub Actions workflow scope
-
-The lightweight [shell syntax workflow](.github/workflows/validate-shell.yml) checks tracked Bash scripts on pull requests and `main` pushes without cloud or Docker Hub credentials.
+On **Windows or macOS**, the same static checks run without VirtualBox: `python scripts/doctor.py`, `python scripts/check-markdown-links.py`, and `bash scripts/check-shell.sh` (Git Bash or WSL on Windows). The repository's [`.gitattributes`](.gitattributes) keeps shell scripts and YAML on LF line endings, so do not override it with editor settings that convert them to CRLF. See the [Windows and macOS guide](docs/WINDOWS-AND-MAC.md).
 
 The [Kubernetes manifest workflow](.github/workflows/validate-k8s.yml) performs the static schema check described above on YAML changes only.
 
