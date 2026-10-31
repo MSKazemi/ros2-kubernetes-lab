@@ -18,7 +18,12 @@ MANIFEST    ?= ROS2/jazzy/talker-listener.yaml
 KCTX        := kind-$(CLUSTER)
 WORKERS     := $(CLUSTER)-worker,$(CLUSTER)-worker2
 
-.PHONY: help check-prereqs demo verify verify-negative clean
+# Offline analysis helpers (issue #46). Nothing in this group starts Vagrant, Kubernetes or Docker.
+# Python >= 3.12 is required (see DataAnalysis/requirements-offline.txt).
+VENV ?= .venv
+PY   := $(VENV)/bin/python
+
+.PHONY: help check-prereqs demo verify verify-negative clean analysis-venv analyze-sample analysis-offline analysis-test
 
 help:
 	@echo 'ROS 2 on Kubernetes - lightweight kind profile (cluster "$(CLUSTER)")'
@@ -34,6 +39,12 @@ help:
 	@echo '  make verify           exit 0 only if pods are Ready, on different workers, and the listener hears the talker'
 	@echo '  make verify-negative  prove that verify fails when delivery is broken, then restore and re-verify'
 	@echo '  make clean            delete cluster "$(CLUSTER)" and image $(IMAGE) (leaves other Docker objects alone)'
+	@echo
+	@echo 'Offline analysis (no Docker, Kubernetes or Vagrant needed):'
+	@echo '  make analysis-venv     create $(VENV) and install the pinned offline dependencies'
+	@echo '  make analyze-sample    summary CSV of the default committed sample -> DataAnalysis/output/ (stdlib only)'
+	@echo '  make analysis-offline  all samples + CPU plot + tests -> DataAnalysis/output/'
+	@echo '  make analysis-test     run the offline pytest suite'
 	@echo
 	@echo 'Exit codes: 0 success; non-zero on any failure (missing prerequisite, build, cluster or verification failure).'
 
@@ -89,3 +100,17 @@ clean: check-prereqs
 	  echo 'image $(IMAGE) not present'; \
 	fi
 	@echo 'clean done. The upstream ROS base image and Docker build cache are not removed (see docs/KIND-DEMO.md).'
+
+# ---- Offline analysis (issue #46) ----
+analysis-venv:
+	python3 -m venv $(VENV)
+	$(PY) -m pip install -r DataAnalysis/requirements-offline.txt
+
+analyze-sample:
+	python3 DataAnalysis/analyze_sample.py
+
+analysis-offline:
+	PYTHON=$(abspath $(PY)) bash scripts/run-analysis-offline.sh
+
+analysis-test:
+	$(PY) -m pytest DataAnalysis

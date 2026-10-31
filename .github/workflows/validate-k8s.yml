@@ -1,0 +1,38 @@
+name: Validate Kubernetes manifests
+
+# STATIC schema validation only: no cluster, kubeconfig or secrets. A green run
+# does not prove any workload starts or that ROS 2/DDS works across nodes.
+on:
+  pull_request:
+    paths:
+      - "**.yaml"
+      - "**.yml"
+      - "scripts/validate-k8s-manifests.py"
+      - "scripts/k8s-manifests-known-issues.txt"
+  push:
+    branches:
+      - main
+    paths:
+      - "**.yaml"
+      - "**.yml"
+      - "scripts/validate-k8s-manifests.py"
+      - "scripts/k8s-manifests-known-issues.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  kubeconform:
+    name: Kubernetes 1.29 schemas (kubeconform, no cluster)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout source
+        # actions/checkout v4.2.2: same pin as the other workflows in this repository.
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Validate manifests
+        # Downloads the pinned kubeconform release, verifies its SHA-256 against
+        # the value recorded in the script, then validates every tracked manifest.
+        run: python3 scripts/validate-k8s-manifests.py

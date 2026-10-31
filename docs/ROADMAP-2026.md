@@ -1,10 +1,10 @@
 # ROS 2 Kubernetes Lab: modernization, adoption and growth roadmap
 
-> Status: **Proposal** (11 October 2026). This roadmap does not indicate that new ROS distributions, Kubernetes configurations, or network modes have been validated. Current repository name is unchanged.
+> **Historical 90-day modernization proposal** (11 October 2026). This document remains useful as a dated baseline, but the **current cross-project coordination plan** is [the 2026–2027 integrated roadmap](PROGRAM-ROADMAP-2026-2027.md) and [documentation index](README.md). The newer document does not mean that a model integration, current Kubernetes profile or cross-worker DDS workload is verified.
 >
-> Proposed name: **ROS 2 Kubernetes Lab** · proposed slug: `ros2-kubernetes-lab`.
-> Tagline: **Deploy, scale, monitor, and benchmark distributed ROS 2 applications on Kubernetes.**
-> Tracking: [GitHub issues](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues).
+> Display name: **ROS 2 Kubernetes Lab** · current GitHub repository slug: `ros2-kubernetes-lab`. Any broader research umbrella name remains a separate, unapproved working-name RFC in issue #22.
+> Original tagline: **Deploy, scale, monitor, and benchmark distributed ROS 2 applications on Kubernetes.**
+> Tracking: [GitHub issues](https://github.com/MSKazemi/ros2-kubernetes-lab/issues).
 
 ## 1. North star and intended audience
 
@@ -29,22 +29,22 @@ This audit inspected repository contents and workflow history; **it did not exec
 
 ## 3. Workstreams and ownership
 
-Issue reference table; all numbers below are in the [current repository](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment).
+Issue reference table; all numbers below are in the [current repository](https://github.com/MSKazemi/ros2-kubernetes-lab).
 
 | Priority | Workstream / required outcome | Issue | Completion gate |
 |---|---|---|---|
-| P0 | Automatic, independently tested cross-worker ROS talker/listener | [#14](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/14) | Repeatable command shows DDS messages across nodes without `kubectl exec` |
-| P0 | ROS 2 Jazzy baseline; evaluate Lyrical on its **own** compatible platform | [#7](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/7) | Pinned image, verified distro and sample nodes; legacy Foxy marked EOL |
-| P0 | Maintained CNI + explicit ROS DDS discovery and cross-node tests | [#15](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/15) | Cross-worker discovery, restart and debugging behavior verified |
-| P0 | Lightweight kind/k3d profile with `make demo`, `make verify`, `make clean` | [#16](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/16) | Fresh test host meets documented resource/time requirements |
-| P0 | Test CI, pinned dependencies, least-privilege security defaults | [#6](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/6) | PR checks + ROS integration proof, safe storage/RBAC/secrets |
-| P0 | Replace archived Dashboard with maintained Headlamp and safer access | [#4](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/4) | UI smoke test, read-only default access, no exposed standing tokens |
-| P1 | Visual README and accurate quickstart | [#17](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/17) | Every featured command and diagram matches checked-in/tested code |
-| P1 | Reproducible DDS/HPA/monitoring benchmarks | [#18](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/18) | Runnable protocol, raw data, regenerated plots and limitations |
-| P1 | Searchable versioned tutorials and troubleshooting | [#19](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/19) | Built/published docs site, verified links, honest support matrix |
-| P1 | First verified release and contributor-friendly workflow | [#20](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/20) | Versioned release with integration proof and contribution guides |
-| P1 | Decide brand, perform safe rename **only after confirmation** | [#22](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/22) | Old/new links, citations, badges, docs, packages audited |
-| P2 | Educational demo, articles, community and conference outreach | [#21](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/21) | Useful technical content and documented engagement metrics |
+| P0 | Automatic, independently tested cross-worker ROS talker/listener | [#14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14) | Repeatable command shows DDS messages across nodes without `kubectl exec` |
+| P0 | ROS 2 Jazzy baseline; evaluate Lyrical on its **own** compatible platform | [#7](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7) | Pinned image, verified distro and sample nodes; legacy Foxy marked EOL |
+| P0 | Maintained CNI + explicit ROS DDS discovery and cross-node tests | [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15) | Cross-worker discovery, restart and debugging behavior verified |
+| P0 | Lightweight kind/k3d profile with `make demo`, `make verify`, `make clean` | [#16](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16) | Fresh test host meets documented resource/time requirements |
+| P0 | Test CI, pinned dependencies, least-privilege security defaults | [#6](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/6) | PR checks + ROS integration proof, safe storage/RBAC/secrets |
+| P0 | Replace archived Dashboard with maintained Headlamp and safer access | [#4](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/4) | UI smoke test, read-only default access, no exposed standing tokens |
+| P1 | Visual README and accurate quickstart | [#17](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/17) | Every featured command and diagram matches checked-in/tested code |
+| P1 | Reproducible DDS/HPA/monitoring benchmarks | [#18](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/18) | Runnable protocol, raw data, regenerated plots and limitations |
+| P1 | Searchable versioned tutorials and troubleshooting | [#19](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/19) | Built/published docs site, verified links, honest support matrix |
+| P1 | First verified release and contributor-friendly workflow | [#20](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/20) | Versioned release with integration proof and contribution guides |
+| P1 | Decide brand, perform safe rename **only after confirmation** | [#22](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/22) | Old/new links, citations, badges, docs, packages audited |
+| P2 | Educational demo, articles, community and conference outreach | [#21](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/21) | Useful technical content and documented engagement metrics |
 
 ## 4. Execution phases and dependency order
 
@@ -111,7 +111,7 @@ Preliminary exact-name GitHub repository searches found no exact existing match 
 
 This text describes the *target* scope; avoid promising kind/multi-node runtime compatibility in live metadata until tests pass.
 
-Rename checklist in [#22](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/22). Maintain repo history, issues, stars and citation continuity. Keep `CITATION.cff` and Apache-2.0 unless separate ownership/licensing review requires changes.
+Rename checklist in [#22](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/22). Maintain repo history, issues, stars and citation continuity. Keep `CITATION.cff` and Apache-2.0 unless separate ownership/licensing review requires changes.
 
 ## 7. Measurement dashboard and goals
 

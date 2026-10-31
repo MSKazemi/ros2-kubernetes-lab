@@ -1,6 +1,6 @@
 # Website growth, scale, discoverability and sustainable collaboration
 
-> ROS 2 Kubernetes Lab — 2026-10-27. This is a **plan and content policy**, not evidence of web traffic, sales or a finished research deployment. Public repository: https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment
+> ROS 2 Kubernetes Lab — 2026-10-27. This is a **plan and content policy**, not evidence of web traffic, sales or a finished research deployment. Public repository: https://github.com/MSKazemi/ros2-kubernetes-lab
 
 ## North star
 
@@ -133,3 +133,9 @@ Use UTM parameters only for genuine attributable campaigns and avoid hidden data
 - [ ] No false endorsements, claims, vanity stats or client testimonials.
 - [ ] At least one path from each audience leads to a real guide, source or issue.
 - [ ] Search metrics gathered only once measurable.
+
+## Cloud–Edge Robotics scenario research expansion (proposed October 2026)
+
+A dedicated [scenario hub](../site/scenarios/index.html) and four [student-facing research pages](../docs/scenario-lab/README.md) are proposed as a credible alternative to generic promotional landing pages. The pages contain falsifiable hypotheses, animated **synthetic** process traces, controls, baseline comparisons, actual issue links and an [evidence registry](../site/scenarios/results.html) that reports **N/A** until verifiable runs exist. No Jev integration, cross-node DDS success or real robot performance is claimed.
+
+Follow [scenario epic #83](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83), contributor issues #84–#89, and the dedicated [SEO/content plan](../docs/scenario-lab/SEO-CONTENT-PLAN.md). Verify public site availability, all canonical URLs, browser UX and Search Console ownership before announcing rankings/traffic or posting externally. Good SEO is durable student value and accurate experiments, not keyword stuffing or automated mass comments.

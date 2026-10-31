@@ -2,7 +2,7 @@
 
 This folder holds JSON files exported from a Prometheus server that monitored the Kubernetes cluster of this lab. You can inspect them with plain Python 3 on any laptop: **no cluster, Vagrant, Prometheus or cloud account is needed**.
 
-Back to the [DataAnalysis README](../README.md) (how the data was extracted from Prometheus) and the broader benchmark plan in [issue #18](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/18).
+Back to the [DataAnalysis README](../README.md) (how the data was extracted from Prometheus) and the broader benchmark plan in [issue #18](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/18).
 
 > **What this data is, and is not.** These are *historical sample files* from a single recording on 2024-04-20. They are **not** a live benchmark, not a reproducible experiment, and they say nothing about the newer Jazzy image in [`ROS2/`](../../ROS2/). Do not quote them as performance results.
 
@@ -132,14 +132,14 @@ ros                    series= 1 points=  514 utc=2024-04-20 07:11..2024-04-20 1
 
 ```sh
 python3 -m venv .venv            # keep it out of the system Python (.venv is not tracked)
-.venv/bin/pip install matplotlib
+.venv/bin/pip install -r DataAnalysis/requirements-offline.txt   # pinned; matplotlib is the only one this plot needs
 .venv/bin/python DataAnalysis/plot_namespace_cpu.py --out /tmp/namespace_cpu.png
 ```
 
-Tested with Python 3.12.3, matplotlib 3.11.2 and numpy 2.5.4 (the latest releases when this was written). The generated PNG is not committed; look at the plot only as an illustration of the file format, not as evidence about ROS 2 or Kubernetes performance.
+Tested with Python 3.12.3, matplotlib 3.11.2 and numpy 2.5.4 (the pinned versions). The generated PNG is not committed; look at the plot only as an illustration of the file format, not as evidence about ROS 2 or Kubernetes performance. For a one-command offline run (summary CSVs, plot and tests) see the [offline analysis section](../README.md#offline-analysis-no-cluster-no-network).
 
 ## Related
 
 - [`../README.md`](../README.md): extracting data from Prometheus with Python.
 - [`../DataAnaysis.ipynb`](../DataAnaysis.ipynb), [`../HPA.ipynb`](../HPA.ipynb): the original (heavy, cluster-dependent) notebooks.
-- [Issue #18](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/18): broader benchmark plan.
+- [Issue #18](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/18): broader benchmark plan.
