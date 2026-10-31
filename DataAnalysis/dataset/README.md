@@ -132,11 +132,11 @@ ros                    series= 1 points=  514 utc=2024-04-20 07:11..2024-04-20 1
 
 ```sh
 python3 -m venv .venv            # keep it out of the system Python (.venv is not tracked)
-.venv/bin/pip install matplotlib
+.venv/bin/pip install -r DataAnalysis/requirements-offline.txt   # pinned; matplotlib is the only one this plot needs
 .venv/bin/python DataAnalysis/plot_namespace_cpu.py --out /tmp/namespace_cpu.png
 ```
 
-Tested with Python 3.12.3, matplotlib 3.11.2 and numpy 2.5.4 (the latest releases when this was written). The generated PNG is not committed; look at the plot only as an illustration of the file format, not as evidence about ROS 2 or Kubernetes performance.
+Tested with Python 3.12.3, matplotlib 3.11.2 and numpy 2.5.4 (the pinned versions). The generated PNG is not committed; look at the plot only as an illustration of the file format, not as evidence about ROS 2 or Kubernetes performance. For a one-command offline run (summary CSVs, plot and tests) see the [offline analysis section](../README.md#offline-analysis-no-cluster-no-network).
 
 ## Related
 
