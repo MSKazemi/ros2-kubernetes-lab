@@ -35,6 +35,8 @@ git status --short
 bash scripts/check-shell.sh
 # Local Markdown links and #anchors (no network; known issues in scripts/markdown-links-known-issues.txt):
 python3 scripts/check-markdown-links.py
+# Kubernetes manifest schemas, K8s 1.29, pinned kubeconform, needs network, no cluster (exceptions in scripts/k8s-manifests-known-issues.txt):
+python3 scripts/validate-k8s-manifests.py
 # Only if Ruby is available and the Vagrantfile changed:
 ruby -c Vagrantfile
 ```
