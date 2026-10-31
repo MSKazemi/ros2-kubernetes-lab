@@ -12,10 +12,10 @@ The site at [site/scenarios/](../../site/scenarios/index.html) provides interact
 
 | Scenario | Website page | Question | Collaboration | Dependency |
 | --- | --- | --- | --- | --- |
-| S1 beginner — fault triage | [DDS/QoS diagnosis](../../site/scenarios/ros2-fault-triage.html) | Can Jev improve diagnostics over rule baselines on synthetic held-out incidents? | [#84](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/84) | #74, #55, #59 |
-| S2 systems — placement | [Edge vs cloud](../../site/scenarios/edge-cloud-inference.html) | Is structured advice useful after hard eligibility, network and action freshness constraints? | [#85](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/85) | #62, #60, #61 |
-| S3 LLM agents — screening | [Agent skill safety](../../site/scenarios/robot-agent-safety.html) | Does Jev advisory screening augment independently enforced simulator policies? | [#86](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/86) | #64, #55, #59 |
-| S4 fleet research — dispatch | [Multi-robot scheduling](../../site/scenarios/multi-robot-scheduling.html) | Does Jev ranking of prequalified simulated robots improve fit/fairness? | [#87](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/87) | #69, #60, #59 |
+| S1 beginner — fault triage | [DDS/QoS diagnosis](../../site/scenarios/ros2-fault-triage.html) | Can Jev improve diagnostics over rule baselines on synthetic held-out incidents? | [#84](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/84) | #74, #55, #59 |
+| S2 systems — placement | [Edge vs cloud](../../site/scenarios/edge-cloud-inference.html) | Is structured advice useful after hard eligibility, network and action freshness constraints? | [#85](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/85) | #62, #60, #61 |
+| S3 LLM agents — screening | [Agent skill safety](../../site/scenarios/robot-agent-safety.html) | Does Jev advisory screening augment independently enforced simulator policies? | [#86](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/86) | #64, #55, #59 |
+| S4 fleet research — dispatch | [Multi-robot scheduling](../../site/scenarios/multi-robot-scheduling.html) | Does Jev ranking of prequalified simulated robots improve fit/fairness? | [#87](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/87) | #69, #60, #59 |
 
 **Future ideas:** ROS 2 incident routing, VLA checkpoint/embodiment compatibility review and more. Do not create large numbers of thin placeholder pages to target keywords.
 
@@ -24,8 +24,8 @@ The site at [site/scenarios/](../../site/scenarios/index.html) provides interact
 - [Website evidence board](../../site/scenarios/results.html)
 - [Machine-readable initial registry](../../site/scenarios/data/experiments.json): four `planned` records; every performance value is **null**.
 - [Result publication / peer-review contract](RESULTS-PUBLICATION.md)
-- [#88 Results and reproducibility](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/88)
-- [#75 Jev benchmark protocol](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/75); [#60 general experiment manifest](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/60)
+- [#88 Results and reproducibility](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/88)
+- [#75 Jev benchmark protocol](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/75); [#60 general experiment manifest](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/60)
 
 ### Build and review
 
@@ -44,8 +44,8 @@ The script validator verifies metadata, internal links, sitemap and registry sta
 
 ### Contribute
 
-- [Epic #83](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/83): track the overall program.
-- [#84](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/84) and [#89](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/89) welcome beginners; scoped language/fixture/UX tasks need no robot or cloud account.
+- [Epic #83](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83): track the overall program.
+- [#84](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/84) and [#89](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/89) welcome beginners; scoped language/fixture/UX tasks need no robot or cloud account.
 - [Claude Code / Codex playbook](CLAUDE-DEVELOPMENT-PLAYBOOK.md) covers issue-first development and review.
 - [Student discoverability & SEO plan](SEO-CONTENT-PLAN.md) covers page intent and evidence-based growth.
 

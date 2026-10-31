@@ -7,8 +7,8 @@
 
 **Do not publish exploits, credentials, unredacted data or attack instructions in public issues or pull requests.**
 
-1. If GitHub's private vulnerability reporting is enabled, use [Report a vulnerability](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/security/advisories/new).
-2. If that feature is unavailable, email the security contact publicly designated by the maintainer in the [KubeIntellect security policy](https://github.com/MSKazemi/kubeintellect/blob/main/SECURITY.md) with subject `SECURITY: Vagrant-Kubernetes-ROS2-Deployment` and ask for a coordinated private channel. Include only what is necessary to triage the report.
+1. If GitHub's private vulnerability reporting is enabled, use [Report a vulnerability](https://github.com/MSKazemi/ros2-kubernetes-lab/security/advisories/new).
+2. If that feature is unavailable, email the security contact publicly designated by the maintainer in the [KubeIntellect security policy](https://github.com/MSKazemi/kubeintellect/blob/main/SECURITY.md) with subject `SECURITY: ros2-kubernetes-lab` and ask for a coordinated private channel. Include only what is necessary to triage the report.
 3. If you cannot reach a private channel, open a non-sensitive public issue **only to request a private reporting contact**; do not disclose technical exploit details there.
 
 Include the affected version/commit, reproducible conditions, likely impact and a minimal safe proof of concept. Please do not access third-party data, scan systems without authorization or disrupt live users.

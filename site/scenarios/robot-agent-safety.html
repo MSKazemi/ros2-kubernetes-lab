@@ -9,38 +9,41 @@
 <meta name="description" content="Proposal, not benchmarked: simulator-only ROS 2 agent skill screening with deterministic allowlists, prompt-injection cases and optional Jev advice.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Mohsen Seyedkazemi Ardebili">
-<link rel="canonical" href="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/robot-agent-safety.html">
+<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/scenarios/robot-agent-safety.html">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/docs.css">
 <link rel="stylesheet" href="../assets/scenarios.css">
+<link rel="stylesheet" href="../assets/lab-anim.css">
+<link rel="stylesheet" href="../assets/anim/s3-agent-safety.css">
+<script defer src="../assets/lab-anim.js"></script>
 <script defer src="../assets/scenarios.js"></script>
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ROS 2 Kubernetes Lab">
 <meta property="og:title" content="ROS 2 Agent Skill Safety | Jev + LLM Research Lab">
 <meta property="og:description" content="Proposal, not benchmarked: simulator-only ROS 2 agent skill screening with deterministic allowlists, prompt-injection cases and optional Jev advice.">
-<meta property="og:url" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/robot-agent-safety.html">
-<meta property="og:image" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/assets/social-card.png">
+<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/scenarios/robot-agent-safety.html">
+<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
 <meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ROS 2 Agent Skill Safety | Jev + LLM Research Lab">
 <meta name="twitter:description" content="Proposal, not benchmarked: simulator-only ROS 2 agent skill screening with deterministic allowlists, prompt-injection cases and optional Jev advice.">
-<meta name="twitter:image" content="https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/assets/social-card.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"ROS 2 Agent Skill Safety | Jev + LLM Research Lab","headline":"ROS 2 Agent Skill Safety | Jev + LLM Research Lab","description":"Explore safe, simulator-only ROS 2 agent skill screening: LLM proposals, Jev advisory decisions, deterministic allowlists, prompt-injection cases and research tasks.","url":"https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/robot-agent-safety.html","isAccessibleForFree":true,"dateModified":"2026-10-27","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/"},{"@type":"ListItem","position":3,"name":"Agent skill screening","item":"https://mskazemi.com/Vagrant-Kubernetes-ROS2-Deployment/scenarios/robot-agent-safety.html"}]}]}</script>
+<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"ROS 2 Agent Skill Safety | Jev + LLM Research Lab","headline":"ROS 2 Agent Skill Safety | Jev + LLM Research Lab","description":"Explore safe, simulator-only ROS 2 agent skill screening: LLM proposals, Jev advisory decisions, deterministic allowlists, prompt-injection cases and research tasks.","url":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/robot-agent-safety.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/"},{"@type":"ListItem","position":3,"name":"Agent skill screening","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/robot-agent-safety.html"}]}]}</script>
 </head><body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="docs-nav"><div class="sc-shell docs-nav-inner">
 <a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
-<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a class="github-link" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
 <section class="sc-hero"><div class="sc-shell sc-hero-inner">
 <div><nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Scenarios</a><span>/</span>Agent skill screening</nav>
 <span class="sc-kicker">SCENARIO 03 · P2 / SAFETY &amp; AGENTS</span>
 <h1>Jev as an Advisory Reviewer for ROS 2 Agent Skills</h1>
 <p class="sc-lead">An LLM proposes a robot skill. Can a structured decision model provide useful extra review without bypassing deterministic permissions and simulator safety checks?</p>
 <div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · not benchmarked</span><span class="sc-pill">MSc → PhD</span><span class="sc-pill">Synthetic fixtures only</span></div>
-<div class="sc-actions"><a class="sc-link-button" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/86">Collaborate on issue #86 ↗</a><a class="sc-link-button sc-link-button--ghost" href="./results.html">View evidence registry</a></div>
+<div class="sc-actions"><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/86">Collaborate on issue #86 ↗</a><a class="sc-link-button sc-link-button--ghost" href="./results.html">View evidence registry</a></div>
 </div><div class="sc-visual">
 <div class="sc-visual-header"><span>CONCEPTUAL WORKFLOW / NOT LIVE</span><b>ROBOTICS · CLOUD · AI</b></div>
 <svg class="sc-motif" viewBox="0 0 500 240" aria-hidden="true" focusable="false">
@@ -55,6 +58,53 @@
 <circle class="sc-pulse" cx="160" cy="88" r="5" /><circle class="sc-pulse" cx="335" cy="88" r="5" />
 </svg><div class="sc-visual-foot"><span>SIMULATED / RESEARCH BLUEPRINT</span><strong>NO ACTUATION</strong><button type="button" class="sc-button sc-button--ghost" data-motion-toggle aria-pressed="false">Pause decorative motion</button></div>
 </div></div></section>
+<section class="sc-section" id="see-it"><div class="sc-shell">
+<h2>See the idea in a minute</h2>
+<p class="sc-intro">An AI agent can suggest robot skills, but fixed rules decide which ones may run. Watch three made-up suggestions reach the policy gate. Nothing here runs a model or moves a robot.</p>
+<figure class="lab-anim s3" data-anim="s3-agent-safety" data-interval="3200" aria-labelledby="s3-title">
+<div class="lab-anim__head"><h3 class="lab-anim__title" id="s3-title">An AI proposes, a policy decides</h3><span class="lab-anim__tag">Illustration · synthetic</span></div>
+<div class="lab-anim__stage">
+<svg viewBox="0 0 640 468" role="img" aria-labelledby="s3-svg-t s3-svg-d" focusable="false">
+<title id="s3-svg-t">An AI agent proposes, a policy gate decides</title>
+<desc id="s3-svg-d">Left to right: an AI agent proposes three example skills, named get status, inspect scene and safety stop off. A fixed policy gate checks each one. The first two are allowed and move on to a simulator lane marked simulator only, with no real robot. The third is stopped at the gate and marked Rejected by policy. A decision log below records all three outcomes, and the model only proposes while the policy decides. The skills are synthetic examples.</desc>
+<rect class="agent" x="6" y="24" width="116" height="226" rx="14" />
+<text class="nm" x="64" y="130" text-anchor="middle">AI agent</text><text class="sm" x="64" y="158" text-anchor="middle">proposes</text>
+<rect class="box" x="424" y="24" width="210" height="226" rx="14" />
+<text class="nm" x="529" y="216" text-anchor="middle">Simulator only</text><text class="sm" x="529" y="240" text-anchor="middle">no real robot</text>
+<path class="lane" d="M402 68H424M402 140H424" />
+<rect class="gate" x="346" y="16" width="56" height="240" rx="12" />
+<text class="nm" x="380" y="136" text-anchor="middle" transform="rotate(-90 380 136)">Policy decides</text>
+<rect class="scan" x="350" y="20" width="48" height="6" rx="3" />
+<g class="card c0"><rect x="134" y="36" width="200" height="64" rx="12" /><text class="nm" x="148" y="63">Get status</text><text class="vd chk" x="148" y="88">checking</text><g class="ok-g"><text class="vd ok-v" x="148" y="88">allowed</text><path class="ok-i" d="M262 79l7 7 14-16" /></g></g>
+<g class="card c1"><rect x="134" y="108" width="200" height="64" rx="12" /><text class="nm" x="148" y="135">Inspect scene</text><text class="vd chk" x="148" y="160">checking</text><g class="ok-g"><text class="vd ok-v" x="148" y="160">allowed</text><path class="ok-i" d="M262 151l7 7 14-16" /></g></g>
+<g class="card c2"><rect x="134" y="180" width="200" height="64" rx="12" /><text class="nm" x="148" y="207">Safety stop off</text><text class="vd chk" x="148" y="232">checking</text><g class="no-g"><text class="vd no-v" x="148" y="232">rejected</text><path class="no-i" d="M266 216l16 16m0-16l-16 16" /></g></g>
+<path class="stop" d="M340 178V246" />
+<g class="stamp"><rect class="stampbox" x="134" y="264" width="262" height="44" rx="10" /><path class="stamp-x" d="M152 278l14 14m0-14l-14 14" /><text class="stamp-t" x="178" y="293">Rejected by policy</text></g>
+<g class="log"><rect class="logbox" x="6" y="324" width="628" height="136" rx="14" />
+<text class="nm" x="22" y="354">Decision log</text><text class="nm msg" x="618" y="354" text-anchor="end">Model proposes, policy decides</text>
+<g class="logrow"><text class="lg r1" x="22" y="386">1  Get status: <tspan class="y">allowed</tspan></text>
+<text class="lg r2" x="22" y="415">2  Inspect scene: <tspan class="y">allowed</tspan></text>
+<text class="lg r3" x="22" y="444">3  Safety stop off: <tspan class="n">rejected</tspan></text></g></g>
+</svg>
+</div>
+<div class="lab-anim__bar">
+<button type="button" data-anim-prev>Back</button>
+<button type="button" data-anim-play aria-pressed="false"><span>Play</span></button>
+<button type="button" data-anim-next>Next</button>
+<button type="button" data-anim-replay>Replay</button>
+<output class="lab-anim__status" data-anim-status aria-live="polite">Step 1 of 5</output>
+</div>
+<ol class="lab-anim__steps">
+<li data-step-text><button type="button"><b>The agent proposes</b><span>An AI agent suggests three skills, such as reading the status or inspecting the scene. These are synthetic examples.</span></button></li>
+<li data-step-text><button type="button"><b>The policy checks each one</b><span>Fixed rules compare every proposal with an allowlist and its limits. The model gets no vote.</span></button></li>
+<li data-step-text><button type="button"><b>Allowed skills reach the simulator</b><span>Two proposals pass and go to the simulator lane. Nothing reaches a real robot.</span></button></li>
+<li data-step-text><button type="button"><b>The policy stops the rest</b><span>The third proposal asks to switch the safety stop off. It is not permitted, so it is rejected by policy.</span></button></li>
+<li data-step-text><button type="button"><b>Every decision is logged</b><span>All three outcomes go into a log. The model only proposes, and the deterministic policy stays in charge.</span></button></li>
+</ol>
+<p class="lab-anim__note">Jev, the optional second opinion this proposal would test, is not drawn here. It could only add advice. It could never override the policy. This is a research proposal, not a measured result.</p>
+</figure>
+<div class="sc-panel"><h3>Plain-language guide</h3><ul><li><strong>Skill proposal:</strong> one high-level simulator action, such as <code>get_status</code>, that the language model suggests. The model suggests it and does not run it.</li><li><strong>Deterministic policy:</strong> fixed rules, such as a schema check, an allowlist and parameter limits, that give the same answer every time. It stays authoritative.</li><li><strong>Jev:</strong> a structured decision model that this proposal would test as an optional second opinion. It advises and never grants permission.</li><li><strong>Simulator only:</strong> the study stays in simulation. This site runs no model and sends no command to a robot.</li></ul></div>
+</div></section>
 <section class="sc-section"><div class="sc-shell">
 <span class="sc-overline">01 / What are we studying?</span><h2>One real research question, not a product claim.</h2>
 <div class="sc-detail-grid">
@@ -94,17 +144,17 @@
 <section class="sc-section sc-section--shade" id="results"><div class="sc-shell">
 <span class="sc-overline">04 / Evidence not marketing</span><h2>Current results: not measured.</h2>
 <div class="sc-detail-grid"><div class="sc-callout"><h3>No verified experiment results yet</h3><p>No Jev-vs-baseline accuracy, latency, energy, fairness or simulator task-success result is available for this scenario. The website does not fabricate graphs or sample performance numbers. Future evidence must include raw data and replay instructions.</p><a class="sc-link-button" href="./results.html">Open results registry ↗</a></div>
-<div class="sc-panel"><h3>Dependencies and research honesty</h3><p>Follow existing research work <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/64">#64</a> and the broader <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/83">scenario epic #83</a>. The legacy Vagrant/Foxy manifests and current Jazzy image-local test do not establish multi-worker DDS or physical robot integration.</p><p><strong>Safety:</strong> no actuator commands, unrestricted cluster operations, or vendor data collection from this static demonstration.</p></div></div>
+<div class="sc-panel"><h3>Dependencies and research honesty</h3><p>Follow existing research work <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/64">#64</a> and the broader <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">scenario epic #83</a>. The legacy Vagrant/Foxy manifests and current Jazzy image-local test do not establish multi-worker DDS or physical robot integration.</p><p><strong>Safety:</strong> no actuator commands, unrestricted cluster operations, or vendor data collection from this static demonstration.</p></div></div>
 </div></section>
 <section class="sc-section" id="contribute"><div class="sc-shell">
 <span class="sc-overline">05 / Open research collaboration</span><h2>Help turn the blueprint into evidence.</h2>
 <div class="sc-detail-grid">
-<div class="sc-callout"><h3>Join scenario 03</h3><p>Contributors can own a small, reviewable task: casebook, synthetic dataset, offline baseline, simulator test, reproducibility review or teaching guide. The issue includes a detailed Claude Code/Codex prompt, acceptance criteria and dependencies.</p><a class="sc-link-button" href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/86">Contribute on GitHub issue #86 ↗</a></div>
+<div class="sc-callout"><h3>Join scenario 03</h3><p>Contributors can own a small, reviewable task: casebook, synthetic dataset, offline baseline, simulator test, reproducibility review or teaching guide. The issue includes a detailed Claude Code/Codex prompt, acceptance criteria and dependencies.</p><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/86">Contribute on GitHub issue #86 ↗</a></div>
 <div class="sc-panel"><h3>Technical references</h3><ul><li><a href="https://genai.owasp.org/llmrisk/llm01-prompt-injection/">OWASP LLM prompt injection</a></li>
 <li><a href="https://docs.typesafe.ai/introduction">Jev introduction</a></li>
-<li><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/64">Existing agent-skills issue #64</a></li></ul><p>Review <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/73">Jev research umbrella #73</a>, <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/83">scenario epic #83</a> and the <a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/AGENTS.md">repository agent instructions</a>. No vendor endorsement or measured success is implied.</p></div></div>
+<li><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/64">Existing agent-skills issue #64</a></li></ul><p>Review <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/73">Jev research umbrella #73</a>, <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">scenario epic #83</a> and the <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/AGENTS.md">repository agent instructions</a>. No vendor endorsement or measured success is implied.</p></div></div>
 <h2 id="more" style="margin-top:70px">Continue exploring</h2><div class="sc-grid sc-grid--3"><a class="sc-card sc-card--link" href="./ros2-fault-triage.html"><span class="sc-card-index">SCENARIO 01</span><h3>Fault triage</h3><p>A listener stops receiving messages. Is the cause DDS discovery, QoS, networking or resource pressure? Build a transparent diagnostic comparison without touching a robot.</p><span class="sc-card-cta">Explore Fault triage</span></a>
 <a class="sc-card sc-card--link" href="./edge-cloud-inference.html"><span class="sc-card-index">SCENARIO 02</span><h3>Edge/cloud placement</h3><p>Which AI workload belongs on a robot, at a nearby edge service, or in Kubernetes? Compare feasibility filters with Jev&#39;s structured advice under unreliable networks.</p><span class="sc-card-cta">Explore Edge/cloud placement</span></a>
 <a class="sc-card sc-card--link" href="./multi-robot-scheduling.html"><span class="sc-card-index">SCENARIO 04</span><h3>Multi-robot scheduling</h3><p>Three simulated robots have different capabilities, reservations and energy budgets. Who should get the next task—and how can we measure fairness?</p><span class="sc-card-cta">Explore Multi-robot scheduling</span></a></div>
 </div></section>
-</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Illustrative diagrams, synthetic examples; no physical robot or safety-critical control</span><a href="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/SAFETY.md">Safety and limitations ↗</a></div></footer></body></html>
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Illustrative diagrams, synthetic examples; no physical robot or safety-critical control</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/SAFETY.md">Safety and limitations ↗</a></div></footer></body></html>

@@ -6,10 +6,10 @@ Welcome! Contributions from robotics engineers, Kubernetes users, students, rese
 
 ## Find a first task
 
-- [Good first issues](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/good%20first%20issue) — small, well-scoped tasks suitable for a first PR.
-- [Help wanted](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/help%20wanted) — bounded tasks where outside help is especially valuable.
-- [Project modernization roadmap](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/pull/23) — proposed longer-term goals and dependencies. The roadmap may change before it merges.
-- [All open issues](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues).
+- [Good first issues](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue) — small, well-scoped tasks suitable for a first PR.
+- [Help wanted](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/help%20wanted) — bounded tasks where outside help is especially valuable.
+- [Project modernization roadmap](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/23) — proposed longer-term goals and dependencies. The roadmap may change before it merges.
+- [All open issues](https://github.com/MSKazemi/ros2-kubernetes-lab/issues).
 
 **Please read the full issue description before starting.** For first contributions, choose one small issue and comment “I'd like to work on this.” Issues are intentionally left unassigned initially so contributors can volunteer; a comment is an invitation to coordinate, not a guarantee of exclusive ownership. If someone else is already working on the task, coordinate in the issue instead of duplicating work.
 
@@ -41,8 +41,8 @@ The repository uses one concise [AGENTS.md](./AGENTS.md) instruction set for Cod
 
 1. Fork this repository (if needed), or clone it:
    ```sh
-   git clone https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment.git
-   cd Vagrant-Kubernetes-ROS2-Deployment
+   git clone https://github.com/MSKazemi/ros2-kubernetes-lab.git
+   cd ros2-kubernetes-lab
    ```
 2. Create a branch for **one** issue, for example:
    ```sh
@@ -90,8 +90,7 @@ The lightweight [shell syntax workflow](.github/workflows/validate-shell.yml) ch
 
 The [Kubernetes manifest workflow](.github/workflows/validate-k8s.yml) performs the static schema check described above on YAML changes only.
 
-The separate [Jazzy image verification workflow](.github/workflows/ros2-image-ci.yml) builds an **amd64 ROS 2 Jazzy container** and tests local talker/listener communication **in one container**, without Docker Hub credentials. The [Docker build/publish workflow](.github/workflows/main.yaml) verifies first, then publishes the **Jazzy image** to Docker Hub using a source-commit tag **only on relevant image/test/workflow changes on `main`** (or authorized manual dispatch). The old Foxy image recipe is retained under `ROS2/legacy/foxy/Dockerfile`, but no longer published by the default workflow. README, tutorial, issue-template and agent-instruction changes must not cause needless image publishing. A successful image build or same-container smoke test **does not prove cross-worker Kubernetes/DDS communication**. This remains an explicit release gate.
-
+The separate [Jazzy image verification workflow](.github/workflows/ros2-image-ci.yml) builds an **amd64 ROS 2 Jazzy container** and tests local talker/listener communication **in one container**, without Docker Hub credentials. A second step preloads the opt-in ros2_pulse probe into that talker and listener and checks their `/chatter` publish and callback rates, still in one container. The [Docker build/publish workflow](.github/workflows/main.yaml) verifies first, then publishes the **Jazzy image** to Docker Hub using a source-commit tag **only on relevant image/test/workflow changes on `main`** (or authorized manual dispatch). The old Foxy image recipe is retained under `ROS2/legacy/foxy/Dockerfile`, but no longer published by the default workflow. README, tutorial, issue-template and agent-instruction changes must not cause needless image publishing. A successful image build or same-container smoke test **does not prove cross-worker Kubernetes/DDS communication**. This remains an explicit release gate.
 ### Environment and scope limitations
 
 The existing three-VM `Vagrantfile` allocates roughly **30 GB RAM and 18 vCPUs** by default. Do not run it on under-provisioned hosts merely to satisfy a documentation PR. If you are not able to run it, explicitly say `Not run: Vagrant/VirtualBox cluster (hardware unavailable)` in your PR.
