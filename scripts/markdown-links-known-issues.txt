@@ -1,0 +1,4 @@
+# Known, documented Markdown link problems that must not fail CI.
+# Format: <path relative to repo root>:<link target exactly as written>
+# Lines starting with '#' are comments. Remove an entry once it is fixed;
+# scripts/check-markdown-links.py warns about stale entries.

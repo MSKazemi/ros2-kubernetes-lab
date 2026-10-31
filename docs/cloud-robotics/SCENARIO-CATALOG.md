@@ -99,4 +99,3 @@
 A valid scenario proposal should state (a) primary question/hypothesis, (b) prior art, (c) control and alternative, (d) simulator/fixture compatibility, (e) independent variable, (f) output metric + units, (g) expected failure mode, (h) resource/license/privacy gates, (i) repetitions/uncertainty plan, and (j) scripts and metadata an outsider will need. Use [experiment template](templates/EXPERIMENT-TEMPLATE.md) and [ethics guide](ETHICS-SAFETY-AND-GOVERNANCE.md).
 
 **Do not promise novelty just because two technologies are combined.** Compare with FogROS2 and existing LeRobot policy-inference research, report what is different and what can be reproduced, and publish negative findings when honest.
-

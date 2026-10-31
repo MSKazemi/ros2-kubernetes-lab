@@ -58,4 +58,3 @@ Lighting, embodiment, actuator ordering, class/object coverage, simulation-reali
 Exact conversion/validation command after implementation, read-only demo, SHA/source evidence, environment and report issue path. For private security concerns refer to repository SECURITY.md.
 
 **Review gate:** [Ethics/safety policy](../ETHICS-SAFETY-AND-GOVERNANCE.md), [dataset integration issue #56](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/56). No actual dataset or license approval is inferred by filling the template.
-

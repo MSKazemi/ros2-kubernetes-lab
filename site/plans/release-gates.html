@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<meta name="color-scheme" content="dark">
+<title>Release gates: the definition of done | ROS 2 Kubernetes Lab</title>
+<meta name="description" content="The eight gates a supported ROS 2 on Kubernetes release must pass. None is claimed yet, and a green Docker build is not a substitute for them.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Mohsen Seyedkazemi Ardebili">
+<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/plans/release-gates.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs.css">
+<link rel="stylesheet" href="../assets/scenarios.css">
+<link rel="stylesheet" href="../assets/lab-anim.css">
+<link rel="stylesheet" href="../assets/anim/release-gates.css">
+<script defer src="../assets/lab-anim.js"></script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ROS 2 Kubernetes Lab">
+<meta property="og:title" content="Release gates: when ROS 2 on Kubernetes counts as done">
+<meta property="og:description" content="Eight checks stand between a green image build and a supported release. No gate is claimed as passed today. A proposal, not a promise.">
+<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/plans/release-gates.html">
+<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Release gates: the definition of done">
+<meta name="twitter:description" content="The eight gates a supported ROS 2 on Kubernetes release must pass. None is claimed yet.">
+<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Release gates: the definition of done","headline":"Release gates: when ROS 2 on Kubernetes counts as done","description":"The eight release gates a supported ROS 2 Kubernetes Lab release must pass. No gate is claimed as passed today. A proposal, not a promise.","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/release-gates.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"isPartOf":{"@type":"WebPage","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"DDS"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Roadmap","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},{"@type":"ListItem","position":3,"name":"Release gates","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/release-gates.html"}]}]}</script>
+</head><body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="docs-nav"><div class="sc-shell docs-nav-inner">
+<a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Roadmap</a><a href="../scenarios/">Research scenarios</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab">GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+
+<section class="sc-hero"><div class="sc-shell">
+<nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Roadmap</a><span>/</span>Release gates</nav>
+<span class="sc-kicker">Definition of done</span>
+<h1>Release gates: when the lab can say it works</h1>
+<p class="sc-lead">A supported release is allowed only when it passes eight checks. They exist so the lab never claims that ROS 2 messages cross Kubernetes nodes on the strength of a build that merely succeeded. No gate is claimed as passed today.</p>
+<div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · planning targets, not promises</span><span class="sc-pill">Source: ROADMAP-2026.md, section 5</span></div>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>Why a green Docker build is not enough</h2>
+<p class="sc-intro">The repository does build a ROS 2 Jazzy image in CI, and a talker and listener exchange a message inside that one container. That is useful, and it is also all the build shows. It says nothing about pods, workers or the network between them.</p>
+<div class="sc-callout"><h3>The rule</h3><p>A lint-only or successful Docker build is not a substitute for end-to-end ROS DDS verification. DDS (Data Distribution Service) is the messaging layer ROS 2 uses to find peers and deliver messages.</p></div>
+</div></section>
+
+<section class="sc-section sc-section--shade" id="stop"><div class="sc-shell">
+<h2>Watch a candidate get stopped</h2>
+<p class="sc-intro">A release candidate has one thing going for it: a passing image build. See how far that gets it.</p>
+
+<figure class="lab-anim release-gates" data-anim="release-gates" data-interval="3400" aria-labelledby="rg-title">
+<div class="lab-anim__head"><h3 class="lab-anim__title" id="rg-title">A passing image build meets the gates</h3><span class="lab-anim__tag">Illustration · nothing here is claimed</span></div>
+<div class="lab-anim__stage">
+<svg viewBox="0 0 640 490" role="img" aria-labelledby="rg-svg-t rg-svg-d" focusable="false">
+<title id="rg-svg-t">A release candidate with only a passing image build is stopped at the first gate</title>
+<desc id="rg-svg-d">A candidate labelled Candidate: build passes sits above a stack of eight release gates: versions documented, clean-room install, cross-node delivery, restart and recovery, safe default access, docs match output, benchmarks with limits, and legacy kept apart. An arrow takes the candidate to the first gate, which is marked Stopped here. The other seven gates are dimmed and labelled not claimed. In the last step the cross-node delivery gate is highlighted with the note that it needs real nodes.</desc>
+<rect class="cand" x="10" y="8" width="380" height="44" rx="12"/><text class="t-strong" x="26" y="38">Candidate: build passes</text>
+<path class="lane" d="M30 54V68M22 60l8 8 8-8"/>
+<g class="g0"><rect class="row" x="10" y="70" width="620" height="44" rx="10"/><text class="t label" x="26" y="100">Versions documented</text><g class="k1"><text class="t-amber" x="614" y="100" text-anchor="end">Stopped here</text></g></g>
+<g class="gx"><rect class="row" x="10" y="122" width="620" height="44" rx="10"/><text class="t label" x="26" y="152">Clean-room install</text><g class="k2"><text class="t-dim" x="614" y="152" text-anchor="end">not claimed</text></g></g>
+<g class="gx g2"><rect class="row" x="10" y="174" width="620" height="44" rx="10"/><text class="t label" x="26" y="204">Cross-node delivery</text><g class="k2"><text class="t-dim r3-claim" x="614" y="204" text-anchor="end">not claimed</text></g><text class="t-cyan r3-note" x="614" y="204" text-anchor="end">needs real nodes</text></g>
+<g class="gx"><rect class="row" x="10" y="226" width="620" height="44" rx="10"/><text class="t label" x="26" y="256">Restart and recovery</text><g class="k2"><text class="t-dim" x="614" y="256" text-anchor="end">not claimed</text></g></g>
+<g class="gx"><rect class="row" x="10" y="278" width="620" height="44" rx="10"/><text class="t label" x="26" y="308">Safe default access</text><g class="k2"><text class="t-dim" x="614" y="308" text-anchor="end">not claimed</text></g></g>
+<g class="gx"><rect class="row" x="10" y="330" width="620" height="44" rx="10"/><text class="t label" x="26" y="360">Docs match output</text><g class="k2"><text class="t-dim" x="614" y="360" text-anchor="end">not claimed</text></g></g>
+<g class="gx"><rect class="row" x="10" y="382" width="620" height="44" rx="10"/><text class="t label" x="26" y="412">Benchmarks with limits</text><g class="k2"><text class="t-dim" x="614" y="412" text-anchor="end">not claimed</text></g></g>
+<g class="gx"><rect class="row" x="10" y="434" width="620" height="44" rx="10"/><text class="t label" x="26" y="464">Legacy kept apart</text><g class="k2"><text class="t-dim" x="614" y="464" text-anchor="end">not claimed</text></g></g>
+</svg>
+</div>
+<div class="lab-anim__bar">
+<button type="button" data-anim-prev>Back</button>
+<button type="button" data-anim-play aria-pressed="false"><span>Play</span></button>
+<button type="button" data-anim-next>Next</button>
+<button type="button" data-anim-replay>Replay</button>
+<output class="lab-anim__status" data-anim-status aria-live="polite">Step 1 of 4</output>
+</div>
+<ol class="lab-anim__steps">
+<li data-step-text><button type="button"><b>A candidate with one green check</b><span>A release candidate arrives. All it has is a passing Docker image build, which the repository runs in CI today.</span></button></li>
+<li data-step-text><button type="button"><b>It stops at the first gate</b><span>The first gate wants every version documented and supported: ROS, Ubuntu, Kubernetes, runtime, CNI and DDS. The image build only covers ROS and Ubuntu inside one image, so the candidate stops.</span></button></li>
+<li data-step-text><button type="button"><b>The other gates stay dimmed</b><span>Gates the candidate has not reached are marked not claimed. No gate is claimed as passed today.</span></button></li>
+<li data-step-text><button type="button"><b>A build cannot skip ahead</b><span>Delivery across nodes needs talker and listener on different Kubernetes nodes plus a scripted check. An image build cannot show that.</span></button></li>
+</ol>
+<p class="lab-anim__note">The order on screen is for storytelling. The roadmap lists the eight gates as a checklist, and a release needs every one of them.</p>
+</figure>
+</div></section>
+
+<section class="sc-section" id="gates"><div class="sc-shell">
+<h2>The eight gates in plain words</h2>
+<p class="sc-intro">This is the same list as the roadmap, in everyday wording. None has a tick, because none is claimed. The last line of each item says what the repository shows today.</p>
+<ul class="gate-list">
+<li><div><h3>Versions are written down</h3><p>The ROS distro, Ubuntu, Kubernetes, container runtime, CNI and DDS versions are documented, supported, and pinned where practical.</p><p class="today">Closest evidence today: The Jazzy image pins its base image. The Kubernetes, CNI and DDS parts of a supported profile are not chosen yet.</p></div><span class="lab-chip lab-chip--planned">Not claimed</span></li>
+<li><div><h3>A fresh install works</h3><p>A clean-room install, starting from nothing, finishes on host or VM specs that are recorded.</p><p class="today">Closest evidence today: Fresh-install validations are not measured yet.</p></div><span class="lab-chip lab-chip--planned">Not claimed</span></li>
+<li><div><h3>Talker and listener run on different nodes</h3><p>They start without manual steps, run on different Kubernetes nodes, and pass a scripted check that messages were delivered.</p><p class="today">Closest evidence today: Only a talker and listener inside one container are checked today.</p></div><span class="lab-chip lab-chip--planned">Not claimed</span></li>
+<li><div><h3>The test survives restarts</h3><p>The test covers restart and recovery, uses time limits, writes clear logs and exits with truthful codes.</p><p class="today">Closest evidence today: No cluster-level check exists yet, so nothing covers restarts.</p></div><span class="lab-chip lab-chip--planned">Not claimed</span></li>
+<li><div><h3>Default settings are safe</h3><p>The default setup does not expose long-lived cluster-admin credentials or host storage that anyone can write to.</p><p class="today">Closest evidence today: The historical monitoring setup binds cluster-admin and applies chmod 777.</p></div><span class="lab-chip lab-chip--planned">Not claimed</span></li>
+<li><div><h3>Docs match what was verified</h3><p>README commands, release instructions, badges, links and diagrams match outputs that were checked.</p><p class="today">Closest evidence today: Some ROS2 README commands were corrected in issue #24 by static review only; they were not re-run.</p></div><span class="lab-chip lab-chip--planned">Not claimed</span></li>
+<li><div><h3>Benchmarks show their work</h3><p>Every benchmark figure includes the method, the data, the number of repeats and the limitations.</p><p class="today">Closest evidence today: Historical sample data exists. No modern validated benchmark run is claimed.</p></div><span class="lab-chip lab-chip--planned">Not claimed</span></li>
+<li><div><h3>Legacy steps are labelled</h3><p>The old, unsupported ROS Foxy steps are kept separate and clearly marked as historical.</p><p class="today">Closest evidence today: The Foxy Dockerfile now sits under ROS2/legacy/foxy, but the original manifests still use a Foxy image.</p></div><span class="lab-chip lab-chip--planned">Not claimed</span></li>
+</ul>
+<p class="phase-hub-link">Source of truth: <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">docs/ROADMAP-2026.md ↗</a>, section 5. Back to the <a href="./">roadmap hub</a>.</p>
+</div></section>
+
+<section class="sc-section sc-section--shade"><div class="sc-shell">
+<div class="sc-detail-grid">
+<div class="sc-panel"><h3>If a phase runs late</h3><p>The plan holds a milestone rather than skipping a gate when upstream dependencies or networking validation take longer. Phases are planning targets, not promises.</p></div>
+<div class="sc-callout"><h3>See where each gate is worked on</h3><p>The cross-node delivery work starts in phases 1 and 2, with safer defaults in phase 2. The docs and benchmark gates are worked on in phase 3.</p><p><a class="sc-link-button sc-link-button--ghost" href="./">Back to the roadmap</a></p></div>
+</div>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<nav class="phase-pager" aria-label="Previous and next page">
+<a href="grow-with-evidence.html"><small>Previous</small><strong>Days 61–90: grow with evidence</strong></a>
+<a class="next" href="./"><small>Back to</small><strong>Roadmap overview</strong></a>
+</nav>
+</div></section>
+
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Plans are proposals; illustrations show sequence, not progress</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">Full roadmap source ↗</a></div></footer></body></html>

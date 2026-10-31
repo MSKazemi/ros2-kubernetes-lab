@@ -1,0 +1,36 @@
+# Line endings are part of this repo's correctness, not a style choice.
+# The .sh scripts, Vagrantfile and YAML run inside Linux VMs and containers;
+# a CRLF checkout on Windows (core.autocrlf=true) turns "#!/bin/bash" into
+# "#!/bin/bash\r" and provisioning fails with "bad interpreter". Forcing LF here
+# makes a Windows checkout behave like a Linux one, whatever the user's git config.
+# See docs/WINDOWS-AND-MAC.md.
+
+# Everything git detects as text is stored and checked out with LF.
+* text=auto eol=lf
+
+# Explicit LF for files executed or parsed on Linux (belt and braces).
+*.sh        text eol=lf
+Vagrantfile text eol=lf
+Dockerfile  text eol=lf
+*.yaml      text eol=lf
+*.yml       text eol=lf
+*.py        text eol=lf
+
+# Windows-only script types keep CRLF if they are ever added.
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+*.ps1       text eol=crlf
+
+# Data files: keep bytes exactly as committed (this CSV was committed with CRLF).
+*.csv       -text
+
+# Binary assets: never touch.
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.pdf       binary
+*.gz        binary
+*.woff      binary
+*.woff2     binary

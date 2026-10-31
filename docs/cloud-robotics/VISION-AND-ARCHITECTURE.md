@@ -127,4 +127,3 @@ Maintain one explicit compatibility decision record per new external dependency:
 - [LeRobot](https://huggingface.co/docs/lerobot/) already supports datasets, policies, evaluation and version-specific remote inference; reuse it and its listed ROS bridges.
 - [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) informs risk management; [OWASP LLM prompt injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) motivates external text being treated as adversarial input.
 - Existing project [#18](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/18), [#42](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/42), [#48](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/48) remain authoritative for their existing workstreams.
-

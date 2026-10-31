@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<meta name="color-scheme" content="dark">
+<title>Days 1–14: define the reference path | ROS 2 Kubernetes Lab</title>
+<meta name="description" content="Phase 1 of the plan: pick a first ROS 2 and Kubernetes profile, split ROS from stress workloads and design a cross-worker DDS test. A proposal.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Mohsen Seyedkazemi Ardebili">
+<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/plans/define-reference-path.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs.css">
+<link rel="stylesheet" href="../assets/scenarios.css">
+<link rel="stylesheet" href="../assets/lab-anim.css">
+<link rel="stylesheet" href="../assets/anim/define-reference-path.css">
+<script defer src="../assets/lab-anim.js"></script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ROS 2 Kubernetes Lab">
+<meta property="og:title" content="Days 1–14: define the reference path for ROS 2 on Kubernetes">
+<meta property="og:description" content="Choose the first profile, keep ROS workloads apart from stress workloads, and plan how DDS discovery across separate workers will be tested. A proposal.">
+<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/plans/define-reference-path.html">
+<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Days 1–14: define the reference path">
+<meta name="twitter:description" content="Phase 1 of the ROS 2 Kubernetes Lab plan: the first profile, a clean workload split and a cross-worker test design. A proposal.">
+<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Days 1 to 14: define the reference path","headline":"Days 1 to 14: define the reference path for ROS 2 on Kubernetes","description":"Phase 1 of the ROS 2 Kubernetes Lab plan: choose a first profile, separate ROS workloads from stress workloads and design a cross-worker DDS test. A proposal.","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/define-reference-path.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"isPartOf":{"@type":"WebPage","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"DDS"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Roadmap","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},{"@type":"ListItem","position":3,"name":"Days 1 to 14: define the reference path","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/define-reference-path.html"}]}]}</script>
+</head><body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="docs-nav"><div class="sc-shell docs-nav-inner">
+<a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Roadmap</a><a href="../scenarios/">Research scenarios</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab">GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+
+<section class="sc-hero"><div class="sc-shell">
+<nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Roadmap</a><span>/</span>Define the reference path</nav>
+<span class="sc-kicker">Phase 1 · days 1–14</span>
+<h1>Define the reference path</h1>
+<p class="sc-lead">Before anything is built, the lab needs one clear target: which versions it supports first, and what a passing test across two workers looks like. This phase picks that target and designs the test. It does not claim the test passes.</p>
+<div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · planning targets, not promises</span><span class="sc-pill">Issues #7, #14, #15</span></div>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>Why this phase comes first</h2>
+<p class="sc-intro">A ROS 2 message has to leave one pod, cross the cluster network and arrive in another pod. Today only a much smaller step is checked: a talker and a listener exchanging a message inside one container.</p>
+<div class="sc-grid sc-grid--3">
+<div class="sc-panel"><span class="lab-chip lab-chip--done">Container tested</span><h3>Inside one container</h3><p>The Jazzy image builds in CI and passes a local talker and listener check. This is the only hop the repository checks today.</p></div>
+<div class="sc-panel"><span class="lab-chip lab-chip--planned">Not yet verified</span><h3>Between two workers</h3><p>No test shows a message crossing from one Kubernetes worker to another. That is what the reference path is designed to prove later.</p></div>
+<div class="sc-panel"><span class="lab-chip lab-chip--legacy">Legacy</span><h3>The original cluster</h3><p>The Vagrant lab uses ROS 2 Foxy (end of life), Kubernetes 1.29 and Weave Net. It stays as a historical example.</p></div>
+</div>
+</div></section>
+
+<section class="sc-section sc-section--shade" id="path"><div class="sc-shell">
+<h2>One message, three hops</h2>
+<p class="sc-intro">A message makes three hops: out of the talker pod, across the cluster network (the CNI), and into the listener pod. Press play to see how the four tasks of this phase build up that picture. The dashed path is a plan, not something that has run.</p>
+
+<figure class="lab-anim define-path" data-anim="define-path" data-interval="3400" aria-labelledby="dp-title">
+<div class="lab-anim__head"><h3 class="lab-anim__title" id="dp-title">A planned path between two workers</h3><span class="lab-anim__tag">Illustration · conceptual path</span></div>
+<div class="lab-anim__stage">
+<svg viewBox="0 0 640 440" role="img" aria-labelledby="dp-svg-t dp-svg-d" focusable="false">
+<title id="dp-svg-t">A planned path for one ROS 2 message between two Kubernetes workers</title>
+<desc id="dp-svg-d">A banner names the proposed first profile: ROS 2 Jazzy with Ubuntu 24.04, with the Kubernetes minor version still to be chosen. Below it, Worker 1 holds a talker pod and a separate stress-ng pod, and Worker 2 holds a listener pod and a separate stress-ng pod. Between the workers sits the cluster network, the CNI. A dashed line shows a message going from the talker through the network to the listener, labelled Not yet verified. At the bottom, a compatibility matrix lists two rows: one container is Container tested, and across workers is Not yet verified.</desc>
+
+<g class="banner k0"><rect x="10" y="8" width="620" height="76" rx="12"/>
+<text class="t-strong" x="320" y="38" text-anchor="middle">Proposed profile: Jazzy + Ubuntu 24.04</text>
+<text class="t-sub" x="320" y="68" text-anchor="middle">Kubernetes minor: to be chosen</text></g>
+
+<g class="k0">
+<rect class="worker" x="10" y="100" width="190" height="200" rx="14"/><text class="t-sub" x="24" y="130">Worker 1</text>
+<rect class="worker" x="440" y="100" width="190" height="200" rx="14"/><text class="t-sub" x="454" y="130">Worker 2</text>
+</g>
+
+<g class="k1">
+<rect class="pod-ros" x="26" y="152" width="158" height="56" rx="10"/><text class="t-strong" x="105" y="188" text-anchor="middle">talker pod</text>
+<rect class="pod-stress" x="26" y="232" width="158" height="56" rx="10"/><text class="t" x="105" y="268" text-anchor="middle">stress-ng</text>
+<rect class="pod-ros" x="456" y="152" width="158" height="56" rx="10"/><text class="t-strong" x="535" y="188" text-anchor="middle">listener pod</text>
+<rect class="pod-stress" x="456" y="232" width="158" height="56" rx="10"/><text class="t" x="535" y="268" text-anchor="middle">stress-ng</text>
+</g>
+
+<g class="k2">
+<rect class="cni" x="255" y="160" width="130" height="110" rx="22"/>
+<path class="hop" d="M184 186H456"/>
+<text class="t-strong" x="320" y="224" text-anchor="middle">CNI</text><text class="t-sub" x="320" y="254" text-anchor="middle">network</text>
+<g class="unverified"><rect x="200" y="102" width="240" height="38" rx="19"/><text class="t-amber" x="320" y="128" text-anchor="middle">Not yet verified</text></g>
+<circle class="dot" cx="184" cy="186" r="9"/>
+</g>
+
+<g class="k3">
+<text class="t-sub" x="10" y="340">Compatibility matrix</text>
+<rect class="cell-ok" x="10" y="352" width="300" height="78" rx="12"/><text class="t" x="24" y="381">One container</text><text class="t-ok" x="24" y="414">Container tested</text>
+<rect class="cell-no" x="330" y="352" width="300" height="78" rx="12"/><text class="t" x="344" y="381">Across workers</text><text class="t-amber" x="344" y="414">Not yet verified</text>
+</g>
+</svg>
+</div>
+<div class="lab-anim__bar">
+<button type="button" data-anim-prev>Back</button>
+<button type="button" data-anim-play aria-pressed="false"><span>Play</span></button>
+<button type="button" data-anim-next>Next</button>
+<button type="button" data-anim-replay>Replay</button>
+<output class="lab-anim__status" data-anim-status aria-live="polite">Step 1 of 4</output>
+</div>
+<ol class="lab-anim__steps">
+<li data-step-text><button type="button"><b>Choose the profile</b><span>Jazzy with Ubuntu 24.04 is the proposed first profile (#7). The Kubernetes minor version is chosen only after checking exact support dates. ROS 2 Lyrical would be a separate profile on Ubuntu 26.04.</span></button></li>
+<li data-step-text><button type="button"><b>Keep ROS apart from stress</b><span>The talker and listener are planned as their own workloads. The stress-ng load runs separately, so a stress pod can never be mistaken for a ROS test (#14).</span></button></li>
+<li data-step-text><button type="button"><b>Pick the network and discovery</b><span>Prototype a maintained CNI plugin (the part that wires pod networking) and explicit DDS discovery settings across real separate workers (#15). Record packet and ROS output, and the failures.</span></button></li>
+<li data-step-text><button type="button"><b>Record it in a matrix</b><span>Every result, including failures, goes into a compatibility matrix. The lab's support table lists one row today: container tested.</span></button></li>
+</ol>
+<p class="lab-anim__note">The hollow marker is a conceptual message, not a measurement. The only hop the repository checks today is the one inside a single container.</p>
+</figure>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>What done looks like</h2>
+<p class="sc-intro">This phase ends when the team agrees what a passing smoke test (a short check that the basics work) must show. These are draft exit conditions, taken from the release gates. The phase defines them, it does not meet them.</p>
+<div class="sc-detail-grid">
+<div class="sc-panel"><h3>Draft exit conditions for the smoke test</h3>
+<ul class="exit-list">
+<li>The talker and listener start on their own, with no manual <code>kubectl exec</code> into a pod.</li>
+<li>They run on different Kubernetes nodes.</li>
+<li>A script checks that messages arrive, stops after a time limit, and exits with a truthful pass or fail code.</li>
+<li>Every result, including failures, is written into the compatibility matrix with the versions used: ROS distro, Ubuntu, Kubernetes, container runtime, CNI and DDS.</li>
+</ul></div>
+<div class="sc-callout"><h3>What this phase will not claim</h3><p>DDS (Data Distribution Service) is the messaging layer ROS 2 uses. The plan states that feature or performance claims must not rest on static YAML alone, and that a Docker build or lint pass does not replace an end-to-end ROS check.</p><p><a class="sc-link-button sc-link-button--ghost" href="release-gates.html">Read the release gates</a></p></div>
+</div>
+</div></section>
+
+<section class="sc-section sc-section--shade"><div class="sc-shell">
+<h2>Issues in this phase</h2>
+<p class="sc-intro">Status labels come from what the repository's files show, not from the state of the issue on GitHub.</p>
+<ul class="phase-issues">
+<li><span class="issue-no">#7</span><div><h3>Modern ROS 2 baseline</h3><p>Pinned Jazzy image and verified sample nodes, with legacy Foxy marked end of life. The image exists; the Kubernetes side of the profile is not chosen yet. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7">Issue #7 ↗</a></p></div><span class="lab-chip lab-chip--done">Container tested</span></li>
+<li><span class="issue-no">#14</span><div><h3>Talker and listener across workers</h3><p>A repeatable command shows messages crossing nodes without <code>kubectl exec</code>, and ROS workloads are separated from stress workloads. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14">Issue #14 ↗</a></p></div><span class="lab-chip lab-chip--planned">Not yet verified</span></li>
+<li><span class="issue-no">#15</span><div><h3>Maintained CNI and explicit discovery</h3><p>Replace the archived Weave Net with a maintained plugin and set DDS discovery on purpose, then test discovery, restart and debugging across workers. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15">Issue #15 ↗</a></p></div><span class="lab-chip lab-chip--planned">Planned</span></li>
+</ul>
+<p class="phase-hub-link">Source of truth: <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">docs/ROADMAP-2026.md ↗</a>, section 4. Back to the <a href="./">roadmap hub</a>.</p>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<nav class="phase-pager" aria-label="Previous and next phase">
+<a href="./"><small>Previous</small><strong>Roadmap overview</strong></a>
+<a class="next" href="runnable-and-safe.html"><small>Next</small><strong>Days 15–30: make it runnable and safe</strong></a>
+</nav>
+</div></section>
+
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Plans are proposals; illustrations show sequence, not progress</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">Full roadmap source ↗</a></div></footer></body></html>

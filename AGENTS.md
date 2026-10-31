@@ -6,7 +6,7 @@ This file is shared guidance for Codex, Claude Code, and other repository-aware 
 
 - This is an educational/research **ROS 2 on Kubernetes** lab, not a production or safety-critical robot platform.
 - The **Vagrant cluster** and original Kubernetes YAML remain historical: ROS 2 **Foxy** (end of life), Kubernetes **1.29**, Ubuntu 22.04 VMs, and Weave Net. Separately, `ROS2/Dockerfile` now targets Jazzy/Ubuntu 24.04 and `scripts/test-ros2-image.sh` checks local ROS communication **inside a single image**. This does **not** establish a modern Kubernetes/DDS deployment or cross-worker delivery.
-- `ROS2/ros_dep_1.yaml` (also `ros_dep_2.yaml` and `ros_dep_3.yaml`) starts **stress-ng**, not a self-starting ROS 2 talker/listener. `ROS2/README.md` has known filename/namespace inaccuracies under correction in issue #24.
+- `ROS2/ros_dep_1.yaml` (also `ros_dep_2.yaml` and `ros_dep_3.yaml`) starts **stress-ng**, not a self-starting ROS 2 talker/listener. `ROS2/README.md` filenames and namespace were corrected in issue #24 (static review only; the manual talker/listener steps were not re-run).
 - Do not assert an installation, DDS cross-node link, or benchmark worked unless you actually ran the necessary test and observed its output.
 
 ## Work one issue at a time
@@ -33,6 +33,10 @@ git diff --check
 git status --short
 # Bash provisioning scripts (GNU/Linux):
 bash scripts/check-shell.sh
+# Local Markdown links and #anchors (no network; known issues in scripts/markdown-links-known-issues.txt):
+python3 scripts/check-markdown-links.py
+# Kubernetes manifest schemas, K8s 1.29, pinned kubeconform, needs network, no cluster (exceptions in scripts/k8s-manifests-known-issues.txt):
+python3 scripts/validate-k8s-manifests.py
 # Only if Ruby is available and the Vagrantfile changed:
 ruby -c Vagrantfile
 ```

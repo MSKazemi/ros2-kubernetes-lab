@@ -48,4 +48,3 @@ List actual run IDs/paths, model/dataset image digests, CPU/GPU environment, FPS
 Model owner / public role, reviewer, review date, approved simulated scopes, external security/ethics dependencies, next review trigger and rollback/disabling method.
 
 **Reference:** [LeRobot plan](../HUGGINGFACE-INTEGRATION.md), [#57 compatibility audit](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/57), [#61 remote inference](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/61).
-

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<meta name="color-scheme" content="dark">
+<title>Multi-Robot Scheduling Lab | Fair Jev Task Assignment</title>
+<meta name="description" content="Proposal, not benchmarked: fair ROS 2 multi-robot task assignment on synthetic fleets, with deterministic capability constraints and optional Jev rankings.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Mohsen Seyedkazemi Ardebili">
+<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/scenarios/multi-robot-scheduling.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs.css">
+<link rel="stylesheet" href="../assets/scenarios.css">
+<link rel="stylesheet" href="../assets/lab-anim.css">
+<link rel="stylesheet" href="../assets/anim/s4-fleet-dispatch.css">
+<script defer src="../assets/lab-anim.js"></script>
+<script defer src="../assets/scenarios.js"></script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ROS 2 Kubernetes Lab">
+<meta property="og:title" content="Multi-Robot Scheduling Lab | Fair Jev Task Assignment">
+<meta property="og:description" content="Proposal, not benchmarked: fair ROS 2 multi-robot task assignment on synthetic fleets, with deterministic capability constraints and optional Jev rankings.">
+<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/scenarios/multi-robot-scheduling.html">
+<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Multi-Robot Scheduling Lab | Fair Jev Task Assignment">
+<meta name="twitter:description" content="Proposal, not benchmarked: fair ROS 2 multi-robot task assignment on synthetic fleets, with deterministic capability constraints and optional Jev rankings.">
+<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Multi-Robot Scheduling Lab | Fair Jev Task Assignment","headline":"Multi-Robot Scheduling Lab | Fair Jev Task Assignment","description":"Research fair ROS 2 multi-robot task assignment with synthetic fleets, deterministic capability constraints, Jev advisory rankings and reproducible scheduling metrics.","url":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/multi-robot-scheduling.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/"},{"@type":"ListItem","position":3,"name":"Multi-robot scheduling","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/multi-robot-scheduling.html"}]}]}</script>
+</head><body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="docs-nav"><div class="sc-shell docs-nav-inner">
+<a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+<section class="sc-hero"><div class="sc-shell sc-hero-inner">
+<div><nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Scenarios</a><span>/</span>Multi-robot scheduling</nav>
+<span class="sc-kicker">SCENARIO 04 · P2 / SIMULATOR RESEARCH</span>
+<h1>Fair Multi-Robot Task Assignment with Jev Advisory Ranking</h1>
+<p class="sc-lead">Three simulated robots have different capabilities, reservations and energy budgets. Who should get the next task—and how can we measure fairness?</p>
+<div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · not benchmarked</span><span class="sc-pill">MSc → PhD</span><span class="sc-pill">CPU-only fixtures first</span></div>
+<div class="sc-actions"><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/87">Collaborate on issue #87 ↗</a><a class="sc-link-button sc-link-button--ghost" href="./results.html">View evidence registry</a></div>
+</div><div class="sc-visual">
+<div class="sc-visual-header"><span>CONCEPTUAL WORKFLOW / NOT LIVE</span><b>ROBOTICS · CLOUD · AI</b></div>
+<svg class="sc-motif" viewBox="0 0 500 240" aria-hidden="true" focusable="false">
+<title id="sc-motif-title">Multi-robot scheduling research workflow</title><desc id="sc-motif-desc">Illustrative processing stages EVIDENCE, HARD GATE, JEV?, REVIEW. No real Jev inference, ROS 2 traffic or robot control is shown.</desc>
+<path class="sc-wire" d="M134 88H185M312 88H355M420 119V158H338" />
+<path class="sc-wire" d="M164 186H115V125" />
+<rect x="8" y="51" width="126" height="74" rx="13" />
+<rect class="sc-vnode" x="182" y="51" width="130" height="74" rx="13" />
+<rect x="356" y="51" width="135" height="74" rx="13" />
+<rect class="sc-vnode" x="162" y="158" width="176" height="65" rx="13" />
+<text x="71" y="94">EVIDENCE</text><text x="247" y="94">HARD GATE</text><text x="423" y="94">JEV?</text><text x="250" y="194">REVIEW</text>
+<circle class="sc-pulse" cx="160" cy="88" r="5" /><circle class="sc-pulse" cx="335" cy="88" r="5" />
+</svg><div class="sc-visual-foot"><span>SIMULATED / RESEARCH BLUEPRINT</span><strong>NO ACTUATION</strong><button type="button" class="sc-button sc-button--ghost" data-motion-toggle aria-pressed="false">Pause decorative motion</button></div>
+</div></div></section>
+<section class="sc-section" id="see-it"><div class="sc-shell">
+<h2>See the idea in a minute</h2>
+<p class="sc-intro">Three simulated robots can each do a different job, and a dispatcher picks who gets the next task. Compare two ways of choosing, one step at a time. The tasks are made up and no result has been measured.</p>
+<figure class="lab-anim s4" data-anim="s4-fleet-dispatch" data-interval="3200" aria-labelledby="s4-title">
+<div class="lab-anim__head"><h3 class="lab-anim__title" id="s4-title">Who gets the next task?</h3><span class="lab-anim__tag">Illustration · synthetic</span></div>
+<div class="lab-anim__stage">
+<svg viewBox="0 0 640 430" role="img" aria-labelledby="s4-svg-t s4-svg-d" focusable="false">
+<title id="s4-svg-t">Two ways to hand out tasks to three simulated robots</title>
+<desc id="s4-svg-d">Three lanes of waiting tasks feed three simulated robots: a scout for inspect tasks, a carrier for parcel tasks and an arm for grasp tasks. A bar beside each robot shows how long its tasks have waited, with no unit. First a naive policy always takes the quickest task: the scout and carrier are served, the arm is starved and its bar fills completely. Then a fair-share policy lets each task type take a turn: all three robots are served and the three waiting bars end up close in length. The tasks are synthetic, this is a simulation idea only, and no measured result exists.</desc>
+<defs><pattern id="s4-hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#ffa66e" /><rect width="4" height="10" fill="#1a2740" /></pattern></defs>
+<text class="bn bn-0" x="320" y="28" text-anchor="middle">Same tasks, two policies</text>
+<text class="bn bn-naive" x="320" y="28" text-anchor="middle">Naive policy: quickest task first</text>
+<text class="bn bn-fair" x="320" y="28" text-anchor="middle">Fair share: each type takes a turn</text>
+<text class="h" x="6" y="62">Waiting tasks</text><text class="h" x="262" y="62">Robot</text><text class="h" x="420" y="62">Waiting so far</text>
+<g class="lane0"><text class="h" x="6" y="96">Inspect tasks</text>
+<rect class="chip q-o" x="156" y="106" width="44" height="36" rx="8" /><rect class="chip q-1" x="106" y="106" width="44" height="36" rx="8" /><rect class="chip q-2" x="56" y="106" width="44" height="36" rx="8" />
+<path class="ln ln-q" style="--len:48" d="M208 124H256" /><path class="ah ah-q" d="M250 116l10 8-10 8z" />
+<rect class="robot rb-q" x="262" y="88" width="120" height="64" rx="12" /><text class="nm" x="322" y="116" text-anchor="middle">Scout</text><text class="h" x="322" y="140" text-anchor="middle">camera</text>
+<text class="st w w-served" x="420" y="106">served</text>
+<rect class="track" x="420" y="116" width="214" height="22" rx="5" /><rect class="bar bar-s" x="420" y="116" width="214" height="22" rx="5" /></g>
+<path class="rule" d="M6 166H634" />
+<g class="lane1"><text class="h" x="6" y="192">Parcel tasks</text>
+<rect class="chip q-o" x="156" y="202" width="44" height="36" rx="8" /><rect class="chip q-1" x="106" y="202" width="44" height="36" rx="8" /><rect class="chip q-2" x="56" y="202" width="44" height="36" rx="8" />
+<path class="ln ln-q" style="--len:48" d="M208 220H256" /><path class="ah ah-q" d="M250 212l10 8-10 8z" />
+<rect class="robot rb-q" x="262" y="184" width="120" height="64" rx="12" /><text class="nm" x="322" y="212" text-anchor="middle">Carrier</text><text class="h" x="322" y="236" text-anchor="middle">parcels</text>
+<text class="st w w-served" x="420" y="202">served</text>
+<rect class="track" x="420" y="212" width="214" height="22" rx="5" /><rect class="bar bar-c" x="420" y="212" width="214" height="22" rx="5" /></g>
+<path class="rule" d="M6 262H634" />
+<g class="lane2"><text class="h" x="6" y="288">Grasp tasks</text>
+<rect class="chip chip-a a-o" x="156" y="298" width="44" height="36" rx="8" /><rect class="chip chip-a a-1" x="106" y="298" width="44" height="36" rx="8" />
+<path class="ln ln-a" style="--len:48" d="M208 316H256" /><path class="ah ah-a" d="M250 308l10 8-10 8z" />
+<path class="block" d="M228 308l16 16m0-16l-16 16" />
+<rect class="robot rb-a" x="262" y="280" width="120" height="64" rx="12" /><text class="nm" x="322" y="308" text-anchor="middle">Arm</text><text class="h" x="322" y="332" text-anchor="middle">grasping</text>
+<text class="st w w-arm-wait" x="420" y="298">waiting</text><text class="st w w-arm-starved" x="420" y="298">starved</text><text class="st w w-served w-arm-served" x="420" y="298">served</text>
+<rect class="track" x="420" y="308" width="214" height="22" rx="5" /><rect class="bar bar-a" x="420" y="308" width="214" height="22" rx="5" /><rect class="bar-a-edge" x="420" y="308" width="214" height="22" rx="5" /></g>
+<text class="h" x="6" y="384">Simulation, synthetic tasks.</text>
+<text class="h" x="6" y="410">No measured result exists. Bars have no unit.</text>
+</svg>
+</div>
+<div class="lab-anim__bar">
+<button type="button" data-anim-prev>Back</button>
+<button type="button" data-anim-play aria-pressed="false"><span>Play</span></button>
+<button type="button" data-anim-next>Next</button>
+<button type="button" data-anim-replay>Replay</button>
+<output class="lab-anim__status" data-anim-status aria-live="polite">Step 1 of 5</output>
+</div>
+<ol class="lab-anim__steps">
+<li data-step-text><button type="button"><b>Tasks arrive</b><span>Inspect, parcel and grasp tasks wait in their own queues. In this illustration each robot does one kind of task.</span></button></li>
+<li data-step-text><button type="button"><b>Naive policy: quickest task first</b><span>The dispatcher always picks the task it expects to finish soonest. The scout and the carrier get work.</span></button></li>
+<li data-step-text><button type="button"><b>Naive result: one task type starves</b><span>Quick tasks keep arriving, so the arm's grasp tasks keep waiting. The waiting bar for the arm fills up.</span></button></li>
+<li data-step-text><button type="button"><b>Fair share: each type takes a turn</b><span>Same tasks again. The dispatcher serves the longest-waiting task of each type in turn, so the arm gets work too.</span></button></li>
+<li data-step-text><button type="button"><b>Fair-share result: waiting evens out</b><span>The three waiting bars end up close together. This shows the goal of the idea, not a measured outcome.</span></button></li>
+</ol>
+<p class="lab-anim__note">Simulation with synthetic tasks. The bars have no unit and are not data. A real study would compute fairness in code from a seeded simulator run. No measured result exists.</p>
+</figure>
+<div class="sc-panel"><h3>Plain-language guide</h3><ul><li><strong>Dispatcher:</strong> the scheduler code that picks which waiting task goes to which robot.</li><li><strong>Eligible robot:</strong> a robot that has the needed capability, is not reserved elsewhere and has enough energy. The scheduler removes all others first.</li><li><strong>Fairness:</strong> whether every robot and task type gets served, instead of one waiting far longer than the rest. The plan is to compute Jain's fairness index in code.</li><li><strong>Jev ranking:</strong> optional qualitative advice that ranks only eligible robots. The deterministic scheduler keeps the final say.</li></ul></div>
+</div></section>
+<section class="sc-section"><div class="sc-shell">
+<span class="sc-overline">01 / What are we studying?</span><h2>One real research question, not a product claim.</h2>
+<div class="sc-detail-grid">
+<div><p class="sc-intro">In a fictional lab, a scout robot can inspect markers, a carrier delivers mock parcels and an arm manipulates objects in simulation. A scheduler must first remove unavailable or incapable robots before asking which candidate best fits.</p><div class="sc-panel"><h3>Research hypothesis</h3><p><strong>Question:</strong> Does Jev&#39;s qualitative ranking among eligible simulated robots improve task fit and completion compared with constrained round-robin or cost-aware deterministic schedulers?</p><p><strong>Null hypothesis:</strong> Jev&#39;s rank offers no reproducible improvement after controlling for task feasibility, arrival order, reservations and resource overhead.</p><p><strong>Alternative:</strong> Jev helps choose semantic fit in ambiguous cases while a deterministic scheduler alone enforces feasibility, fairness and capacity.</p></div></div>
+<div class="sc-panel"><h3>Audience & learning targets</h3><p><strong>Multi-agent systems · OR · robotics researchers</strong> · MSc → PhD · CPU-only fixtures first</p><ul class="sc-mini-list"><li>Model robotic capabilities and authorization as hard constraints.</li><li>Compare round-robin, greedy and cost-aware scheduling baselines.</li><li>Use seeded task arrivals and congestion to measure fairness.</li><li>Record invalid suggestions and no-eligible-robot outcomes.</li></ul></div>
+</div>
+</div></section>
+<section class="sc-section sc-section--shade" id="interactive-trace"><div class="sc-shell">
+<span class="sc-overline">02 / Interactive walkthrough</span><h2>Follow an illustrative decision trace.</h2>
+<p class="sc-intro">Select a fabricated case and trace where conventional code, an optional Jev judgment, and human review belong. This animation is preauthored educational content: <strong>it performs no inference, no API call, and no robot action.</strong></p>
+<div class="sc-trace" data-walkthrough="fleet-dispatch">
+<div class="sc-trace-controls"><label for="example-select">Synthetic case</label><select id="example-select" class="sc-select" data-example-select><option value="camera">Scout camera-inspection task</option><option value="energy">Carrier below energy reserve</option></select><span class="sc-pill sc-pill--mint">SYNTHETIC ONLY</span></div>
+<div class="sc-trace-observation" data-observation>In a fictional lab, a scout robot can inspect markers, a carrier delivers mock parcels and an arm manipulates objects in simulation. A scheduler must first remove unavailable or incapable robots before asking which candidate best fits.</div>
+<ol class="sc-steps"><li><button type="button" class="sc-step-btn" data-step-index="0" aria-current="step"><b>STAGE 01</b><strong>Synthetic fleet + incoming task</strong><span data-step-description>No physical fleet exists.</span></button></li><li><button type="button" class="sc-step-btn" data-step-index="1" aria-current="false"><b>STAGE 02</b><strong>Filter capability, reservation and energy reserve</strong><span data-step-description>Hard capability and energy budgets first.</span></button></li><li><button type="button" class="sc-step-btn" data-step-index="2" aria-current="false"><b>STAGE 03</b><strong>Optional Jev qualitative candidate ranking</strong><span data-step-description>Advice is not allocation authority.</span></button></li><li><button type="button" class="sc-step-btn" data-step-index="3" aria-current="false"><b>STAGE 04</b><strong>Deterministic scheduler + simulator outcome</strong><span data-step-description>Task metrics require executed simulation.</span></button></li></ol>
+<div class="sc-trace-caption"><div><p role="status" aria-live="polite" data-step-status>Illustrative stage 1 of 4: Synthetic fleet + incoming task</p><p>Visual explanation only; Jev probabilities and experimental outcomes are intentionally absent.</p></div><div class="sc-trace-actions"><button type="button" class="sc-button sc-button--ghost" data-next-step>Next step</button><button type="button" class="sc-button" data-play-steps aria-pressed="false">Play walkthrough</button></div></div>
+</div>
+<p class="sc-aside">Keyboard users: select a case or activate any stage button. The animation can be paused in the header, and system reduced-motion preferences are supported.</p>
+</div></section>
+<section class="sc-section" id="experiment"><div class="sc-shell">
+<span class="sc-overline">03 / Experiment blueprint</span><h2>Variables, baselines and measurements.</h2>
+<p class="sc-intro">Before anyone reports performance, the task, failure cases, comparison methods and test split must be fixed. Keep negative results and rejected advice visible.</p>
+<div class="sc-table-wrap"><table class="sc-table"><thead><tr><th scope="col">Research dimension</th><th scope="col">Proposed measurement contract</th></tr></thead><tbody><tr><th scope="row">Fleet</th><td>Fictional scout (camera), arm (grasp) and carrier (parcel) with fixed capability and reserve states.</td></tr>
+<tr><th scope="row">Baseline</th><td>Constrained round-robin, greedy shortest estimated task time, capacity/fairness heuristic.</td></tr>
+<tr><th scope="row">Variables</th><td>Task arrival mix, reservations, simulated low battery, robot outage, queue size and uncertain task semantics.</td></tr>
+<tr><th scope="row">Failure cases</th><td>Ineligible capability, insufficient reserve, conflicting exclusive tasks, spoofed state, no available robot.</td></tr>
+<tr><th scope="row">Primary metrics</th><td>Simulator task completion, queue wait, invalid suggestion rate, utilization, Jain&#39;s fairness index computed in code.</td></tr>
+<tr><th scope="row">Reproducibility</th><td>Seeded workload generator, queue and capability matrices, fixed schedule budget, full task-allocation trace.</td></tr></tbody></table></div>
+<div class="sc-detail-grid"><div class="sc-panel"><h3>Suggested experiment procedure</h3><ol><li>Define a tiny synthetic, licensed fleet/task schema with hard capabilities and budget constraints.</li>
+<li>Implement deterministic eligible-set filtering plus a no-JeV allocation baseline.</li>
+<li>Prepare fixed task-arrival seeds, failure injection and fair-scheduling comparison definitions.</li>
+<li>Optionally use Jev Choice only among eligible robot IDs and record advice vs actual assignment.</li>
+<li>Execute a verified simulator study before reporting completion or fairness results; preserve negative runs.</li></ol></div><div class="sc-panel"><h3>What a contribution should produce</h3><ul><li>Synthetic robot capability and task-arrival fixture definitions</li>
+<li>Constraint-aware baseline scheduler tests</li>
+<li>Simulator trace/run manifest with seeds (later)</li>
+<li>Plots of fairness, waiting time and task success after verified runs</li></ul><p><strong>Required before publishing a result:</strong> independent run ID, method, seed, source/model revisions, environment, raw measurements, executable analysis, errors/limitations and human review.</p></div></div>
+</div></section>
+<section class="sc-section sc-section--shade" id="results"><div class="sc-shell">
+<span class="sc-overline">04 / Evidence not marketing</span><h2>Current results: not measured.</h2>
+<div class="sc-detail-grid"><div class="sc-callout"><h3>No verified experiment results yet</h3><p>No Jev-vs-baseline accuracy, latency, energy, fairness or simulator task-success result is available for this scenario. The website does not fabricate graphs or sample performance numbers. Future evidence must include raw data and replay instructions.</p><a class="sc-link-button" href="./results.html">Open results registry ↗</a></div>
+<div class="sc-panel"><h3>Dependencies and research honesty</h3><p>Follow existing research work <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/69">#69</a> and the broader <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">scenario epic #83</a>. The legacy Vagrant/Foxy manifests and current Jazzy image-local test do not establish multi-worker DDS or physical robot integration.</p><p><strong>Safety:</strong> no actuator commands, unrestricted cluster operations, or vendor data collection from this static demonstration.</p></div></div>
+</div></section>
+<section class="sc-section" id="contribute"><div class="sc-shell">
+<span class="sc-overline">05 / Open research collaboration</span><h2>Help turn the blueprint into evidence.</h2>
+<div class="sc-detail-grid">
+<div class="sc-callout"><h3>Join scenario 04</h3><p>Contributors can own a small, reviewable task: casebook, synthetic dataset, offline baseline, simulator test, reproducibility review or teaching guide. The issue includes a detailed Claude Code/Codex prompt, acceptance criteria and dependencies.</p><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/87">Contribute on GitHub issue #87 ↗</a></div>
+<div class="sc-panel"><h3>Technical references</h3><ul><li><a href="https://docs.ros.org/en/jazzy/Concepts/Basic/About-Topics.html">ROS 2 concepts</a></li>
+<li><a href="https://docs.typesafe.ai/introduction">Jev Choice</a></li>
+<li><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/69">Multi-robot research issue #69</a></li></ul><p>Review <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/73">Jev research umbrella #73</a>, <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">scenario epic #83</a> and the <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/AGENTS.md">repository agent instructions</a>. No vendor endorsement or measured success is implied.</p></div></div>
+<h2 id="more" style="margin-top:70px">Continue exploring</h2><div class="sc-grid sc-grid--3"><a class="sc-card sc-card--link" href="./ros2-fault-triage.html"><span class="sc-card-index">SCENARIO 01</span><h3>Fault triage</h3><p>A listener stops receiving messages. Is the cause DDS discovery, QoS, networking or resource pressure? Build a transparent diagnostic comparison without touching a robot.</p><span class="sc-card-cta">Explore Fault triage</span></a>
+<a class="sc-card sc-card--link" href="./edge-cloud-inference.html"><span class="sc-card-index">SCENARIO 02</span><h3>Edge/cloud placement</h3><p>Which AI workload belongs on a robot, at a nearby edge service, or in Kubernetes? Compare feasibility filters with Jev&#39;s structured advice under unreliable networks.</p><span class="sc-card-cta">Explore Edge/cloud placement</span></a>
+<a class="sc-card sc-card--link" href="./robot-agent-safety.html"><span class="sc-card-index">SCENARIO 03</span><h3>Agent skill screening</h3><p>An LLM proposes a robot skill. Can a structured decision model provide useful extra review without bypassing deterministic permissions and simulator safety checks?</p><span class="sc-card-cta">Explore Agent skill screening</span></a></div>
+</div></section>
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Illustrative diagrams, synthetic examples; no physical robot or safety-critical control</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/SAFETY.md">Safety and limitations ↗</a></div></footer></body></html>

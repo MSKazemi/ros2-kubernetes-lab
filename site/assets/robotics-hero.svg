@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+<title id="title">Robotics cloud laboratory concept illustration</title>
+<desc id="desc">Stylized robotic rover, articulated robot arm, orbiting pods and connected Kubernetes-style infrastructure, with no depiction of an actual deployment.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0A182D"/><stop offset=".58" stop-color="#0E2140"/><stop offset="1" stop-color="#10183B"/></linearGradient>
+  <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#91BDEB"/><stop offset=".38" stop-color="#2A4F83"/><stop offset="1" stop-color="#15243E"/></linearGradient>
+  <linearGradient id="glass" x1="0" y1="0" x2=".75" y2="1"><stop stop-color="#B3FFFF"/><stop offset=".3" stop-color="#63CFF0"/><stop offset="1" stop-color="#4D70DB"/></linearGradient>
+  <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#D6B7FF"/><stop offset="1" stop-color="#725EE8"/></linearGradient>
+  <linearGradient id="horizon" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#65FFDE" stop-opacity=".24"/><stop offset="1" stop-color="#65FFDE" stop-opacity="0"/></linearGradient>
+  <radialGradient id="ambient"><stop stop-color="#2994E4" stop-opacity=".54"/><stop offset="1" stop-color="#134B9B" stop-opacity="0"/></radialGradient>
+  <radialGradient id="purpleGlow"><stop stop-color="#956DFF" stop-opacity=".39"/><stop offset="1" stop-color="#8D61FF" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse"><path d="M56 0H0V56" fill="none" stroke="#669EE8" stroke-opacity=".14"/></pattern>
+  <filter id="blur"><feGaussianBlur stdDeviation="19"/></filter>
+  <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+  <filter id="soft"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#06102C" flood-opacity=".8"/></filter>
+</defs>
+<rect width="1200" height="750" fill="url(#bg)"/>
+<rect width="1200" height="750" fill="url(#grid)" opacity=".8"/>
+<circle cx="850" cy="220" r="460" fill="url(#ambient)"/>
+<circle cx="230" cy="600" r="350" fill="url(#purpleGlow)"/>
+<g opacity=".2" fill="none" stroke="#72BFFF">
+  <path d="M0 600 600 340 1200 600M0 680 600 390 1200 680M0 740 600 450 1200 740"/>
+  <path d="M80 750 600 330 1100 750M200 750 600 330 1000 750M320 750 600 330 880 750M460 750 600 330 740 750"/>
+</g>
+<path d="M0 545h1200" stroke="#80FFDB" opacity=".25"/>
+<path d="M0 546h1200v155H0z" fill="url(#horizon)" opacity=".5"/>
+<!-- Floating orchestration orbit -->
+<g fill="none" stroke-linecap="round">
+  <path d="M435 230c76-108 345-143 489-34" stroke="#5CEED7" stroke-opacity=".55" stroke-width="2" stroke-dasharray="7 11"/>
+  <path d="M428 239c-30 120 95 202 230 197" stroke="#8B89FC" stroke-opacity=".55" stroke-width="2" stroke-dasharray="8 13"/>
+  <path d="M917 217c45 70 3 164-83 196" stroke="#78B4FF" stroke-opacity=".55" stroke-width="2" stroke-dasharray="7 11"/>
+  <circle cx="435" cy="230" r="5" fill="#62EBDA"/><circle cx="917" cy="217" r="5" fill="#9A91FD"/>
+  <circle cx="658" cy="436" r="5" fill="#76AFFE"/>
+</g>
+<!-- Cloud and computer infrastructure cluster -->
+<g filter="url(#soft)">
+  <path d="M536 172c-21-28-13-66 16-85 29-19 68-8 85 18 10-20 35-31 58-25 27 6 44 27 42 52 30-7 61 13 63 44 3 30-20 56-52 56H571c-29 0-51-20-52-47-1-5 0-9 1-13z" fill="#142D59" stroke="#76DFF0" stroke-opacity=".9" stroke-width="3"/>
+  <path d="M547 191h228" stroke="#79F5E4" stroke-opacity=".45"/>
+  <circle cx="653" cy="157" r="41" fill="#5D84E5" fill-opacity=".17" stroke="#75E4ED" stroke-width="2"/>
+  <path d="M653 126v61m-30-30h60m-52-21 44 44m0-44-44 44" stroke="#B2FFFF" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="653" cy="157" r="13" fill="#94EFFF"/>
+</g>
+<!-- Floating workload modules -->
+<g filter="url(#soft)">
+  <g transform="translate(340 270)">
+    <path d="M0 19 65-9l65 28-65 28Z" fill="#294D8E" stroke="#93B8FF" stroke-width="2"/>
+    <path d="M0 19v70l65 31V46Z" fill="#1B335C" stroke="#72A2EB" stroke-width="2"/>
+    <path d="M130 19v70l-65 31V46Z" fill="#23457D" stroke="#72A2EB" stroke-width="2"/>
+    <path d="M21 52v19m20-11v19" stroke="#68E6D7" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="102" cy="66" r="7" fill="#67F1D9"/>
+  </g>
+  <g transform="translate(850 274) scale(.82)">
+    <path d="M0 19 65-9l65 28-65 28Z" fill="#504594" stroke="#B8A2FF" stroke-width="2"/>
+    <path d="M0 19v70l65 31V46Z" fill="#2E2A67" stroke="#9F8DFB" stroke-width="2"/>
+    <path d="M130 19v70l-65 31V46Z" fill="#453684" stroke="#9F8DFB" stroke-width="2"/>
+    <path d="M20 53v22m19-13v22" stroke="#B1A0FF" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</g>
+<path d="M654 235v40H405M654 235v40h250" fill="none" stroke="#69D9E9" stroke-opacity=".5" stroke-width="2"/>
+<circle cx="405" cy="275" r="4" fill="#7FFFE8"/><circle cx="904" cy="275" r="4" fill="#A69DFF"/>
+<!-- Stylized rover, left foreground -->
+<g filter="url(#soft)" transform="translate(130 425)">
+  <ellipse cx="210" cy="230" rx="242" ry="29" fill="#09112A" opacity=".65"/>
+  <path d="m36 100 35-73 208-8 80 65-18 66H47Z" fill="url(#steel)" stroke="#8BC8EC" stroke-width="3"/>
+  <path d="m70 34 207-5 51 44-266 2Z" fill="#102947" stroke="#78DDEB" stroke-width="2"/>
+  <path d="M78 48h172l39 24H69Z" fill="#153E5E"/>
+  <path d="M33 103 358 86l-4 76-328 9Z" fill="#294A78" stroke="#83A9DE" stroke-width="3"/>
+  <path d="M57 115h270" stroke="#7AF9E6" stroke-width="6" stroke-linecap="round"/>
+  <rect x="142" y="102" width="83" height="42" rx="12" fill="#11243C" stroke="#76EAEC" stroke-width="2"/>
+  <circle cx="163" cy="123" r="9" fill="#7FFFE6"/><circle cx="203" cy="123" r="9" fill="#B0A9FF"/>
+  <g fill="#11203B" stroke="#8EB6EE" stroke-width="10">
+    <circle cx="90" cy="184" r="45"/><circle cx="294" cy="182" r="45"/>
+  </g>
+  <g fill="#3F71B4"><circle cx="90" cy="184" r="26"/><circle cx="294" cy="182" r="26"/></g>
+  <circle cx="90" cy="184" r="11" fill="#86F9DC"/><circle cx="294" cy="182" r="11" fill="#86F9DC"/>
+  <path d="M108 10v-26l30-18 37 18v28" stroke="#8BA5FF" stroke-width="11" fill="none" stroke-linejoin="round"/>
+  <rect x="125" y="-41" width="51" height="23" rx="11" fill="#172B52" stroke="#99CBFA" stroke-width="3"/>
+  <circle cx="155" cy="-30" r="6" fill="#7EFEE4"/>
+</g>
+<!-- Robotic arm, right foreground -->
+<g filter="url(#soft)" transform="translate(813 408)">
+  <ellipse cx="182" cy="270" rx="188" ry="28" fill="#060D24" opacity=".7"/>
+  <path d="m41 217 178-13 46 36-36 23H43Z" fill="#294C78" stroke="#81B7EA" stroke-width="3"/>
+  <path d="m65 217 70-99 45 22-41 84" fill="url(#steel)" stroke="#92D7F5" stroke-width="3"/>
+  <circle cx="156" cy="137" r="30" fill="#1F3760" stroke="#A4E8FC" stroke-width="8"/>
+  <path d="m150 123 37-104 30-13 22 34-40 116" fill="url(#steel)" stroke="#9ADAF4" stroke-width="4"/>
+  <circle cx="210" cy="24" r="26" fill="#254477" stroke="#A0DDFC" stroke-width="8"/>
+  <path d="M210 12 269-77l36 12-51 109" fill="url(#steel)" stroke="#92CBED" stroke-width="4"/>
+  <circle cx="290" cy="-58" r="20" fill="#11294B" stroke="#83F6EC" stroke-width="7"/>
+  <path d="m303-68 36-27m-36 52 39 22" fill="none" stroke="#B3DFFF" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="156" cy="137" r="11" fill="#7AF9E0"/>
+  <circle cx="210" cy="24" r="10" fill="#A5A2FF"/>
+</g>
+<!-- Floating data lights and stars -->
+<g fill="#7BE5E6"><circle cx="160" cy="189" r="3"/><circle cx="230" cy="271" r="2"/><circle cx="1041" cy="158" r="3"/><circle cx="1076" cy="277" r="2"/><circle cx="837" cy="84" r="2"/></g>
+<g opacity=".68" stroke="#83E9E7" stroke-width="2" stroke-linecap="round"><path d="M160 179v20m-10-10h20M1041 148v20m-10-10h20"/></g>
+<path d="M0 695h1200" stroke="#70B1EA" stroke-opacity=".35" stroke-width="2"/>
+</svg>

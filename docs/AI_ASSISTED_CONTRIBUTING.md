@@ -8,26 +8,28 @@ Both tools use our shared [AGENTS.md](../AGENTS.md) instructions: Codex reads it
 
 ## Choose a small, open issue
 
-Start with one of the current [good first issues](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/good%20first%20issue) or [help-wanted tasks](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/help%20wanted). Read the actual issue and its acceptance criteria. Comment politely that you would like to work on it, and check for other active PRs before spending time.
+Start with one of the current [good first issues](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue) or [help-wanted tasks](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/help%20wanted). Read the actual issue and its acceptance criteria. Comment politely that you would like to work on it, and check for other active PRs before spending time.
 
 Suggested starting points (only if still open):
 
 | Issue | Task | What you need |
 |---|---|---|
-| [#25](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/25) | Fix broken monitoring screenshot links and alt text | Markdown and file inspection |
-| [#24](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/24) | Clarify ROS 2 tutorial filenames/namespace and current stress workload | Markdown and basic Kubernetes concepts |
-| [#28](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/28) | Add Bash syntax checks on pull requests | Bash and GitHub Actions |
-| [#29](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/29) | Add offline Kubernetes manifest validation | Kubernetes YAML and CI |
+| [#25](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/25) | Fix broken monitoring screenshot links and alt text | Markdown and file inspection |
+| [#24](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/24) | Clarify ROS 2 tutorial filenames/namespace and current stress workload | Markdown and basic Kubernetes concepts |
+| [#55](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/55) | CPU-only simulated ROS 2 observation/action contract and mock policy | Beginner coding; check the issue for the tools it needs |
+| [#29](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/29) | Add offline Kubernetes manifest validation | Kubernetes YAML and CI |
+
+Issue #25 already has an open PR ([#36](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/36)). Coordinate there, or pick another issue, rather than opening a duplicate.
 
 A documentation-only contribution does not require launching Vagrant. The historical full VM profile needs approximately **30 GB VM RAM and 18 vCPUs**.
 
 ## Step 1 — Fork, clone, and make a branch
 
-On GitHub click **Fork** on the [project repository](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment). Clone **your fork**, not the original repository (replace `YOUR_GITHUB_USERNAME`):
+On GitHub click **Fork** on the [project repository](https://github.com/MSKazemi/ros2-kubernetes-lab). Clone **your fork**, not the original repository (replace `YOUR_GITHUB_USERNAME`):
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/Vagrant-Kubernetes-ROS2-Deployment.git
-cd Vagrant-Kubernetes-ROS2-Deployment
+git clone https://github.com/YOUR_GITHUB_USERNAME/ros2-kubernetes-lab.git
+cd ros2-kubernetes-lab
 git switch -c docs/issue-25-monitoring-images
 git status --short
 ```

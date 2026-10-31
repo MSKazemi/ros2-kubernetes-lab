@@ -129,4 +129,3 @@ The agent should not autonomously push to main or merge its own changes. README 
 Offer self-contained workshops/tutorials, short videos, graded problems, reproducibility challenges and a curated first-contribution pathway. Track reproducible independent installs, external datasets/citations, independent issues/PRs, instructor reuse, research replications and reduction in setup failures. GitHub stars are a **secondary** measure; avoid spam, misleading "working robot" labels and unverified universal benchmarks.
 
 **Course maintenance:** each published semester pins a release/tag, validates commands and dependencies, tracks deprecation of ROS/K8s/HF components, retains historical exercise references, and explicitly notes the support status of resources. Physical hardware modules are excluded until institution/site safety oversight exists.
-

@@ -101,4 +101,3 @@ checklist. Do not edit, merge, push, publish images or close issues.
 Different independent contributors may work in parallel on (a) offline schema/fixtures #55, (b) independent research documentation #60, (c) governance templates #67, (d) read-only evaluation data #65. Coordinate integration via shared contract versions and **one** maintainer-approved release gate. Do not run simultaneous agents that rewrite the same Kubernetes YAML, dependency lockfile or README without review; concurrency is not evidence of correctness.
 
 **Priority rule:** if the selected issue already has an active PR, review/extend that work instead of duplicating it. Historical GitHub issues may be stale; verify state before asking an agent to act. Preserve explicit human consent for external/public posts, model uploads, credential usage and physical experiment decisions.
-

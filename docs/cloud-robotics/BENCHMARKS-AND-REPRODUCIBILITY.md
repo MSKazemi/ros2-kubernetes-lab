@@ -128,4 +128,3 @@ Only after B2 has reliable instrumentation. Compare multi-client contention and 
 - Academic citation and related work (FogROS2, robotics benchmarking, LeRobot) rather than ungrounded novelty marketing.
 
 Use [experiment template](templates/EXPERIMENT-TEMPLATE.md). Existing benchmark issue [#18](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/18) owns the general DDS/monitoring suite; [#60](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/60) adds this AI policy/run contract.
-

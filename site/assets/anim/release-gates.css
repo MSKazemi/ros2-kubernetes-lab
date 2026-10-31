@@ -1,0 +1,63 @@
+/* Release gates animation: "Why a green Docker build is not enough".
+   Visuals keyed on .s-ge-K and [data-step]. Without .is-ready the finished picture shows. */
+.release-gates .t{font:500 16px var(--body);fill:var(--ink)}
+.release-gates .t-strong{font:700 16px var(--body);fill:var(--ink)}
+.release-gates .t-amber{font:700 16px var(--body);fill:var(--amber)}
+.release-gates .t-cyan{font:700 16px var(--body);fill:var(--cyan)}
+.release-gates .t-dim{font:500 16px var(--body);fill:var(--dim)}
+
+.release-gates .cand{fill:rgba(102,235,218,.10);stroke:var(--ok);stroke-width:2.5}
+.release-gates .lane{fill:none;stroke:var(--amber);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.release-gates .row{fill:rgba(16,27,46,.85);stroke:var(--line);stroke-width:2;transition:stroke .4s var(--ease),fill .4s var(--ease)}
+
+/* Finished state (no JS): first gate stops the candidate, the rest are dimmed and unclaimed. */
+.release-gates .g0 .row{stroke:var(--amber);stroke-width:3;fill:rgba(255,166,110,.10)}
+.release-gates .gx .row{stroke:var(--dim);stroke-dasharray:7 6}
+.release-gates .gx .label{fill:var(--dim)}
+.release-gates .r3-note{opacity:0}
+
+/* Reveal by step once the framework is ready. */
+.release-gates.is-ready .k1,.release-gates.is-ready .k2{opacity:0;transform:translateY(6px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.release-gates.is-ready.s-ge-1 .k1,.release-gates.is-ready.s-ge-2 .k2{opacity:1;transform:none}
+.release-gates.is-ready .lane{stroke-dasharray:60;stroke-dashoffset:60;transition:stroke-dashoffset .8s var(--ease)}
+.release-gates.is-ready.s-ge-1 .lane{stroke-dashoffset:0}
+/* Before step 1 all rows look alike; step 1 marks the stop; step 2 dims the rest. */
+.release-gates.is-ready .g0 .row{stroke:var(--line);stroke-width:2;fill:rgba(16,27,46,.85)}
+.release-gates.is-ready.s-ge-1 .g0 .row{stroke:var(--amber);stroke-width:3;fill:rgba(255,166,110,.10)}
+.release-gates.is-ready .gx .row{stroke:var(--line);stroke-dasharray:none}
+.release-gates.is-ready .gx .label{fill:var(--ink);transition:fill .5s var(--ease)}
+.release-gates.is-ready.s-ge-2 .gx .row{stroke:var(--dim);stroke-dasharray:7 6}
+.release-gates.is-ready.s-ge-2 .gx .label{fill:var(--dim)}
+
+/* Step 4: gate that needs real nodes. */
+.release-gates.is-ready.s-ge-2[data-step="3"] .g2 .row{stroke:var(--cyan);stroke-width:3.5;stroke-dasharray:none;fill:rgba(102,235,218,.08)}
+.release-gates.is-ready.s-ge-2[data-step="3"] .g2 .label{fill:var(--ink)}
+.release-gates[data-step="3"] .g2 .r3-claim{opacity:0}
+.release-gates[data-step="3"] .g2 .r3-note{opacity:1}
+
+@media (max-width:640px){
+  .release-gates .t,.release-gates .t-strong,.release-gates .t-amber,.release-gates .t-cyan,.release-gates .t-dim{font-size:26px}
+}
+
+/* Page layout helpers (gate checklist, pager). */
+.gate-list{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:14px}
+.gate-list li{display:grid;grid-template-columns:1fr auto;gap:6px 16px;align-items:start;padding:18px 20px;
+  border:1px solid #334862;border-radius:14px;background:#111f32}
+.gate-list h3{font:600 17px/1.35 var(--display);margin:0 0 4px;color:#ebf5ff}
+.gate-list p{margin:0 0 6px;font-size:14px;color:#b1c2d7;line-height:1.65}
+.gate-list .today{margin:0;color:#9bacbf;font-size:13px}
+.gate-list .lab-chip{justify-self:end;white-space:nowrap}
+.phase-pager{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:stretch;margin:0}
+.phase-pager a{flex:1 1 260px;display:block;padding:18px 20px;border:1px solid #334862;border-radius:14px;background:#111f32;color:inherit;text-decoration:none;transition:border-color .2s,transform .2s}
+.phase-pager a:hover{border-color:#63bcb2;text-decoration:none;transform:translateY(-2px)}
+.phase-pager small{display:block;font:700 12px var(--mono);color:#91eddf;margin-bottom:4px}
+.phase-pager strong{font:600 17px/1.35 var(--display);color:#ebf5ff}
+.phase-pager .next{text-align:right}
+.phase-hub-link{margin:18px 0 0;font-size:14px}
+@media (max-width:640px){
+  .gate-list li{grid-template-columns:1fr}
+  .gate-list .lab-chip{justify-self:start}
+  .phase-pager .next{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){.phase-pager a:hover{transform:none}}

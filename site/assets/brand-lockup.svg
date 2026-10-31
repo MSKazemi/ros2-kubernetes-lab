@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="120" viewBox="0 0 660 120" role="img" aria-labelledby="t d"><title id="t">ROS 2 Kubernetes Lab wordmark</title><desc id="d">Connected node mark alongside the ROS 2 Kubernetes Lab title</desc>
+<g transform="translate(12 10) scale(.4) rotate(-12 128 128)">
+  <rect x="28" y="28" width="94" height="94" rx="23" fill="#66EBDA"/><rect x="134" y="28" width="94" height="94" rx="23" fill="#7397FF"/><rect x="28" y="134" width="94" height="94" rx="23" fill="#7397FF"/><rect x="134" y="134" width="94" height="94" rx="23" fill="#A493FF"/><circle cx="128" cy="128" r="8" fill="#EEFFFF"/>
+</g>
+<text x="132" y="62" fill="#F0F5FF" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="47" letter-spacing="-1.5">ROS 2</text>
+<text x="292" y="62" fill="#6FECE0" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="47" letter-spacing="-1">/</text>
+<text x="324" y="62" fill="#F0F5FF" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="47" letter-spacing="-1.7">K8S LAB</text>
+<text x="134" y="94" fill="#93A9C6" font-family="Arial,Helvetica,sans-serif" font-size="18" letter-spacing="3">BUILD · OBSERVE · EXPERIMENT</text>
+</svg>

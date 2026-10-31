@@ -42,4 +42,3 @@ This table is a **starting set of risks**, not exhaustive. Add scenario-specific
 - [ ] Public claims will distinguish proposed, synthetic, simulated, integrated and real-world evidence.
 
 **Decision summary:** [risk accepted for simulation / blocked / requires additional reviewer]; rationale, verification artifact and next review trigger. No real robot safety permission can arise from this document alone.
-

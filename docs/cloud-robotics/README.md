@@ -71,4 +71,3 @@ A simulator is still a model of reality, not a physical-safety test. LLMs **neve
 No production SLAs, fleet management suite, replacement for ROS 2/LeRobot/FogROS2/Open-RMF/Nav2, hard-real-time motion guarantee, physical autonomy, self-issued safety certification, autonomous public-cloud robot actuation, secret-bearing public datasets or claims that SmolVLA is drop-in compatible with arbitrary ROS topics.
 
 **Documentation maturity:** The pages in this folder describe *proposals, experiment specifications and templates*. This work has not installed a fresh supported cluster, evaluated an AI model, or measured a real robot. Keep this warning when sharing screenshots, blog posts, papers or conference submissions.
-

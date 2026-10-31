@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+<title id="title">ROS 2 Kubernetes Lab logo mark</title><desc id="desc">Four interconnected geometric modules suggesting robotics nodes and Kubernetes infrastructure.</desc>
+<defs>
+  <linearGradient id="tileA" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#A2FFF0"/><stop offset="1" stop-color="#42CBBF"/></linearGradient>
+  <linearGradient id="tileB" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8CB7FF"/><stop offset="1" stop-color="#5D75EB"/></linearGradient>
+  <linearGradient id="tileC" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#C4A8FF"/><stop offset="1" stop-color="#8069DB"/></linearGradient>
+  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<g transform="rotate(-12 128 128)">
+  <path d="M128 40V216M40 128H216" stroke="#8AE8EC" stroke-opacity=".20" stroke-width="8" stroke-linecap="round"/>
+  <rect x="21" y="21" width="100" height="100" rx="24" fill="#52E0CD" opacity=".25" filter="url(#glow)"/>
+  <rect x="28" y="28" width="94" height="94" rx="23" fill="url(#tileA)"/>
+  <rect x="134" y="28" width="94" height="94" rx="23" fill="url(#tileB)"/>
+  <rect x="28" y="134" width="94" height="94" rx="23" fill="url(#tileB)"/>
+  <rect x="134" y="134" width="94" height="94" rx="23" fill="url(#tileC)"/>
+  <g fill="none" stroke="#09162B" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" opacity=".78">
+    <path d="M57 74h37M75.5 55.5v37"/>
+    <path d="M160 55l44 40M204 55l-44 40"/>
+    <path d="M55 181h40"/>
+    <circle cx="181" cy="181" r="20"/>
+  </g>
+  <circle cx="128" cy="128" r="8" fill="#E4FFFF"/>
+</g>
+</svg>

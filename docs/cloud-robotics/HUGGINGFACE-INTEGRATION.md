@@ -117,4 +117,3 @@ A demo should start with a **mock policy**. Then evaluate a real checkpoint **on
 - [#56](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/56) licensed dataset converter; [#57](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/57) plugin/policy compatibility; [#58](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/58) Hub immutable revisions; [#61](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/61) server; [#62](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/62) edge-cloud experiment; [#68](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/68) public read-only Space.
 
 No Hugging Face user account, model/dataset repository or Space has been created by this planning work.
-

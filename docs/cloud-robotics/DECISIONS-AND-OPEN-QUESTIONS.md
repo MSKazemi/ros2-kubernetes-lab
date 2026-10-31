@@ -58,4 +58,3 @@ Physical robotics is **not an early phase**. Separate institutional review, lega
 ## Changelog
 
 - **2026-10-27:** Initial discussion record prepared alongside 16 granular AI/LLM/cloud-robotics proposal issues. No simulator, model evaluation, cloud run, web page or production robot capability has been implemented by this decision log.
-

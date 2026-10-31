@@ -117,4 +117,3 @@ Replace placeholders with actual run values. Log model/dataset/image revisions, 
 - [ ] Claims distinguish model inference, safe gate acceptance, ROS message delivery and simulator task success.
 - [ ] All clock and statistical assumptions are explicit; no p99 claims from a tiny sample.
 - [ ] Reproduce script, limitations, negative cases and source versions are included.
-

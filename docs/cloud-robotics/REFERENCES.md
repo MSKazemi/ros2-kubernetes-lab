@@ -61,4 +61,3 @@
 5. Don't copy code, datasets or weights whose license/redistribution terms are unclear.
 6. If a regulation or standard is mentioned, record product category/region, applicable text/version and need for qualified legal or safety review.
 7. When a third-party system (LeRobot remote inference or ROS/Zenoh) already provides a feature, evaluate and reuse instead of declaring a first-of-kind invention.
-

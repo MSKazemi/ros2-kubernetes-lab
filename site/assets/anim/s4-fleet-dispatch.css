@@ -1,0 +1,68 @@
+/* Scenario 4: "Who gets the next task?". Step state is carried by custom properties set
+ * per data-step on the figure; the base rules (no data-step, so no JavaScript) equal the
+ * finished step 5 (fair-share result). Bars are unitless and illustrative. */
+.s4{--edge:#8aa0c2;
+  --qo-tx:56px;--qo-op:0;--q1-tx:106px;--q1-op:0;--q2-tx:100px;--q2-op:1;--ao-tx:56px;--ao-op:0;--a1-tx:106px;--a1-op:0;
+  --bs:.32;--bc:.36;--ba:.4}
+.s4[data-step="0"]{--qo-tx:0px;--qo-op:1;--q1-tx:0px;--q1-op:1;--q2-tx:0px;--q2-op:0;--ao-tx:0px;--ao-op:1;--a1-tx:0px;--a1-op:1;--bs:.04;--bc:.04;--ba:.04}
+.s4[data-step="1"]{--qo-tx:56px;--qo-op:0;--q1-tx:50px;--q1-op:1;--q2-tx:0px;--q2-op:1;--ao-tx:0px;--ao-op:1;--a1-tx:0px;--a1-op:1;--bs:.15;--bc:.2;--ba:.45}
+.s4[data-step="2"]{--qo-tx:56px;--qo-op:0;--q1-tx:106px;--q1-op:0;--q2-tx:100px;--q2-op:1;--ao-tx:0px;--ao-op:1;--a1-tx:0px;--a1-op:1;--bs:.2;--bc:.3;--ba:1}
+.s4[data-step="3"]{--qo-tx:56px;--qo-op:0;--q1-tx:50px;--q1-op:1;--q2-tx:0px;--q2-op:1;--ao-tx:56px;--ao-op:0;--a1-tx:50px;--a1-op:1;--bs:.2;--bc:.2;--ba:.2}
+
+.s4 .h{font:400 21px var(--body);fill:var(--sub)}
+.s4 .nm{font:600 22px var(--body);fill:var(--ink)}
+.s4 .st{font:600 21px var(--body)}
+.s4 .rule{stroke:var(--line);stroke-width:2}
+
+/* Policy banner: one of four lines per step (base shows the finished one). */
+.s4 .bn{font:600 22px var(--body);fill:var(--ink);opacity:0;transition:opacity .45s var(--ease)}
+.s4 .bn-fair{opacity:1}
+.s4[data-step] .bn-fair{opacity:0}
+.s4[data-step="0"] .bn-0,.s4[data-step="1"] .bn-naive,.s4[data-step="2"] .bn-naive,.s4[data-step="3"] .bn-fair,.s4[data-step="4"] .bn-fair{opacity:1}
+.s4 .bn-naive{fill:var(--amber)}
+
+/* Queue chips. */
+.s4 .chip{fill:var(--panel2);stroke:var(--edge);stroke-width:2.5}
+.s4[data-step="2"] .chip-a{stroke:var(--amber)}
+.s4 .q-o{transform:translateX(var(--qo-tx));opacity:var(--qo-op)}
+.s4 .q-1{transform:translateX(var(--q1-tx));opacity:var(--q1-op)}
+.s4 .q-2{transform:translateX(var(--q2-tx));opacity:var(--q2-op)}
+.s4 .a-o{transform:translateX(var(--ao-tx));opacity:var(--ao-op)}
+.s4 .a-1{transform:translateX(var(--a1-tx));opacity:var(--a1-op)}
+.s4 .q-o,.s4 .q-1,.s4 .q-2,.s4 .a-o,.s4 .a-1{transition:transform .9s var(--ease),opacity .6s var(--ease)}
+
+/* Robots and assignment lines. */
+.s4 .robot{fill:var(--panel2);stroke:var(--cyan);stroke-width:3;transition:stroke .5s var(--ease)}
+.s4[data-step="0"] .rb-q{stroke:var(--edge)}
+.s4[data-step="0"] .rb-a,.s4[data-step="1"] .rb-a,.s4[data-step="2"] .rb-a{stroke:var(--edge);stroke-dasharray:7 5}
+.s4 .ln{fill:none;stroke:var(--cyan);stroke-width:3;stroke-linecap:round;stroke-dasharray:48;stroke-dashoffset:0;transition:stroke-dashoffset .8s var(--ease)}
+.s4 .ah{fill:var(--cyan);transition:opacity .4s var(--ease) .5s}
+.s4[data-step="0"] .ln-q{stroke-dashoffset:48}
+.s4[data-step="0"] .ah-q{opacity:0;transition-delay:0s}
+.s4[data-step="0"] .ln-a,.s4[data-step="1"] .ln-a,.s4[data-step="2"] .ln-a{stroke-dashoffset:48}
+.s4[data-step="0"] .ah-a,.s4[data-step="1"] .ah-a,.s4[data-step="2"] .ah-a{opacity:0;transition-delay:0s}
+.s4 .block{fill:none;stroke:var(--amber);stroke-width:4;stroke-linecap:round;opacity:0;transition:opacity .45s var(--ease)}
+.s4[data-step="2"] .block{opacity:1}
+
+/* Status words beside the waiting bars. Text always accompanies colour. */
+.s4 .w{opacity:0;transition:opacity .45s var(--ease)}
+.s4 .w-served{fill:var(--cyan);opacity:1}
+.s4[data-step="0"] .w-served{opacity:0}
+.s4 .w-arm-wait,.s4 .w-arm-starved{fill:var(--amber)}
+.s4[data-step="1"] .w-arm-wait,.s4[data-step="2"] .w-arm-starved{opacity:1}
+.s4[data-step="1"] .w-arm-served,.s4[data-step="2"] .w-arm-served,.s4[data-step="0"] .w-arm-served{opacity:0}
+
+/* Waiting bars: fill length only, no unit. */
+.s4 .track{fill:var(--panel);stroke:var(--edge);stroke-width:2.5}
+.s4 .bar{fill:var(--cyan);transform-box:fill-box;transform-origin:0 50%;transition:transform .9s var(--ease)}
+.s4 .bar-s{transform:scaleX(var(--bs))}
+.s4 .bar-c{transform:scaleX(var(--bc))}
+.s4 .bar-a{transform:scaleX(var(--ba))}
+.s4[data-step="1"] .bar-a,.s4[data-step="2"] .bar-a{fill:url(#s4-hatch)}
+.s4 .bar-a-edge{fill:none;stroke:var(--amber);stroke-width:2.5;opacity:0;transition:opacity .45s var(--ease)}
+.s4[data-step="2"] .bar-a-edge{opacity:1}
+
+@media (max-width:640px){
+  .s4 .h{font-size:22px}
+  .s4 .st{font-size:22px}
+}
