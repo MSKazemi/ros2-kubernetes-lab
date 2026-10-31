@@ -71,7 +71,7 @@ No working Kubernetes setup is provided by this container-only migration. The fi
 
 ## Optional ros2_pulse telemetry pilot (issue #52)
 
-> **Status: pilot.** Only the same-container check below is automated. The Kubernetes manifest has **not** been applied to a cluster, talker-to-listener delivery between two pods (same node or different workers) is **not** validated, and no DDS-vs-Zenoh result is claimed.
+> **Status: pilot.** Only the same-container check below is automated. The Kubernetes manifest has had one contributor-reported run on a 3-node kind cluster ([details](#reported-kind-run-contributor-reported-not-reproduced)) that the maintainers have **not** reproduced. In that run the pods started, but talker-to-listener delivery between pods worked only after a discovery server was added, which this manifest does not include. No DDS-vs-Zenoh result is claimed.
 
 [ros2_pulse](https://github.com/TanayK07/ros2_pulse) is an `LD_PRELOAD` probe. Inside each ROS 2 process it counts how often each topic is published and how often subscription callbacks run, and appends one window of rates per period to a log file. It needs no ROS rebuild, adds no node and sends no DDS traffic. The image installs it but does not enable it: a process is instrumented only when its own environment sets `LD_PRELOAD`.
 
@@ -101,7 +101,7 @@ docker run --rm -i --platform linux/amd64 --user 1000:1000 ros-jazzy-lab:local b
 
 [`scripts/test-ros2-pulse.sh`](../../scripts/test-ros2-pulse.sh) fails if the image sets `LD_PRELOAD` by default or if the probe, `pulse-check` or `pulse-export` is missing. It then starts the `demo_nodes_cpp` listener and talker with the four variables on those two processes only, waits for three 5 s windows from each, and requires the probe start banner and an `I heard:` line. `pulse-check` must then pass a spec asking for `/chatter` at 0.5 Hz or more on the publish side (talker log) and the callback side (listener log), with `/talker` and `/listener` present. Last, `pulse-export` runs on `127.0.0.1:9464` and `/metrics` must carry positive `/chatter` publish and receive series. The existing `scripts/test-ros2-image.sh` still runs first with nothing preloaded.
 
-### Kubernetes example (not cluster-tested)
+### Kubernetes example (pilot)
 
 [`pulse-talker-listener.yaml`](./pulse-talker-listener.yaml) creates the namespace `ros2-pulse-pilot` with two one-replica Deployments in separate pods: `pulse-talker` (containers `talker` and `pulse-export`) and `pulse-listener` (containers `listener` and `pulse-export`). In each pod:
 
@@ -139,6 +139,18 @@ kubectl delete namespace ros2-pulse-pilot
 
 The demo talker publishes once per second, so a working talker pod shows `ros2_pulse_topic_publish_rate_hertz{pid="talker.jsonl",topic="/chatter",path="inter"}` near 1. The listener pod shows a matching `ros2_pulse_topic_receive_rate_hertz` only if the two pods discovered each other. If it has no `/chatter` series and no `I heard:` lines, discovery between the pods failed, which is common on CNIs without multicast (see the [DDS guide](../../docs/ROS2-KUBERNETES-DDS-GUIDE.md)). This pilot does not fix discovery. With an explicit `ROS_TOPIC_STATS_OUTPUT_FILE`, pulse-export labels series with the file name (`pid="talker.jsonl"`), not a process id.
 
+### Reported kind run (contributor-reported, not reproduced)
+
+The contributor ran this manifest unchanged on a 3-node kind cluster (kind v0.33.0, Kubernetes v1.37.0, the node layout proposed in [#97](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/97)) in GitHub Actions on their fork, on amd64 and arm64, with an image built from this PR: [run 41160572458](https://github.com/TanayK07/ros2-kubernetes-lab/actions/runs/41160572458). Reported results:
+
+- Both pods `2/2 Running` with 0 restarts over about 4 minutes, talker and listener on different workers; `kubectl port-forward` to the exporter worked.
+- The talker's `/chatter` publish rate was 1.0 Hz on every scrape.
+- **The listener received nothing**, and its `/chatter` series was absent rather than 0: multicast discovery did not reach between pods, also with both pods on one worker. With a Fast DDS discovery server added only in the contributor's CI overlay (not in this repository), the listener's `/chatter` rate was 1.0 Hz, 61 messages heard for 61 published.
+- Each ROS container used about 155 MiB of its 256 Mi limit, flat, with no OOM kill; pulse-export used about 13 MB.
+- arm64 built only when the arm64 apt pins were passed as build arguments, because the build farm stamps arm64 package versions differently. The Dockerfile pins are amd64 pins.
+
+Not covered by that run: a real multi-machine cluster, other CNIs, restarts, scaling, more than one subscriber, long runs. **Until a discovery mechanism is added, treat the listener pod of this example as expected to report no `/chatter` series** on clusters without multicast between pods; see the [DDS guide](../../docs/ROS2-KUBERNETES-DDS-GUIDE.md). A discovery-server variant is a follow-up.
+
 ### Reading the numbers
 
 - **Per-process counts, not end-to-end delivery.** The publish rate is `publish()` calls counted inside the talker process; the receive rate is subscription callbacks counted inside the listener process; each is a count divided by the window length. Nothing matches a received message to a sent one, so equal rates are consistent with delivery but do not prove that every message arrived once, in order or on time.
@@ -154,16 +166,16 @@ The demo talker publishes once per second, so a working talker pod shows `ros2_p
 | Image builds with the pinned packages; `pulse-export --help` runs at build time | CI, [`ros2-image-ci.yml`](../../.github/workflows/ros2-image-ci.yml) | Automated on PRs touching the Dockerfile or test scripts |
 | Default image unchanged: existing smoke test with nothing preloaded, no `LD_PRELOAD` in the image environment | CI | Automated |
 | Probe, `pulse-check` and `pulse-export` with talker and listener in one container, as uid 1000 | CI, `scripts/test-ros2-pulse.sh` | Automated |
-| Manifest applies; pods start with these security settings, limits and volume | Any cluster | **Not run** |
-| Talker to listener between two pods on one node | Any cluster | **Not run** |
-| Talker to listener across workers | Multi-node cluster ([#14](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/14), [#15](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/15)) | **Not run** |
-| `kubectl port-forward` to the `127.0.0.1`-bound exporter | Any cluster | **Not run** |
+| Manifest applies; pods start with these security settings, limits and volume | 3-node kind | Contributor-reported, not reproduced |
+| Talker to listener between two pods on one node | 3-node kind | Contributor-reported: **no delivery** without a discovery server; delivery with one (CI overlay only) |
+| Talker to listener across workers | 3-node kind; real multi-node cluster ([#14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14), [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15)) | kind: contributor-reported, as above; real multi-node cluster **not run** |
+| `kubectl port-forward` to the `127.0.0.1`-bound exporter | 3-node kind | Contributor-reported, not reproduced |
 | Restarts, scaling, several subscribers | Any cluster | **Not run** |
-| arm64 image | Not covered | **Not run** |
+| arm64 image | Contributor's fork CI | Builds only with arm64 apt pins passed as build arguments; the repository CI is amd64 only |
 
 ### Validating the counts later with sequence-numbered messages
 
-For the broader benchmark ([#18](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/18), [#48](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/48)), check the probe counts against an independent count:
+For the broader benchmark ([#18](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/18), [#48](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/48)), check the probe counts against an independent count:
 
 1. Publish test messages carrying a sequence number that increases by one per message, plus a send timestamp, at a fixed rate. For a first look, the demo talker's `Hello World: N` already carries a counter.
 2. In the subscriber, record every received sequence number and derive received, missing, duplicate and out-of-order counts.
@@ -182,7 +194,7 @@ Agreement within about one message per window boundary supports using the probe 
 | Repository-built image | `ros-jazzy-with-stress-ng:sha-475988ae383e361ebbc60c1c6e0614ecd93694d1` | Published and smoke-tested in [run 38228962264](https://github.com/MSKazemi/ros2-kubernetes-lab/actions/runs/38228962264); digest recorded above; public pull access not yet independently checked |
 | Architectures | `linux/amd64` | CI-covered when green; arm64 not validated |
 | Additional apt packages | `ros-jazzy-demo-nodes-cpp=0.33.11-1noble.20260920.235420`, `stress-ng=0.17.06-1build1` | Direct package versions pinned from the successful 2026-10-12 CI installation; **transitive dependency versions are not locked** |
-| ros2_pulse pilot packages | `ros-jazzy-ros2-pulse=0.5.0-1noble.20260914.160740`, `python3-venv=3.12.3-0ubuntu2.1`, PyPI `ros2-pulse-top==0.6.1` (wheel sha256 pinned, `--no-deps`) | Resolved from the package indexes on 2026-10-28; first CI build pending on the PR; **transitive apt versions are not locked** |
+| ros2_pulse pilot packages | `ros-jazzy-ros2-pulse=0.5.0-1noble.20260914.160740`, `python3-venv=3.12.3-0ubuntu2.1`, PyPI `ros2-pulse-top==0.6.1` (wheel sha256 pinned, `--no-deps`) | Resolved from the package indexes on 2026-10-28; built and tested on amd64 in the PR's CI; **transitive apt versions are not locked** |
 | Full Kubernetes environment | Legacy Kubernetes 1.29 / Weave Net | **Not modernized or tested** in this PR |
 | Lyrical profile | Ubuntu 26.04 platform | Deferred; no claim of support |
 

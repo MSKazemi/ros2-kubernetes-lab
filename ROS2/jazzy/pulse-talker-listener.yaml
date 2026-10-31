@@ -2,10 +2,11 @@
 # separate pods, each with the probe preloaded on the ROS container and a pod-local
 # pulse-export sidecar reading the probe's log from a shared emptyDir.
 #
-# NOT cluster-tested: only parsed as YAML. Talker-to-listener discovery between two pods,
-# same node or different workers, is NOT validated here (see #14 and #15). If the pods cannot
-# discover each other, the talker pod still reports /chatter publishes and the listener pod
-# reports no /chatter callbacks.
+# One contributor-reported run on a 3-node kind cluster (not reproduced by the maintainers; see
+# ROS2/jazzy/README.md, "Reported kind run"): pods start, but without a discovery server the
+# listener never receives /chatter. Cross-pod discovery is NOT provided here (see #14 and #15).
+# If the pods cannot discover each other, the talker pod still reports /chatter publishes and
+# the listener pod reports no /chatter callbacks.
 #
 # Image: ros-jazzy-lab:local, built from ROS2/Dockerfile at this commit (it contains
 # ros-jazzy-ros2-pulse and pulse-export). The Docker Hub digest recorded in
