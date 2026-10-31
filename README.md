@@ -224,6 +224,8 @@ Python and Jupyter Notebook setups for analyzing data collected from the environ
 
 ## Use Cases
 
+These pins are deliberately left as recorded. They have **not** been bumped or re-tested. As checked on 2026-10-31: Kubernetes 1.29 is past end of life (1.37.2 is the latest stable release), and the Weave Net and Kubernetes Dashboard repositories are archived with no newer release. Upgrading them means replacing the CNI and dashboard, not just changing a version number; see [modernization issue #7](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7). The CI actions and the Jazzy container image are kept current and are checked separately.
+
 - **Study ROS 2 on Kubernetes locally** without cloud costs, on a sufficiently resourced workstation.
 - **Prototype and test** containerized robotics middleware and DDS communication patterns.
 - **Study Kubernetes autoscaling** (HPA/VPA) and self-healing behavior under load with `stress-ng`.
