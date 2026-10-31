@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MSKazemi/ros2-kubernetes-lab/examples/cloud-robotics/mock-policy/schema/observation.v1.schema.json",
+  "title": "Simulated observation message, contract ros2-obs-action/v1",
+  "description": "Documentation of the contract. The executable authority is validate.py (it also checks monotonic sequence/timestamps, base64 length, per-joint limits and key mapping, which JSON Schema cannot express). Simulated educational contract; not a safety gate.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "simulated", "observation_id", "sequence_id", "source_timestamp_ns", "frame_name", "task_id", "ttl_ms", "cameras", "state"],
+  "properties": {
+    "contract_version": {"const": "ros2-obs-action/v1"},
+    "simulated": {"const": true},
+    "observation_id": {"$ref": "#/$defs/identifier"},
+    "sequence_id": {"type": "integer", "minimum": 0, "maximum": 9007199254740992},
+    "source_timestamp_ns": {"type": "integer", "minimum": 0, "maximum": 9007199254740992, "description": "Monotonic source clock in nanoseconds; must strictly increase per stream."},
+    "frame_name": {"$ref": "#/$defs/identifier"},
+    "task_id": {"$ref": "#/$defs/identifier"},
+    "ttl_ms": {"type": "integer", "minimum": 1, "maximum": 10000},
+    "cameras": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "key", "width", "height", "encoding", "data_b64"],
+        "properties": {
+          "name": {"enum": ["front_rgb", "wrist_rgb"]},
+          "key": {"enum": ["observation.images.front", "observation.images.wrist"], "description": "Must match the name: front_rgb -> observation.images.front, wrist_rgb -> observation.images.wrist."},
+          "width": {"type": "integer", "minimum": 1, "maximum": 1024},
+          "height": {"type": "integer", "minimum": 1, "maximum": 1024},
+          "encoding": {"enum": ["rgb8", "mono8"]},
+          "data_b64": {"type": "string", "description": "Base64 of width*height*channels bytes."}
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["names", "units", "values"],
+      "properties": {
+        "names": {"const": ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper"]},
+        "units": {"const": ["rad", "rad", "rad", "rad", "rad", "m"]},
+        "values": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"type": "number"}}
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$"}
+  }
+}

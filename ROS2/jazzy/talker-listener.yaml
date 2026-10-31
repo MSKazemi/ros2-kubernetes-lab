@@ -1,0 +1,227 @@
+# Self-starting ROS 2 Jazzy talker/listener demo for the kind profile (issues #14 and #16).
+#
+# Scope: educational lab. Separate from the stress-ng examples (ROS2/ros_dep_*.yaml and
+# ROS2/jazzy/stress-deployment.yaml), which are unchanged.
+#
+# Requirements:
+#   * Image ros2k8s-demo-ros:local built from ROS2/Dockerfile and loaded into the worker nodes
+#     (`make demo` does this; imagePullPolicy is Never, nothing is pulled or published).
+#   * Worker nodes labelled ros2k8s-demo/role=talker and ros2k8s-demo/role=listener
+#     (kind/ros2k8s-demo.yaml does this). These labels put talker and listener on different workers.
+#
+# DDS discovery: the default Fast DDS multicast discovery was tested first on kind's default
+# CNI and did not deliver messages between the two workers (see docs/KIND-DEMO.md for the recorded
+# result). This profile therefore uses a Fast DDS Discovery Server (ROS_DISCOVERY_SERVER) reachable
+# through a ClusterIP Service. All settings live in the ConfigMap below.
+#
+# `ulimit -n 1024`: the container runtime inside kind hands out a ~1e9 open-files limit. Measured on
+# the development host with that limit, a talker container used ~299 MB (RSS ~160 MB per process) and
+# was OOM-killed at a 256Mi memory limit; with the limit lowered to 1024 it used ~30 MB. The commands
+# below therefore lower the limit before starting the node (cause not investigated further).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ros
+  labels:
+    # Informational only (warn/audit, not enforce) so this file can share the namespace with the
+    # legacy stress examples. The pods below satisfy the "restricted" Pod Security profile.
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ros2-dds-config
+  namespace: ros
+data:
+  ROS_DOMAIN_ID: "42"
+  RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+  # Fast DDS Discovery Server (client mode). The Service DNS name below resolves in-cluster.
+  ROS_DISCOVERY_SERVER: discovery-server.ros.svc.cluster.local:11811
+  # Pods are not on the host network; only discovery through the server is expected.
+  ROS_AUTOMATIC_DISCOVERY_RANGE: SUBNET
+  # Unbuffered logs so `kubectl logs` shows messages immediately.
+  RCUTILS_LOGGING_BUFFERED_STREAM: "0"
+  RCUTILS_COLORIZED_OUTPUT: "0"
+  # Read-only root filesystem: keep HOME and ROS logs in the writable /tmp emptyDir.
+  HOME: /tmp
+  ROS_LOG_DIR: /tmp/ros-log
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: discovery-server
+  namespace: ros
+  labels:
+    app: discovery-server
+spec:
+  selector:
+    app: discovery-server
+  ports:
+    - name: discovery
+      protocol: UDP
+      port: 11811
+      targetPort: 11811
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discovery-server
+  namespace: ros
+  labels:
+    app: discovery-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discovery-server
+  template:
+    metadata:
+      labels:
+        app: discovery-server
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 5
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: discovery-server
+          image: ros2k8s-demo-ros:local
+          imagePullPolicy: Never
+          command: ["/bin/sh", "-c"]
+          args: ["ulimit -n 1024 && exec /ros_entrypoint.sh fast-discovery-server -i 0 -l 0.0.0.0 -p 11811"]
+          envFrom:
+            - configMapRef:
+                name: ros2-dds-config
+          ports:
+            - containerPort: 11811
+              protocol: UDP
+          # Ready once the process is bound to UDP port 11811 (0x2E23 in /proc/net/udp).
+          readinessProbe:
+            exec:
+              command: ["/bin/sh", "-c", "grep -qi ':2E23 ' /proc/net/udp"]
+            initialDelaySeconds: 2
+            periodSeconds: 3
+          resources:
+            requests: { cpu: 20m, memory: 16Mi }
+            limits: { cpu: 100m, memory: 64Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: talker
+  namespace: ros
+  labels:
+    app: talker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: talker
+  template:
+    metadata:
+      labels:
+        app: talker
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 5
+      nodeSelector:
+        ros2k8s-demo/role: talker
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: talker
+          image: ros2k8s-demo-ros:local
+          imagePullPolicy: Never
+          command: ["/bin/sh", "-c"]
+          args: ["ulimit -n 1024 && exec /ros_entrypoint.sh ros2 run demo_nodes_cpp talker"]
+          envFrom:
+            - configMapRef:
+                name: ros2-dds-config
+          resources:
+            requests: { cpu: 50m, memory: 48Mi }
+            limits: { cpu: 250m, memory: 128Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: listener
+  namespace: ros
+  labels:
+    app: listener
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: listener
+  template:
+    metadata:
+      labels:
+        app: listener
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 5
+      nodeSelector:
+        ros2k8s-demo/role: listener
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: listener
+          image: ros2k8s-demo-ros:local
+          imagePullPolicy: Never
+          command: ["/bin/sh", "-c"]
+          args: ["ulimit -n 1024 && exec /ros_entrypoint.sh ros2 run demo_nodes_cpp listener"]
+          envFrom:
+            - configMapRef:
+                name: ros2-dds-config
+          resources:
+            requests: { cpu: 50m, memory: 48Mi }
+            limits: { cpu: 250m, memory: 128Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi

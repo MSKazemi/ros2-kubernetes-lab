@@ -19,3 +19,9 @@ ROS2/VPA.yaml:VerticalPodAutoscaler -- CRD from kubernetes/autoscaler; no built-
 # (they have no apiVersion/kind). The rendered chart output is not stored in this repo.
 MonitoringSystem/values.yaml:* -- Helm values file (kube-prometheus-stack defaults), not a Kubernetes manifest
 MonitoringSystem/kube-prometheus-stack-values.yaml:* -- Helm values file (kube-prometheus-stack overrides), not a Kubernetes manifest
+
+# kind cluster configuration (apiVersion kind.x-k8s.io/v1alpha4, kind: Cluster) for the
+# lightweight kind profile. It configures the kind tool, it is not a Kubernetes API object, so
+# no Kubernetes schema exists for it. The workloads that profile deploys
+# (ROS2/jazzy/talker-listener.yaml) ARE validated.
+kind/ros2k8s-demo.yaml:* -- kind tool cluster config, not a Kubernetes API object

@@ -1,0 +1,30 @@
+{
+  "action_space": "joint_position_target",
+  "command": "set_joint_targets",
+  "contract_version": "ros2-obs-action/v1",
+  "created_timestamp_ns": 1101000000,
+  "model_id": "MOCK-policy-do-not-report-accuracy",
+  "model_revision": "mock-0",
+  "observation_id": "obs-0001",
+  "sequence_id": 1,
+  "simulated": true,
+  "source_id": "MOCK-policy-01",
+  "task_id": "task-synthetic-reach",
+  "ttl_ms": 100,
+  "units": [
+    "rad",
+    "rad",
+    "rad",
+    "rad",
+    "rad",
+    "m"
+  ],
+  "values": [
+    0.82554,
+    0.414001,
+    0.552728,
+    0.074276,
+    0.233825,
+    0.025194
+  ]
+}

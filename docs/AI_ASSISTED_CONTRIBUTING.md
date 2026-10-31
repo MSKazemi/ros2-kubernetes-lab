@@ -16,7 +16,7 @@ Suggested starting points (only if still open):
 |---|---|---|
 | [#25](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/25) | Fix broken monitoring screenshot links and alt text | Markdown and file inspection |
 | [#24](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/24) | Clarify ROS 2 tutorial filenames/namespace and current stress workload | Markdown and basic Kubernetes concepts |
-| [#55](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/55) | CPU-only simulated ROS 2 observation/action contract and mock policy | Beginner coding; check the issue for the tools it needs |
+| [#55](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/55) | CPU-only simulated ROS 2 observation/action contract and mock policy | Beginner coding; check the issue for the tools it needs. A first simulated version exists, see [the contract guide](OBSERVATION-ACTION-CONTRACT.md); extend it rather than duplicating |
 | [#29](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/29) | Add offline Kubernetes manifest validation | Kubernetes YAML and CI |
 
 Issue #25 already has an open PR ([#36](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/36)). Coordinate there, or pick another issue, rather than opening a duplicate.

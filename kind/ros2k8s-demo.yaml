@@ -1,0 +1,26 @@
+# Lightweight local profile for the ROS 2 Kubernetes lab (issue #16):
+# one control plane + two workers, all as Docker containers (kind).
+# Educational/CI use only: this is NOT the Vagrant/kubeadm profile and NOT a production setup.
+#
+# Cluster name "ros2k8s-demo" -> kubectl context "kind-ros2k8s-demo", Docker containers
+# "ros2k8s-demo-control-plane", "ros2k8s-demo-worker" and "ros2k8s-demo-worker2".
+#
+# The node image is pinned (it is the default image of kind v0.33.0) so that the Kubernetes
+# version does not change silently; pair this file with a matching kind release.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: ros2k8s-demo
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
+  # Deterministic placement: the manifests pin the talker to the node labelled
+  # ros2k8s-demo/role=talker and the listener to ros2k8s-demo/role=listener, so the two
+  # always run on DIFFERENT workers.
+  - role: worker
+    image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
+    labels:
+      ros2k8s-demo/role: talker
+  - role: worker
+    image: kindest/node:v1.37.0@sha256:a1ed56cfb0e7b93589bdf97c8cd566405a265939e3620fc4f5de89adff580ae5
+    labels:
+      ros2k8s-demo/role: listener
