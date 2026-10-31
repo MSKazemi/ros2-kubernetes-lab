@@ -1,0 +1,56 @@
+name: Cross-platform checks
+
+# Proves that the static tooling and the line-ending protection work on the host
+# operating systems contributors actually use. This does NOT start Vagrant, VirtualBox,
+# Kubernetes or Docker, so it says nothing about the lab running on Windows or macOS.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  host-os:
+    name: Static checks on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025, macos-15]
+    steps:
+      - name: Simulate the default Windows git setting on every OS
+        # With core.autocrlf=true and no protection, a Windows checkout would put CRLF
+        # into the shell scripts. .gitattributes must make this harmless.
+        shell: bash
+        run: git config --global core.autocrlf true
+      - name: Checkout source
+        # actions/checkout v4.2.2: pinned for a reproducible, least-privilege check.
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Set up Python
+        # actions/setup-python v7.1.0: pinned to a commit SHA like the checkout step.
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - name: Show line-ending state of key files
+        shell: bash
+        run: git ls-files --eol Vagrantfile KubernetesClusterSetup scripts ROS2/Dockerfile
+      - name: Preflight (fails if Linux-bound files contain CRLF)
+        shell: bash
+        run: python scripts/doctor.py
+      - name: Bash syntax of provisioning scripts
+        shell: bash
+        run: bash scripts/check-shell.sh
+      - name: Local Markdown links and anchors
+        shell: bash
+        run: python scripts/check-markdown-links.py
+      - name: Site validation
+        shell: bash
+        run: python scripts/validate-site.py
+      - name: Vagrantfile syntax
+        if: runner.os != 'Windows'
+        shell: bash
+        run: ruby -c Vagrantfile

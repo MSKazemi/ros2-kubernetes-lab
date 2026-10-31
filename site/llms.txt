@@ -1,0 +1,44 @@
+# ROS 2 Kubernetes Lab
+
+> ROS 2 Kubernetes Lab is an open-source educational and research lab for running ROS 2 robotics software on Kubernetes. It has a ROS 2 Jazzy container image with a same-container talker/listener test, a historical three-VM Vagrant and Kubernetes cluster, DDS discovery guides, monitoring examples and a set of research scenario proposals. It is not a production robot platform and makes no real-time or safety guarantees.
+
+## Status in one paragraph
+
+- Container tested: a ROS 2 Jazzy / Ubuntu 24.04 image builds in CI and a talker and listener exchange messages inside one container.
+- Legacy: the Vagrant cluster and the root-level Kubernetes manifests use ROS 2 Foxy (end of life), Kubernetes 1.29 and Weave Net. `ROS2/ros_dep_1.yaml` starts a stress-ng workload, not a talker/listener.
+- Not yet verified: ROS 2 messages crossing between Kubernetes pods or worker nodes on a modern profile (tracked in issue #14).
+- The research scenarios are proposals. No Jev integration, model benchmark, real robot control or measured result is published.
+
+## Start here
+
+- [Home](https://mskazemi.com/ros2-kubernetes-lab/): what the lab is, the two ways to start, the architecture and the roadmap.
+- [Docs hub](https://mskazemi.com/ros2-kubernetes-lab/docs/): field guide index.
+- [Getting started](https://mskazemi.com/ros2-kubernetes-lab/docs/getting-started.html): the tested Jazzy container path and the historical Vagrant path.
+- [Architecture](https://mskazemi.com/ros2-kubernetes-lab/docs/architecture.html): the layers from VMs to DDS to monitoring.
+- [Learning paths](https://mskazemi.com/ros2-kubernetes-lab/docs/lab-paths.html): routes for students, engineers and researchers.
+- [Contribute](https://mskazemi.com/ros2-kubernetes-lab/docs/contribute.html): how to pick an issue and open a pull request.
+
+## Roadmap (a 90-day proposal, not a promise)
+
+- [Roadmap hub](https://mskazemi.com/ros2-kubernetes-lab/plans/): four phases and one gate, with the issues behind each.
+- [Days 1-14: define the reference path](https://mskazemi.com/ros2-kubernetes-lab/plans/define-reference-path.html)
+- [Days 15-30: make it runnable and safe](https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html)
+- [Days 31-60: package and document](https://mskazemi.com/ros2-kubernetes-lab/plans/package-and-document.html)
+- [Days 61-90: grow with evidence](https://mskazemi.com/ros2-kubernetes-lab/plans/grow-with-evidence.html)
+- [Release gates: the definition of done](https://mskazemi.com/ros2-kubernetes-lab/plans/release-gates.html)
+
+## Research scenarios (proposals with synthetic, animated explanations)
+
+- [Scenario hub](https://mskazemi.com/ros2-kubernetes-lab/scenarios/)
+- [ROS 2 DDS and QoS fault triage](https://mskazemi.com/ros2-kubernetes-lab/scenarios/ros2-fault-triage.html)
+- [Edge and cloud inference placement](https://mskazemi.com/ros2-kubernetes-lab/scenarios/edge-cloud-inference.html)
+- [LLM agent skill screening in a simulator](https://mskazemi.com/ros2-kubernetes-lab/scenarios/robot-agent-safety.html)
+- [Fair multi-robot task dispatch](https://mskazemi.com/ros2-kubernetes-lab/scenarios/multi-robot-scheduling.html)
+- [Results registry](https://mskazemi.com/ros2-kubernetes-lab/scenarios/results.html): every primary outcome is empty until human-reviewed raw evidence exists.
+
+## Source and identity
+
+- Repository: https://github.com/MSKazemi/ros2-kubernetes-lab
+- Author: Mohsen Seyedkazemi Ardebili (https://github.com/MSKazemi, https://mskazemi.github.io)
+- License: Apache-2.0
+- This file is a navigation aid. It does not claim special indexing or ranking treatment.

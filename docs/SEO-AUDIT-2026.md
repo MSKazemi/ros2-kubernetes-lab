@@ -1,6 +1,6 @@
 # GitHub SEO and developer discoverability audit — 11 October 2026
 
-**Repository:** https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment
+**Repository:** https://github.com/MSKazemi/ros2-kubernetes-lab
 
 **Scope:** Repository-level search, README clarity, truthful descriptions, developer discovery, search landing pages, AI answer citations, and organic community growth. This report combines an **actual static repository inspection** with a limited **GitHub repository-search sample**. It does **not** claim to measure Google Search Console, Bing impressions, ChatGPT recommendations, visitors, or traffic. The Vagrant/Kubernetes stack remains a historical ROS 2 Foxy lab (`legacy`); a separate ROS 2 Jazzy / Ubuntu 24.04 container image is `container tested` only, and `cross-worker verified` has not been achieved (see [support states](ROS2-KUBERNETES-DDS-GUIDE.md#support-states-and-evidence)).
 
@@ -35,7 +35,7 @@ GitHub's own documentation identifies repository **name, description, topics, an
 
 ### Repository name
 
-**Proposed eventual slug:** `ros2-kubernetes-lab` (tracked in [#22](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/22)). This audit makes **no repository rename**. Avoid creating competing canonical URLs before the change decision is made and a migration plan exists.
+**Proposed eventual slug:** `ros2-kubernetes-lab` (tracked in [#22](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/22)). This audit makes **no repository rename**. Avoid creating competing canonical URLs before the change decision is made and a migration plan exists.
 
 ## Copy/paste GitHub About metadata (requires repository settings access)
 
@@ -93,11 +93,11 @@ Retain a clear Foxy/legacy signal until a modern tested release exists. Do **not
 | P0 | Correct overclaims about end-to-end DDS, modern support, installation reproducibility | In this PR |
 | P0 | Add a linked, useful DDS troubleshooting guide anchored in actual files | In this PR |
 | P1 | Align `llms.txt` with current status and primary source links | In this PR; no assumed SEO ranking benefit |
-| P1 | Update GitHub About/description/topics/website | **Manual repository metadata action required**; tracked in [#32](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/32) |
-| P1 | Upload custom GitHub social preview image | **Manual repository settings action required**; [#32](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/32) |
-| P1 | Publish a project docs website with stable canonicals, sitemap and unique pages | Planned in [#19](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/19); not yet live |
-| P1 | Create a real verified release and corrected CI once ROS modernization completes | [#20](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/20) |
-| P2 | Publish reproducible technical articles and get genuine citations/backlinks | [#21](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/21) |
+| P1 | Update GitHub About/description/topics/website | **Manual repository metadata action required**; tracked in [#32](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/32) |
+| P1 | Upload custom GitHub social preview image | **Manual repository settings action required**; [#32](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/32) |
+| P1 | Publish a project docs website with stable canonicals, sitemap and unique pages | Planned in [#19](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/19); not yet live |
+| P1 | Create a real verified release and corrected CI once ROS modernization completes | [#20](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/20) |
+| P2 | Publish reproducible technical articles and get genuine citations/backlinks | [#21](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/21) |
 
 **Avoid false SEO “fixes”:** GitHub-hosted README Markdown does not let the repository owner set arbitrary HTML `<head>` title/description, robots directives, sitemaps, or structured data. These controls belong on a separately published website. A `robots.txt` file committed to the repository root would not control GitHub crawling. Similarly, `llms.txt` is informational and does not establish search-engine inclusion, traffic, or answer-engine citations.
 

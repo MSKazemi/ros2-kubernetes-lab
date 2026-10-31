@@ -1,0 +1,75 @@
+/* Scenario 2 animation: where should the model run?
+ * Default (no JS / not ready) = finished picture. Once the framework adds .is-ready,
+ * items change by step (.s-ge-K). Bar lengths are unitless; no latency numbers exist. */
+.s2-place .box{fill:var(--panel);stroke:var(--line);stroke-width:3;transition:stroke .5s var(--ease)}
+.s2-place .box-title{font:600 30px var(--display);fill:var(--ink)}
+.s2-place .box-sub{font:400 24px var(--body);fill:var(--sub)}
+.s2-place .sensor{fill:var(--cyan)}
+.s2-place .link{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.s2-place .link-edge{stroke:var(--cyan)}
+.s2-place .link-cloud{stroke:var(--amber);stroke-dasharray:14 10;transition:stroke .5s var(--ease)}
+.s2-place .net{font:600 26px var(--body)}
+.s2-place .net-good{fill:var(--cyan)}
+.s2-place .net-bad{fill:var(--amber)}
+.s2-place .pkt{fill:var(--amber);opacity:0}
+.s2-place .pill{fill:var(--panel2);stroke:var(--cyan);stroke-width:3}
+.s2-place .pill-text{font:600 24px var(--mono);fill:var(--ink)}
+.s2-place .panel-title{font:500 24px var(--body);fill:var(--sub)}
+.s2-place .row-label{font:600 28px var(--display);fill:var(--ink)}
+.s2-place .bar-ok{fill:var(--cyan)}
+.s2-place .bar-over{fill:url(#s2-hatch);stroke:var(--amber);stroke-width:3;transition:width .9s var(--ease)}
+.s2-place .bar-fit{transition:width .9s var(--ease)}
+.s2-place .budget{stroke:var(--ink);stroke-width:3;stroke-dasharray:8 8}
+.s2-place .budget-label{font:600 24px var(--body);fill:var(--ink)}
+.s2-place .st{font:500 24px var(--body);fill:var(--ink)}
+.s2-place .ico-ok{fill:none;stroke:var(--cyan);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.s2-place .ico-bad{fill:none;stroke:var(--amber);stroke-width:5;stroke-linecap:round}
+.s2-place .collect{fill:rgba(161,147,255,.08);stroke:var(--violet);stroke-width:3;stroke-dasharray:12 8}
+.s2-place .collect-t1{font:600 26px var(--display);fill:#c9b3ff}
+.s2-place .collect-t2{font:400 24px var(--body);fill:var(--ink)}
+
+/* Step-dependent states. Defaults above/below describe the finished picture. */
+.s2-place .e-a,.s2-place .c-a,.s2-place .c-b,.s2-place .n-a{opacity:0}
+.s2-place .e-b,.s2-place .c-c,.s2-place .n-b{opacity:1}
+.s2-place .e-a,.s2-place .e-b,.s2-place .c-a,.s2-place .c-b,.s2-place .c-c,.s2-place .n-a,.s2-place .n-b,
+.s2-place .pick,.s2-place .collect-g{transition:opacity .5s var(--ease)}
+.s2-place.is-ready:not(.s-ge-1) .n-a{opacity:1}
+.s2-place.is-ready:not(.s-ge-1) .n-b{opacity:0}
+.s2-place.is-ready:not(.s-ge-1) .pkt{fill:var(--cyan)}
+.s2-place.is-ready:not(.s-ge-1) .link-cloud{stroke:var(--cyan);stroke-dasharray:none}
+.s2-place.is-ready:not(.s-ge-1) .bar-over{width:0}
+.s2-place.is-ready:not(.s-ge-1) .bar-fit{width:357px}
+.s2-place.is-ready:not(.s-ge-2) .e-b{opacity:0}
+.s2-place.is-ready:not(.s-ge-2) .e-a{opacity:1}
+.s2-place.is-ready:not(.s-ge-1) .c-a{opacity:1}
+.s2-place.is-ready.s-ge-1:not(.s-ge-2) .c-b{opacity:1}
+.s2-place.is-ready:not(.s-ge-2) .c-c{opacity:0}
+.s2-place.is-ready:not(.s-ge-2) .pick{opacity:0}
+.s2-place.is-ready:not(.s-ge-3) .collect-g{opacity:0}
+.s2-place.is-ready.s-ge-2 .edge-box{stroke:var(--cyan);stroke-width:5}
+.s2-place.is-ready.s-ge-2 .cloud-box{stroke-dasharray:10 8}
+
+/* Packet moves along the cloud link while the rule has not yet chosen. Slower on the bad network. */
+@keyframes s2-pkt{0%{transform:translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateX(605px);opacity:0}}
+.s2-place.is-ready:not(.s-ge-2) .pkt{animation:s2-pkt 2.4s linear infinite;opacity:1}
+.s2-place.is-ready.s-ge-1:not(.s-ge-2) .pkt{animation-duration:5.2s}
+
+/* Small screens: the SVG scales down, so enlarge its text in viewBox units to stay near 12px+. */
+@media (max-width:640px){
+  /* sizes are in viewBox units: ~0.34 px per unit at a 390px viewport, so 1 unit = ~0.34px */
+  .s2-place .box-title{font-size:43px}
+  .s2-place .box-sub{font-size:36px}
+  .s2-place .net{font-size:36px}
+  .s2-place .pill-text{font-size:34px}
+  .s2-place .panel-title{font-size:35px}
+  .s2-place .row-label{font-size:38px}
+  .s2-place .budget-label{font-size:34px}
+  .s2-place .st{font-size:34px}
+  .s2-place .collect-t1{font-size:36px}
+  .s2-place .collect-t2{font-size:34px}
+}
+
+/* Plain-language guide beside the animation. */
+.plain-guide dl{margin:0;display:grid;gap:14px}
+.plain-guide dt{font:600 15px/1.4 var(--display);color:#ebf5ff}
+.plain-guide dd{margin:2px 0 0;color:#b1c2d7;font-size:14px;line-height:1.65}
