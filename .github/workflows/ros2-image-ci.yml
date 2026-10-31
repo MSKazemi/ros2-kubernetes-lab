@@ -7,6 +7,7 @@ on:
     paths:
       - ROS2/Dockerfile
       - scripts/test-ros2-image.sh
+      - scripts/test-ros2-pulse.sh
       - .github/workflows/ros2-image-ci.yml
   workflow_dispatch:
 
@@ -25,3 +26,6 @@ jobs:
         run: docker build --platform linux/amd64 --pull --file ROS2/Dockerfile --tag ros-jazzy-lab:local .
       - name: Check Jazzy, demo nodes, stress-ng and local talker/listener
         run: docker run --rm -i --platform linux/amd64 ros-jazzy-lab:local bash -s < scripts/test-ros2-image.sh
+      # Opt-in ros2_pulse pilot (issue #52), as the same non-root uid as the example pods.
+      - name: Check opt-in ros2_pulse probe, pulse-check and pulse-export (one container)
+        run: docker run --rm -i --platform linux/amd64 --user 1000:1000 ros-jazzy-lab:local bash -s < scripts/test-ros2-pulse.sh
