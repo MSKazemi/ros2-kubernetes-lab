@@ -17,6 +17,8 @@ The site at [site/scenarios/](../../site/scenarios/index.html) provides interact
 | S3 LLM agents — screening | [Agent skill safety](../../site/scenarios/robot-agent-safety.html) | Does Jev advisory screening augment independently enforced simulator policies? | [#86](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/86) | #64, #55, #59 |
 | S4 fleet research — dispatch | [Multi-robot scheduling](../../site/scenarios/multi-robot-scheduling.html) | Does Jev ranking of prequalified simulated robots improve fit/fairness? | [#87](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/87) | #69, #60, #59 |
 
+**E08 embodied agent mobility (proposed):** [seven-phase scientific study](agent-mobility.md) · [CPU-only synthetic five-waypoint handoff and tests](../../experiments/e08-task-handoff/README.md) · [research issue #104](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/104). This is an educational **single-process** example, not real agent relocation, independent safety enforcement, cross-worker DDS or measured robot performance.
+
 **Future ideas:** ROS 2 incident routing, VLA checkpoint/embodiment compatibility review and more. Do not create large numbers of thin placeholder pages to target keywords.
 
 ### Reproducible results
