@@ -1,0 +1,68 @@
+/* Scenario 3: "An AI proposes, a policy decides". Visuals keyed on the framework's
+ * data-step / .s-ge-K classes. The base rules (no .is-ready) are the FINISHED picture,
+ * so the figure reads correctly without JavaScript. */
+.s3{--edge:#8aa0c2;--shift:296px}
+.s3 .nm{font:600 22px var(--body);fill:var(--ink)}
+.s3 .sm{font:400 21px var(--body);fill:var(--sub)}
+.s3 .vd{font:500 20px var(--mono)}
+.s3 .lg{font:500 21px var(--mono);fill:var(--ink)}
+
+.s3 .agent{fill:rgba(161,147,255,.10);stroke:var(--violet);stroke-width:3}
+.s3 .box{fill:rgba(102,235,218,.07);stroke:var(--cyan);stroke-width:3;stroke-dasharray:2 0}
+.s3 .gate{fill:rgba(115,151,255,.10);stroke:var(--blue);stroke-width:3;transition:stroke .5s var(--ease),stroke-width .5s var(--ease),fill .5s var(--ease)}
+.s3[data-step="1"] .gate{stroke:var(--cyan);stroke-width:5;fill:rgba(102,235,218,.16)}
+.s3 .scan{fill:var(--cyan);opacity:0;transform:translateY(0);transition:transform 1.1s var(--ease),opacity .3s}
+.s3[data-step="1"] .scan{opacity:1;transform:translateY(212px)}
+.s3[data-step="2"] .scan{opacity:0;transform:translateY(212px)}
+
+/* Skill cards. Base = finished: two passed, one stopped at the gate. */
+.s3 .card rect{fill:var(--panel2);stroke:var(--cyan);stroke-width:2.5;transition:stroke .5s var(--ease)}
+.s3 .card{transition:transform 1s var(--ease),opacity .5s var(--ease)}
+.s3 .c0,.s3 .c1{transform:translateX(var(--shift))}
+.s3 .c2{transform:none}
+.s3 .c2 rect{stroke:var(--amber);stroke-dasharray:7 5}
+.s3 .c1{transition-delay:.12s}.s3 .c2{transition-delay:.24s}
+.s3.is-ready .card{opacity:0}
+.s3.s-ge-0 .card{opacity:1}
+.s3.is-ready .c0,.s3.is-ready .c1{transform:none}
+.s3.s-ge-2 .c0,.s3.s-ge-2 .c1{transform:translateX(var(--shift))}
+.s3.is-ready .card rect{stroke:var(--edge);stroke-dasharray:none}
+.s3.s-ge-2 .c0 rect,.s3.s-ge-2 .c1 rect{stroke:var(--cyan)}
+.s3.s-ge-3 .c2 rect{stroke:var(--amber);stroke-dasharray:7 5}
+
+/* Verdict text and icons on the cards. */
+.s3 .ok-v{fill:var(--cyan)}.s3 .no-v{fill:var(--amber)}
+.s3 .ok-i{fill:none;stroke:var(--cyan);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.s3 .no-i{fill:none;stroke:var(--amber);stroke-width:3.5;stroke-linecap:round}
+.s3 .ok-g,.s3 .no-g,.s3 .chk{transition:opacity .45s var(--ease)}
+.s3.is-ready .ok-g,.s3.is-ready .no-g{opacity:0}
+.s3.s-ge-2 .ok-g{opacity:1}
+.s3.s-ge-3 .no-g{opacity:1}
+.s3 .chk{opacity:0;fill:var(--sub)}
+.s3[data-step="1"] .chk,.s3[data-step="2"] .c2 .chk{opacity:1}
+
+/* Passing lane to the simulator. */
+.s3 .lane,.s3 .stop,.s3 .stamp,.s3 .log,.s3 .msg{transition:opacity .6s var(--ease)}
+.s3 .lane{fill:none;stroke:var(--cyan);stroke-width:3;stroke-linecap:round}
+.s3.is-ready .lane{opacity:0}.s3.s-ge-2 .lane{opacity:1}
+
+/* Stop bar and stamp for the rejected proposal. */
+.s3 .stop{stroke:var(--amber);stroke-width:8;stroke-linecap:round}
+.s3 .stampbox{fill:rgba(255,166,110,.12);stroke:var(--amber);stroke-width:2.5;stroke-dasharray:7 5}
+.s3 .stamp-t{font:700 22px var(--body);fill:var(--amber)}
+.s3 .stamp-x{fill:none;stroke:var(--amber);stroke-width:4;stroke-linecap:round}
+.s3.is-ready .stop,.s3.is-ready .stamp{opacity:0}
+.s3.s-ge-3 .stop,.s3.s-ge-3 .stamp{opacity:1}
+
+/* Decision log. */
+.s3 .logbox{fill:rgba(12,20,36,.7);stroke:var(--edge);stroke-width:2.5}
+.s3 .logrow .y{fill:var(--cyan)}.s3 .logrow .n{fill:var(--amber)}
+.s3.is-ready .log{opacity:0}
+.s3.s-ge-4 .log{opacity:1}
+.s3 .r1{transition-delay:.2s}.s3 .r2{transition-delay:.4s}.s3 .r3{transition-delay:.6s}
+
+@media (max-width:640px){
+  .s3 .sm{font-size:22px}
+  .s3 .vd{font-size:23px}
+  .s3 .lg{font-size:22px}
+}

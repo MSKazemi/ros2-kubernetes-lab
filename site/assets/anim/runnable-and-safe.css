@@ -1,0 +1,58 @@
+/* Phase 2 animation: planned "make demo, make verify, make clean" flow plus a safety strip.
+   Visuals keyed on .s-ge-K and [data-step]. Without .is-ready the finished picture shows. */
+.run-safe .t{font:500 16px var(--body);fill:var(--ink)}
+.run-safe .t-strong{font:700 16px var(--body);fill:var(--ink)}
+.run-safe .t-sub{font:500 15px var(--body);fill:var(--sub)}
+.run-safe .t-amber{font:700 16px var(--body);fill:var(--amber)}
+.run-safe .t-ok{font:700 16px var(--body);fill:var(--ok)}
+.run-safe .t-mono{font:700 16px var(--mono);fill:var(--ink)}
+
+.run-safe .cmd{fill:rgba(16,27,46,.9);stroke:var(--amber);stroke-width:2.5;stroke-dasharray:8 6;transition:stroke .4s var(--ease),fill .4s var(--ease)}
+.run-safe .arrow{fill:none;stroke:var(--amber);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.run-safe .risk{fill:rgba(255,166,110,.08);stroke:var(--amber);stroke-width:2.5}
+.run-safe .safe{fill:rgba(102,235,218,.08);stroke:var(--ok);stroke-width:2.5;stroke-dasharray:7 6}
+.run-safe .gate-box{fill:rgba(255,166,110,.10);stroke:var(--amber);stroke-width:2.5;stroke-dasharray:9 6}
+.run-safe .shift{fill:none;stroke:var(--cyan);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+
+.run-safe.is-ready .b1,.run-safe.is-ready .b2,.run-safe.is-ready .k3,.run-safe.is-ready .k4{opacity:0;transform:translateY(8px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.run-safe.is-ready.s-ge-1 .b1,.run-safe.is-ready.s-ge-2 .b2,.run-safe.is-ready.s-ge-3 .k3,.run-safe.is-ready.s-ge-4 .k4{opacity:1;transform:none}
+.run-safe.is-ready .a1,.run-safe.is-ready .a2{stroke-dasharray:60;stroke-dashoffset:60;transition:stroke-dashoffset .8s var(--ease)}
+.run-safe.is-ready.s-ge-1 .a1,.run-safe.is-ready.s-ge-2 .a2{stroke-dashoffset:0}
+
+/* The command for the current step is highlighted. */
+.run-safe[data-step="0"] .b0 .cmd,.run-safe[data-step="1"] .b1 .cmd,.run-safe[data-step="2"] .b2 .cmd{stroke:var(--cyan);stroke-width:4;fill:rgba(102,235,218,.08)}
+.run-safe[data-step="3"] .risk,.run-safe[data-step="3"] .safe{stroke-width:4}
+.run-safe[data-step="4"] .gate-box{stroke-width:4}
+
+@media (max-width:640px){
+  .run-safe .t,.run-safe .t-strong,.run-safe .t-amber,.run-safe .t-ok{font-size:26px}
+  .run-safe .t-mono{font-size:24px}
+  .run-safe .t-sub{font-size:24px}
+}
+
+/* Page layout helpers (issue list, pager). */
+.phase-issues{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:14px}
+.phase-issues li{display:grid;grid-template-columns:auto 1fr auto;gap:6px 16px;align-items:start;padding:18px 20px;
+  border:1px solid #334862;border-radius:14px;background:#111f32}
+.phase-issues .issue-no{font:700 14px var(--mono);color:#91eddf;white-space:nowrap}
+.phase-issues h3{font:600 17px/1.35 var(--display);margin:0 0 4px;color:#ebf5ff}
+.phase-issues p{margin:0;font-size:14px;color:#b1c2d7;line-height:1.65}
+.phase-issues .lab-chip{justify-self:end}
+.phase-pager{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:stretch;margin:0}
+.phase-pager a{flex:1 1 260px;display:block;padding:18px 20px;border:1px solid #334862;border-radius:14px;background:#111f32;color:inherit;text-decoration:none;transition:border-color .2s,transform .2s}
+.phase-pager a:hover{border-color:#63bcb2;text-decoration:none;transform:translateY(-2px)}
+.phase-pager small{display:block;font:700 12px var(--mono);color:#91eddf;margin-bottom:4px}
+.phase-pager strong{font:600 17px/1.35 var(--display);color:#ebf5ff}
+.phase-pager .next{text-align:right}
+.phase-hub-link{margin:18px 0 0;font-size:14px}
+.compare{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+.compare th,.compare td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid #334862;color:#b1c2d7;line-height:1.6}
+.compare th{font:700 12px var(--mono);color:#91eddf}
+@media (max-width:640px){
+  .phase-issues li{grid-template-columns:1fr}
+  .phase-issues .lab-chip{justify-self:start}
+  .phase-pager .next{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){.phase-pager a:hover{transform:none}}
+.compare-wrap{overflow-x:auto}

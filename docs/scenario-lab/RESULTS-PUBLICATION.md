@@ -1,6 +1,6 @@
 # Publishing reproducible experiments and honest results
 
-> This is a **data-publication contract**, not evidence of a completed experiment. Apply the research/evaluation specification in [#60](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/60), [#75](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/75) and [#88](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/88).
+> This is a **data-publication contract**, not evidence of a completed experiment. Apply the research/evaluation specification in [#60](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/60), [#75](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/75) and [#88](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/88).
 
 ## Why a registry instead of a chart with example numbers?
 
