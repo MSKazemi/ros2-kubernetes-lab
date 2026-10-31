@@ -1,0 +1,54 @@
+{
+  "cameras": [
+    {
+      "data_b64": "M+xO/9PYwLn9HEoa",
+      "encoding": "rgb8",
+      "height": 2,
+      "key": "observation.images.front",
+      "name": "front_rgb",
+      "width": 2
+    },
+    {
+      "data_b64": "doxgTHnG9fYRF9Lx",
+      "encoding": "rgb8",
+      "height": 2,
+      "key": "observation.images.wrist",
+      "name": "wrist_rgb",
+      "width": 2
+    }
+  ],
+  "contract_version": "ros2-obs-action/v1",
+  "frame_name": "base_link",
+  "observation_id": "obs-0002",
+  "sequence_id": 2,
+  "simulated": true,
+  "source_timestamp_ns": 1200000000,
+  "state": {
+    "names": [
+      "shoulder_pan",
+      "shoulder_lift",
+      "elbow_flex",
+      "wrist_flex",
+      "wrist_roll",
+      "gripper"
+    ],
+    "units": [
+      "rad",
+      "rad",
+      "rad",
+      "rad",
+      "rad",
+      "m"
+    ],
+    "values": [
+      0.192499,
+      0.567119,
+      0.543453,
+      0.337077,
+      0.027306,
+      0.030318
+    ]
+  },
+  "task_id": "task-synthetic-reach",
+  "ttl_ms": 500
+}
