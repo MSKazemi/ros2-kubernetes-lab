@@ -1,0 +1,73 @@
+name: kind demo (ROS 2 cross-worker)
+
+# Builds the Jazzy image, creates the 3-node kind cluster, deploys the self-starting talker/listener
+# and verifies that messages cross between two different workers (issues #14 and #16).
+# Runs only for changes that affect the profile; it never pushes or publishes an image.
+on:
+  pull_request:
+    paths:
+      - Makefile
+      - kind/**
+      - ROS2/Dockerfile
+      - ROS2/jazzy/talker-listener.yaml
+      - scripts/verify-ros2.sh
+      - .github/workflows/kind-demo.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kind-demo-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned tool versions; checksums come from the official release channels of each project.
+  KIND_VERSION: v0.33.0
+  KIND_SHA256: aee6151561422756b764a4ae28e7f44cda5af5a9eead3cc9985112b1de8d8e0d
+  KUBECTL_VERSION: v1.37.1
+  KUBECTL_SHA256: 65691ff77eb6fa44c908b77a1082c9f092c3b9733b5cefabec0d1104890e21a8
+
+jobs:
+  kind-demo:
+    name: make demo, make verify, make clean (amd64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout source (read-only, no persisted credentials)
+        # actions/checkout v7.0.1, resolved with: gh api repos/actions/checkout/git/ref/tags/v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Install pinned kind and kubectl (checksum verified)
+        shell: bash
+        run: |
+          set -euo pipefail
+          bin="$RUNNER_TEMP/bin"
+          mkdir -p "$bin"
+          curl -fsSL --retry 3 -o "$bin/kind" "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
+          echo "${KIND_SHA256}  $bin/kind" | sha256sum --check -
+          curl -fsSL --retry 3 -o "$bin/kubectl" "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          echo "${KUBECTL_SHA256}  $bin/kubectl" | sha256sum --check -
+          chmod +x "$bin/kind" "$bin/kubectl"
+          echo "$bin" >> "$GITHUB_PATH"
+      - name: Show tool versions
+        run: |
+          docker version --format 'docker server {{.Server.Version}}'
+          kind version
+          kubectl version --client
+      - name: make demo (build image, create cluster, deploy)
+        run: make demo
+      - name: make verify (pods Ready, different workers, messages delivered)
+        run: make verify
+      - name: make verify-negative (the check must fail when delivery is broken)
+        run: make verify-negative
+      - name: Cluster state on failure
+        if: failure()
+        run: |
+          kubectl --context kind-ros2k8s-demo get nodes -o wide || true
+          kubectl --context kind-ros2k8s-demo -n ros get pods -o wide || true
+          kubectl --context kind-ros2k8s-demo -n ros get events --sort-by=.lastTimestamp || true
+      - name: make clean
+        if: always()
+        run: make clean
