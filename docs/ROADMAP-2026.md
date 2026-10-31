@@ -1,9 +1,9 @@
 # ROS 2 Kubernetes Lab: modernization, adoption and growth roadmap
 
-> Status: **Proposal** (11 October 2026). This roadmap does not indicate that new ROS distributions, Kubernetes configurations, or network modes have been validated. Current repository name is unchanged.
+> **Historical 90-day modernization proposal** (11 October 2026). This document remains useful as a dated baseline, but the **current cross-project coordination plan** is [the 2026–2027 integrated roadmap](PROGRAM-ROADMAP-2026-2027.md) and [documentation index](README.md). The newer document does not mean that a model integration, current Kubernetes profile or cross-worker DDS workload is verified.
 >
-> Proposed name: **ROS 2 Kubernetes Lab** · proposed slug: `ros2-kubernetes-lab`.
-> Tagline: **Deploy, scale, monitor, and benchmark distributed ROS 2 applications on Kubernetes.**
+> Display name: **ROS 2 Kubernetes Lab** · current GitHub repository slug: `ros2-kubernetes-lab`. Any broader research umbrella name remains a separate, unapproved working-name RFC in issue #22.
+> Original tagline: **Deploy, scale, monitor, and benchmark distributed ROS 2 applications on Kubernetes.**
 > Tracking: [GitHub issues](https://github.com/MSKazemi/ros2-kubernetes-lab/issues).
 
 ## 1. North star and intended audience
