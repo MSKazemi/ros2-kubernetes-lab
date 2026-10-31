@@ -76,6 +76,7 @@ Current effects:
 3. Low-key DDS illustration pulses and signal indicators.
 4. IntersectionObserver scroll reveals for sections and cards.
 5. Interactive architecture layer highlights, tabs, mobile navigation, and clipboard feedback.
+6. Step animations (`lab-anim`): short, user-controlled explainers on roadmap and scenario pages. They play once when scrolled into view, never loop, never autoplay under reduced motion, and are always labelled *Illustration*.
 
 **Reduced motion:** honor `prefers-reduced-motion: reduce` automatically and provide the **Pause motion** control. No autoplay video, audio, scroll-jacking or continuous aggressive camera movement. Motion can be disabled without hiding content.
 

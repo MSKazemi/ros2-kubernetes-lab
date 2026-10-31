@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<meta name="color-scheme" content="dark">
+<title>Roadmap: 90-day plan for ROS 2 on Kubernetes | ROS 2 Kubernetes Lab</title>
+<meta name="description" content="The 90-day plan to turn a historical ROS 2 and Kubernetes lab into a verified one: four phases, their issues and the release gates. A proposal, not a promise.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Mohsen Seyedkazemi Ardebili">
+<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/plans/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs.css">
+<link rel="stylesheet" href="../assets/scenarios.css">
+<link rel="stylesheet" href="../assets/lab-anim.css">
+<link rel="stylesheet" href="../assets/anim/plans-hub.css">
+<script defer src="../assets/lab-anim.js"></script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ROS 2 Kubernetes Lab">
+<meta property="og:title" content="Roadmap: 90-day plan for ROS 2 on Kubernetes">
+<meta property="og:description" content="Four phases, the issues behind each, and the release gates that decide when the lab can claim ROS 2 messages cross Kubernetes nodes. A proposal, not a promise.">
+<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/plans/">
+<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Roadmap: 90-day plan for ROS 2 on Kubernetes">
+<meta name="twitter:description" content="Four phases and the release gates between a historical lab and a verified one. A proposal, not a promise.">
+<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Roadmap: 90-day plan for ROS 2 on Kubernetes","description":"Four phases, the issues behind each, and the release gates for the ROS 2 Kubernetes Lab. A proposal, not a promise.","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"DDS"}],"mainEntity":{"@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"name":"Days 1 to 14: define the reference path","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/define-reference-path.html"},{"@type":"ListItem","position":2,"name":"Days 15 to 30: make it runnable and safe","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html"},{"@type":"ListItem","position":3,"name":"Days 31 to 60: package and document","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/package-and-document.html"},{"@type":"ListItem","position":4,"name":"Days 61 to 90: grow with evidence","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/grow-with-evidence.html"}]}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Roadmap","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/"}]}]}</script>
+</head><body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="docs-nav"><div class="sc-shell docs-nav-inner">
+<a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Roadmap</a><a href="../scenarios/">Research scenarios</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab">GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+
+<section class="sc-hero"><div class="sc-shell">
+<nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span>Roadmap</nav>
+<span class="sc-kicker">90-day plan</span>
+<h1>From a historical lab to a verified one</h1>
+<p class="sc-lead">Today the lab has a Jazzy image whose talker and listener work inside one container, and a historical three-VM cluster. This plan is how it earns the claim that ROS 2 messages cross between Kubernetes nodes. Each of the four phases has its own page.</p>
+<div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · planning targets, not promises</span><span class="sc-pill">Source: docs/ROADMAP-2026.md</span></div>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>Where the lab stands today</h2>
+<p class="sc-intro">Three honest states, so the plan has a starting line. Nothing below is claimed beyond what the repository's checks show.</p>
+<div class="sc-grid sc-grid--3">
+<div class="sc-panel"><span class="lab-chip lab-chip--done">Container tested</span><h3>ROS 2 Jazzy image</h3><p>A Jazzy / Ubuntu 24.04 image builds in CI, and a talker and listener exchange messages <strong>inside one container</strong>. This does not show messages crossing Kubernetes pods or workers.</p></div>
+<div class="sc-panel"><span class="lab-chip lab-chip--legacy">Legacy</span><h3>Three-VM Vagrant cluster</h3><p>The original lab uses ROS 2 Foxy (end of life), Kubernetes 1.29 and Weave Net. It stays as a historical example and needs about 30 GB of VM memory.</p></div>
+<div class="sc-panel"><span class="lab-chip lab-chip--planned">Not yet verified</span><h3>Messages across workers</h3><p>No check yet proves a ROS 2 message travels between different Kubernetes nodes on a modern profile. The whole plan exists to earn that proof.</p></div>
+</div>
+</div></section>
+
+<section class="sc-section sc-section--shade" id="timeline"><div class="sc-shell">
+<h2>Step through the 90 days</h2>
+<p class="sc-intro">Press play, or pick a phase. The marker shows the order of the work. It is not a progress report.</p>
+
+<figure class="lab-anim plans-hub" data-anim="plans-hub" data-interval="3200" aria-labelledby="hub-title">
+<div class="lab-anim__head"><h3 class="lab-anim__title" id="hub-title">Four phases, one gate</h3><span class="lab-anim__tag">Illustration · sequence only</span></div>
+<div class="lab-anim__stage">
+<svg viewBox="0 0 960 250" role="img" aria-labelledby="hub-svg-t hub-svg-d" focusable="false">
+<title id="hub-svg-t">Timeline of the four roadmap phases</title>
+<desc id="hub-svg-d">A horizontal line with four numbered stops: Define, Run safely, Package, Grow. A diamond marked Gate sits between the second and third stops. The gate is not yet passed.</desc>
+<path class="track" d="M100 125H860" />
+<path class="draw seg seg1" style="--len:254" d="M100 125H354" />
+<path class="draw seg seg2" style="--len:253" d="M354 125H607" />
+<path class="draw seg seg3" style="--len:253" d="M607 125H860" />
+<g class="gate" transform="translate(480 125)"><path d="M0 -20 20 0 0 20 -20 0Z" /><text class="gate-label" x="0" y="-34" text-anchor="middle">Gate</text><text class="gate-note" x="0" y="107" text-anchor="middle">not yet passed</text></g>
+<g class="node n0"><text class="days" x="100" y="58" text-anchor="middle">Days 1–14</text><circle cx="100" cy="125" r="32" /><text class="num" x="100" y="136" text-anchor="middle">1</text><text class="name" x="100" y="195" text-anchor="middle">Define</text></g>
+<g class="node n1"><text class="days" x="354" y="58" text-anchor="middle">Days 15–30</text><circle cx="354" cy="125" r="32" /><text class="num" x="354" y="136" text-anchor="middle">2</text><text class="name" x="354" y="195" text-anchor="middle">Run safely</text></g>
+<g class="node n2"><text class="days" x="607" y="58" text-anchor="middle">Days 31–60</text><circle cx="607" cy="125" r="32" /><text class="num" x="607" y="136" text-anchor="middle">3</text><text class="name" x="607" y="195" text-anchor="middle">Package</text></g>
+<g class="node n3"><text class="days" x="860" y="58" text-anchor="middle">Days 61–90</text><circle cx="860" cy="125" r="32" /><text class="num" x="860" y="136" text-anchor="middle">4</text><text class="name" x="860" y="195" text-anchor="middle">Grow</text></g>
+<path class="dot" d="M90 70h20l-10 14Z" />
+</svg>
+</div>
+<div class="lab-anim__bar">
+<button type="button" data-anim-prev>Back</button>
+<button type="button" data-anim-play aria-pressed="false"><span>Play</span></button>
+<button type="button" data-anim-next>Next</button>
+<button type="button" data-anim-replay>Replay</button>
+<output class="lab-anim__status" data-anim-status aria-live="polite">Step 1 of 4</output>
+</div>
+<ol class="lab-anim__steps">
+<li data-step-text><button type="button"><b>Define the reference path</b><span>Choose the first supported profile and plan how DDS discovery across separate workers will be tested. Issues #7, #14, #15.</span></button></li>
+<li data-step-text><button type="button"><b>Make it runnable and safe</b><span>A script proves delivery across workers, a light kind or k3d profile arrives, and the risky defaults go. Issues #14, #16, #6, #4.</span></button></li>
+<li data-step-text><button type="button"><b>Package and document</b><span>A truthful README, reproducible benchmarks, versioned tutorials and a first release, only after validation. Issues #17, #18, #19, #20.</span></button></li>
+<li data-step-text><button type="button"><b>Grow with evidence</b><span>Share the demo, triage real user reports and keep naming and links consistent. Issues #21, #22.</span></button></li>
+</ol>
+<p class="lab-anim__note">The gate sits at the end of phase 2: a clean host runs the supported install, shows messages between different workers and passes the documented verification. Until then the modern quickstart stays unpublished.</p>
+</figure>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>Pick a phase</h2>
+<p class="sc-intro">Every phase page has its own animation, the exact issues, and what "done" means.</p>
+<div class="sc-grid sc-grid--3">
+<a class="sc-card sc-card--link" href="./define-reference-path.html"><span class="sc-card-index">Days 1–14</span><h3>Define the reference path</h3><p>Pick the supported profile and design the cross-worker discovery test.</p><span class="sc-card-cta">Open phase 1</span></a>
+<a class="sc-card sc-card--link" href="./runnable-and-safe.html"><span class="sc-card-index">Days 15–30</span><h3>Make it runnable and safe</h3><p>One command, a lighter cluster, and safer defaults.</p><span class="sc-card-cta">Open phase 2</span></a>
+<a class="sc-card sc-card--link" href="./package-and-document.html"><span class="sc-card-index">Days 31–60</span><h3>Package and document</h3><p>README, benchmarks, tutorials and a first validated release.</p><span class="sc-card-cta">Open phase 3</span></a>
+<a class="sc-card sc-card--link" href="./grow-with-evidence.html"><span class="sc-card-index">Days 61–90</span><h3>Grow with evidence</h3><p>Demo, posts, real user reports and honest measurement.</p><span class="sc-card-cta">Open phase 4</span></a>
+<a class="sc-card sc-card--link" href="./release-gates.html"><span class="sc-card-index">Definition of done</span><h3>Release gates</h3><p>The eight checks a supported release must pass. None is claimed yet.</p><span class="sc-card-cta">Open the gates</span></a>
+<a class="sc-card sc-card--link" href="../scenarios/"><span class="sc-card-index">Research</span><h3>Research scenarios</h3><p>Four open experiments that build on a verified lab.</p><span class="sc-card-cta">Explore scenarios</span></a>
+</div>
+</div></section>
+
+<section class="sc-section sc-section--shade"><div class="sc-shell">
+<h2>How to read this plan</h2>
+<div class="sc-detail-grid">
+<div class="sc-panel"><h3>Targets, not promises</h3><ul><li>A phase can slip. The plan holds a milestone rather than skip a release gate.</li><li>A successful Docker build or a lint pass is not a substitute for end-to-end ROS 2 verification.</li><li>No usage, star or performance numbers are published here until they are measured and sourced.</li></ul></div>
+<div class="sc-callout"><h3>Help move a phase forward</h3><p>Every phase is a set of public issues. Pick a small one, comment that you would like to work on it, and open a pull request.</p><p><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue">Find a first issue ↗</a> <a class="sc-link-button sc-link-button--ghost" href="../docs/contribute.html">Contribution guide</a></p></div>
+</div>
+</div></section>
+
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Plans are proposals; illustrations show sequence, not progress</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">Full roadmap source ↗</a></div></footer></body></html>

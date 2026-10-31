@@ -30,40 +30,40 @@ ROS 2 DDS discovery behavior depends on RMW configuration, network transport and
 
 ## Documentation and use cases
 
-- [Main README — what it does, requirements, old-stack quickstart and FAQ](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/README.md)
-- [ROS 2 on Kubernetes DDS discovery and troubleshooting](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/docs/ROS2-KUBERNETES-DDS-GUIDE.md)
-- [Kubernetes cluster provisioning via Vagrant](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/KubernetesClusterSetup/README.md)
-- [Networking and CNI configuration](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/Network/README.md)
-- [Jazzy image build, local smoke test, compatibility and release caveats](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/ROS2/jazzy/README.md)
-- [ROS 2 manual talker/listener walkthrough](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/ROS2/README.md)
-- [Prometheus/Grafana and dashboard examples](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/MonitoringSystem/README.md)
-- [Monitoring metrics, notebooks and data analysis](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/DataAnalysis/README.md)
-- [Evidence-based SEO/discoverability review](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/docs/SEO-AUDIT-2026.md)
+- [Main README — what it does, requirements, old-stack quickstart and FAQ](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/README.md)
+- [ROS 2 on Kubernetes DDS discovery and troubleshooting](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROS2-KUBERNETES-DDS-GUIDE.md)
+- [Kubernetes cluster provisioning via Vagrant](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/KubernetesClusterSetup/README.md)
+- [Networking and CNI configuration](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/Network/README.md)
+- [Jazzy image build, local smoke test, compatibility and release caveats](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/ROS2/jazzy/README.md)
+- [ROS 2 manual talker/listener walkthrough](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/ROS2/README.md)
+- [Prometheus/Grafana and dashboard examples](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/MonitoringSystem/README.md)
+- [Monitoring metrics, notebooks and data analysis](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/DataAnalysis/README.md)
+- [Evidence-based SEO/discoverability review](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/SEO-AUDIT-2026.md)
 
 ## Roadmap and changes not yet available
 
-- [90-day modernization and growth proposal — PR #23](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/pull/23)
-- [Container image modernized in part; full supported Kubernetes migration remains — issue #7](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/7)
-- [Verify ROS 2 cross-worker talker/listener communication — issue #14](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/14)
-- [Move to maintained Kubernetes CNI and DDS discovery — issue #15](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/15)
-- [Lightweight kind/k3d profile — issue #16](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/16)
+- [90-day modernization and growth proposal — PR #23](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/23)
+- [Container image modernized in part; full supported Kubernetes migration remains — issue #7](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7)
+- [Verify ROS 2 cross-worker talker/listener communication — issue #14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14)
+- [Move to maintained Kubernetes CNI and DDS discovery — issue #15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15)
+- [Lightweight kind/k3d profile — issue #16](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16)
 
 ## Experimental Cloud–Edge Robotics Scenario Lab (research proposals; not implemented)
 
-- [Scenario hub: ROS 2 + Kubernetes + Jev experiments](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/index.html) — searchable educational research gallery and conceptual animated explanations.
-- [Fault triage scenario](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/ros2-fault-triage.html) — synthetic DDS/QoS diagnosis, deterministic baseline and optional Jev Choice proposal.
-- [Edge/cloud placement scenario](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/edge-cloud-inference.html) — hard eligibility before advisory placement.
-- [LLM ROS 2 skill-review scenario](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/robot-agent-safety.html) — simulator-only deterministic authorization and optional model review.
-- [Multi-robot scheduling scenario](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/multi-robot-scheduling.html) — fair synthetic fleet allocation.
-- [Evidence registry](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/site/scenarios/results.html) — all primary outcomes N/A until human-reviewed raw evidence and immutable run provenance.
-- [Scenario program and Claude collaborator playbook](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/blob/main/docs/scenario-lab/README.md) — epic #83, child contributor issues #84–#89, results publication and SEO plan.
+- [Scenario hub: ROS 2 + Kubernetes + Jev experiments](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/site/scenarios/index.html) — searchable educational research gallery and conceptual animated explanations.
+- [Fault triage scenario](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/site/scenarios/ros2-fault-triage.html) — synthetic DDS/QoS diagnosis, deterministic baseline and optional Jev Choice proposal.
+- [Edge/cloud placement scenario](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/site/scenarios/edge-cloud-inference.html) — hard eligibility before advisory placement.
+- [LLM ROS 2 skill-review scenario](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/site/scenarios/robot-agent-safety.html) — simulator-only deterministic authorization and optional model review.
+- [Multi-robot scheduling scenario](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/site/scenarios/multi-robot-scheduling.html) — fair synthetic fleet allocation.
+- [Evidence registry](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/site/scenarios/results.html) — all primary outcomes N/A until human-reviewed raw evidence and immutable run provenance.
+- [Scenario program and Claude collaborator playbook](https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/scenario-lab/README.md) — epic #83, child contributor issues #84–#89, results publication and SEO plan.
 
 **No verified Jev integration, cloud/edge model benchmark, real robot control, live simulator or cross-worker DDS is established by these web pages.** Animated step flows use synthetic, preauthored text and do not contact a model provider.
 
 ## Repository identity
 
-- **Canonical repository:** https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment
-- **Proposed future name (not yet adopted):** ROS 2 Kubernetes Lab / `ros2-kubernetes-lab`.
+- **Canonical repository:** https://github.com/MSKazemi/ros2-kubernetes-lab
+- **Name:** ROS 2 Kubernetes Lab (repository slug `ros2-kubernetes-lab`). Its website is https://mskazemi.com/ros2-kubernetes-lab/.
 - **Author:** Mohsen Seyedkazemi Ardebili.
 - **License:** Apache-2.0 — see `LICENSE`.
 - **Citation:** `CITATION.cff`.

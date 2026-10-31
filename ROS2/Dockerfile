@@ -4,7 +4,7 @@
 # Ref: https://hub.docker.com/layers/library/ros/jazzy-ros-base-noble/images/sha256-f652c502c971653afc2ed9b9e5929643df644e6125b6ee68349408b6cc2f64cd
 FROM docker.io/library/ros:jazzy-ros-base-noble@sha256:2589a8fba5257307857890173c069852c2abf913a0be7970f172478baecb09e4
 
-LABEL org.opencontainers.image.source="https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment" \
+LABEL org.opencontainers.image.source="https://github.com/MSKazemi/ros2-kubernetes-lab" \
       org.opencontainers.image.description="ROS 2 Jazzy on Ubuntu 24.04: demo_nodes_cpp, stress-ng and opt-in ros2_pulse telemetry for educational experiments"
 
 ARG DEBIAN_FRONTEND=noninteractive

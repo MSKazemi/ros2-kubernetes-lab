@@ -2,7 +2,7 @@
 
 This folder holds JSON files exported from a Prometheus server that monitored the Kubernetes cluster of this lab. You can inspect them with plain Python 3 on any laptop: **no cluster, Vagrant, Prometheus or cloud account is needed**.
 
-Back to the [DataAnalysis README](../README.md) (how the data was extracted from Prometheus) and the broader benchmark plan in [issue #18](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/18).
+Back to the [DataAnalysis README](../README.md) (how the data was extracted from Prometheus) and the broader benchmark plan in [issue #18](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/18).
 
 > **What this data is, and is not.** These are *historical sample files* from a single recording on 2024-04-20. They are **not** a live benchmark, not a reproducible experiment, and they say nothing about the newer Jazzy image in [`ROS2/`](../../ROS2/). Do not quote them as performance results.
 
@@ -142,4 +142,4 @@ Tested with Python 3.12.3, matplotlib 3.11.2 and numpy 2.5.4 (the latest release
 
 - [`../README.md`](../README.md): extracting data from Prometheus with Python.
 - [`../DataAnaysis.ipynb`](../DataAnaysis.ipynb), [`../HPA.ipynb`](../HPA.ipynb): the original (heavy, cluster-dependent) notebooks.
-- [Issue #18](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues/18): broader benchmark plan.
+- [Issue #18](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/18): broader benchmark plan.

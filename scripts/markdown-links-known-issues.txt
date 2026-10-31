@@ -2,6 +2,3 @@
 # Format: <path relative to repo root>:<link target exactly as written>
 # Lines starting with '#' are comments. Remove an entry once it is fixed;
 # scripts/check-markdown-links.py warns about stale entries.
-
-# PR #36 fixes this broken image link. Remove this entry when #36 merges.
-MonitoringSystem/README.md:../images/k8s1.png

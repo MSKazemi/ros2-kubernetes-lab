@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18">
+<meta name="color-scheme" content="dark">
+<title>Days 61–90: grow with evidence | ROS 2 Kubernetes Lab</title>
+<meta name="description" content="Phase 4 of the 90-day plan: share a demo, learn from real user reports, keep naming consistent and measure honestly. Planning targets, not promises.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Mohsen Seyedkazemi Ardebili">
+<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/plans/grow-with-evidence.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/docs.css">
+<link rel="stylesheet" href="../assets/scenarios.css">
+<link rel="stylesheet" href="../assets/lab-anim.css">
+<link rel="stylesheet" href="../assets/anim/grow-with-evidence.css">
+<script defer src="../assets/lab-anim.js"></script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ROS 2 Kubernetes Lab">
+<meta property="og:title" content="Days 61–90: grow with evidence">
+<meta property="og:description" content="Phase 4 of the roadmap: publish, listen to real user reports, fix install friction and measure honestly, then go around again. A proposal, not a promise.">
+<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/plans/grow-with-evidence.html">
+<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Days 61–90: grow with evidence">
+<meta name="twitter:description" content="Phase 4 of the roadmap: publish, listen, fix, measure, repeat. A proposal, not a promise.">
+<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Days 61–90: grow with evidence","description":"Phase 4 of the 90-day plan: share a demo, learn from real user reports, keep naming consistent and measure honestly. Planning targets, not promises.","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/grow-with-evidence.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"isPartOf":{"@type":"WebPage","name":"Roadmap","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Roadmap","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},{"@type":"ListItem","position":3,"name":"Days 61–90: grow with evidence","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/grow-with-evidence.html"}]}]}</script>
+</head><body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="docs-nav"><div class="sc-shell docs-nav-inner">
+<a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Roadmap</a><a href="../scenarios/">Research scenarios</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab">GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+
+
+<section class="sc-hero"><div class="sc-shell">
+<nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Roadmap</a><span>/</span>Days 61–90</nav>
+<span class="sc-kicker">Phase 4 · days 61–90</span>
+<h1>Grow with evidence, not with hype</h1>
+<p class="sc-lead">Once the lab has something verified to show, this phase shares it, listens to what real people run into, and fixes the friction they report. Growth here means more people reaching a working first run, not a bigger number on a badge.</p>
+<div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · planning targets, not promises</span><span class="sc-pill">Issues #21, #22</span><span class="sc-pill">Source: docs/ROADMAP-2026.md</span></div>
+</div></section>
+
+<section class="sc-section" id="loop"><div class="sc-shell">
+<h2>A loop, not a launch</h2>
+<p class="sc-intro">Publishing is where the loop starts, not where it ends. Each lap uses what people actually report, and the roadmap plans to repeat it every quarter.</p>
+
+<figure class="lab-anim loop" data-anim="grow-loop" data-interval="3400" aria-labelledby="loop-title">
+<div class="lab-anim__head"><h3 class="lab-anim__title" id="loop-title">Publish, listen, fix, measure</h3><span class="lab-anim__tag">Illustration · sequence only</span></div>
+<div class="lab-anim__stage">
+<svg viewBox="0 0 720 560" role="img" aria-labelledby="loop-svg-t loop-svg-d" focusable="false">
+<title id="loop-svg-t">The grow-with-evidence loop</title>
+<desc id="loop-svg-d">A circle of four stops joined by clockwise arrows: Publish, User reports, Fix friction, and Measure and repeat. A final arrow leads from Measure and repeat back to Publish, showing that the loop runs again.</desc>
+<circle class="ring" cx="360" cy="280" r="190" />
+<path class="draw arc a0" style="--len:300" d="M360.0 90.0A190 190 0 0 1 550.0 280.0" />
+<path class="fade arrow ar0" transform="translate(494.4 145.6) rotate(45)" d="M-13 -11L13 0L-13 11Z" />
+<path class="draw arc a1" style="--len:300" d="M550.0 280.0A190 190 0 0 1 360.0 470.0" />
+<path class="fade arrow ar1" transform="translate(494.4 414.4) rotate(135)" d="M-13 -11L13 0L-13 11Z" />
+<path class="draw arc a2" style="--len:300" d="M360.0 470.0A190 190 0 0 1 170.0 280.0" />
+<path class="fade arrow ar2" transform="translate(225.6 414.4) rotate(225)" d="M-13 -11L13 0L-13 11Z" />
+<path class="draw arc a3" style="--len:300" d="M170.0 280.0A190 190 0 0 1 360.0 90.0" />
+<path class="fade arrow ar3" transform="translate(225.6 145.6) rotate(315)" d="M-13 -11L13 0L-13 11Z" />
+<g class="runner"><circle class="dot" cx="360" cy="90" r="12" /></g>
+<g class="node n0"><rect x="230.0" y="54.0" width="260" height="72" rx="14" /><text class="ttl" x="360.0" y="86.0" text-anchor="middle">Publish</text><text class="det" x="360.0" y="112.0" text-anchor="middle">demo video, two posts</text></g>
+<g class="node n1"><rect x="420.0" y="244.0" width="260" height="72" rx="14" /><text class="ttl" x="550.0" y="276.0" text-anchor="middle">User reports</text><text class="det" x="550.0" y="302.0" text-anchor="middle">install problems</text></g>
+<g class="node n2"><rect x="230.0" y="434.0" width="260" height="72" rx="14" /><text class="ttl" x="360.0" y="466.0" text-anchor="middle">Fix friction</text><text class="det" x="360.0" y="492.0" text-anchor="middle">docs, scripts, links</text></g>
+<g class="node n3"><rect x="40.0" y="244.0" width="260" height="72" rx="14" /><text class="ttl" x="170.0" y="276.0" text-anchor="middle">Measure, repeat</text><text class="det" x="170.0" y="302.0" text-anchor="middle">record, then go again</text></g>
+</svg>
+</div>
+<div class="lab-anim__bar">
+<button type="button" data-anim-prev>Back</button>
+<button type="button" data-anim-play aria-pressed="false"><span>Play</span></button>
+<button type="button" data-anim-next>Next</button>
+<button type="button" data-anim-replay>Replay</button>
+<output class="lab-anim__status" data-anim-status aria-live="polite">Step 1 of 4</output>
+</div>
+<ol class="lab-anim__steps">
+<li data-step-text><button type="button"><b>Publish</b><span>Share a demonstration video and two technical posts, and ask ROS and Kubernetes educators to review them (issue #21). Content shows only behaviour the lab has verified.</span></button></li>
+<li data-step-text><button type="button"><b>Collect user reports</b><span>People try the lab and report what broke or confused them. New issues are triaged, and install problems count as useful feedback.</span></button></li>
+<li data-step-text><button type="button"><b>Fix install friction</b><span>Turn the reports into changes to docs, scripts or defaults. Keep names and links consistent after the repository rename, and check redirects (issue #22).</span></button></li>
+<li data-step-text><button type="button"><b>Measure and repeat</b><span>Record the measures in the table below, dated and sourced, then go around again. Plans call for a quarterly pass using real visitor, install, contributor and doc-discovery data.</span></button></li>
+</ol>
+<p class="lab-anim__note">The marker shows order only. It does not show that a video, post or review exists yet.</p>
+</figure>
+</div></section>
+
+<section class="sc-section sc-section--shade"><div class="sc-shell">
+<h2>The two issues in this phase</h2>
+<div class="sc-grid">
+<div class="sc-panel"><span class="lab-chip lab-chip--planned">Planned</span><h3><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/21">#21 Demo, articles and community ↗</a></h3><p>Publish a demonstration video and two technical posts, and seek ROS and Kubernetes educator reviews. Then triage new issues and improve installation using actual user reports.</p><p><strong>Completion gate:</strong> useful technical content and documented engagement metrics.</p></div>
+<div class="sc-panel"><span class="lab-chip lab-chip--planned">Planned</span><h3><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/22">#22 Naming, links and redirects ↗</a></h3><p>The repository now lives at ros2-kubernetes-lab. The issue stays open until old and new links, citations, badges, docs and packages are audited and the redirects are verified.</p><p><strong>Completion gate:</strong> old and new links, citations, badges, docs and packages audited.</p></div>
+</div>
+</div></section>
+
+<section class="sc-section" id="measure"><div class="sc-shell">
+<h2>How the lab will measure</h2>
+<p class="sc-intro">The table copies the roadmap's own wording (section 7). "Not measured" means exactly that: the lab has no number yet, and none is shown here. Targets are planning goals, not predictions.</p>
+<div class="sc-table-wrap"><table class="sc-table">
+<caption class="sr-only">Measures, current status, review cadence and targets from the roadmap</caption>
+<thead><tr><th scope="col">Measure</th><th scope="col">Status today</th><th scope="col">Review</th><th scope="col">Target</th></tr></thead>
+<tbody>
+<tr><th scope="row">Stars</th><td><span class="lab-chip">6 on 2026-10-10</span></td><td>Monthly</td><td>25 / 75 / 150 / 300, and an aspiration of 600</td></tr>
+<tr><th scope="row">Successful fresh-install validations</th><td><span class="lab-chip lab-chip--planned">Not measured</span></td><td>Per release</td><td>At least one verified supported path before launch</td></tr>
+<tr><th scope="row">Verified cross-node ROS messages</th><td><span class="lab-chip lab-chip--planned">Not measured on the current checkout</span></td><td>Per pull request or release</td><td>A repeatable PASS on the supported profile</td></tr>
+<tr><th scope="row">GitHub unique visitors and clones</th><td><span class="lab-chip lab-chip--planned">Needs Insights access</span></td><td>Monthly</td><td>Record a baseline, then improve</td></tr>
+<tr><th scope="row">External contributors</th><td><span class="lab-chip lab-chip--planned">Not assessed</span></td><td>Monthly</td><td>Record a baseline and welcome the first outside pull request</td></tr>
+<tr><th scope="row">Search impressions and documentation visits</th><td><span class="lab-chip lab-chip--planned">No docs analytics baseline</span></td><td>Monthly after launch</td><td>Record, then improve</td></tr>
+<tr><th scope="row">Reproduced benchmark experiments</th><td><span class="lab-chip lab-chip--planned">Modern validated runs not assessed</span> <span class="lab-chip lab-chip--legacy">Historical artifacts exist</span></td><td>Per release</td><td>Three independently repeatable cases</td></tr>
+</tbody></table></div>
+<div class="sc-grid" style="margin-top:22px">
+<div class="sc-panel"><h3>The one dated baseline</h3><p>Audited on 10 October 2026: <strong>6 stars, 2 forks, 0 releases</strong>. Source: <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">docs/ROADMAP-2026.md</a>, section 7. These are not current counts.</p></div>
+<div class="sc-panel"><h3>Stars are an imperfect signal</h3><p>A star does not show that anyone ran the lab. The roadmap treats successful first runs, outside contributors, documented reuse and reproducible results as better signs, and says to measure feedback quality too. Stars are never incentivised.</p></div>
+</div>
+</div></section>
+
+<section class="sc-section sc-section--shade" id="help"><div class="sc-shell">
+<div class="sc-detail-grid">
+<div class="sc-panel"><h3>How to help</h3><ul><li>Pick a small task and comment that you would like to work on it.</li><li>When a supported quickstart exists, try it and report exactly where it failed or confused you.</li><li>If you teach ROS 2 or Kubernetes, review a tutorial and tell us what a student would stumble on.</li><li>Fixing a broken link or an unclear sentence counts as a real contribution.</li></ul></div>
+<div class="sc-callout"><h3>Start with a good first issue</h3><p>Documentation and static-check tasks do not need a 30 GB Vagrant cluster.</p><p><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue">Good first issues ↗</a> <a class="sc-link-button sc-link-button--ghost" href="../docs/contribute.html">Contribution guide</a></p></div>
+</div>
+</div></section>
+
+<section class="sc-section"><div class="sc-shell">
+<h2>Keep going</h2>
+<div class="sc-grid pager">
+<a class="sc-card sc-card--link" href="./package-and-document.html"><span class="sc-card-index">Previous · days 31–60</span><h3>Package and document</h3><p>README, benchmarks, tutorials and a first validated release.</p><span class="sc-card-cta">Back to phase 3</span></a>
+<a class="sc-card sc-card--link" href="./release-gates.html"><span class="sc-card-index">Next · definition of done</span><h3>Release gates</h3><p>The eight checks a supported release must pass.</p><span class="sc-card-cta">Open the gates</span></a>
+</div>
+<p class="sc-intro" style="margin-top:24px"><a href="./">Back to the roadmap hub</a> · <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/21">Issue #21 ↗</a> · <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/22">Issue #22 ↗</a></p>
+</div></section>
+
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Plans are proposals; illustrations show sequence, not progress</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">Full roadmap source ↗</a></div></footer></body></html>

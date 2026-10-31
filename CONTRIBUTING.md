@@ -6,10 +6,10 @@ Welcome! Contributions from robotics engineers, Kubernetes users, students, rese
 
 ## Find a first task
 
-- [Good first issues](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/good%20first%20issue) — small, well-scoped tasks suitable for a first PR.
-- [Help wanted](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/labels/help%20wanted) — bounded tasks where outside help is especially valuable.
-- [Project modernization roadmap](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/pull/23) — proposed longer-term goals and dependencies. The roadmap may change before it merges.
-- [All open issues](https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment/issues).
+- [Good first issues](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue) — small, well-scoped tasks suitable for a first PR.
+- [Help wanted](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/help%20wanted) — bounded tasks where outside help is especially valuable.
+- [Project modernization roadmap](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/23) — proposed longer-term goals and dependencies. The roadmap may change before it merges.
+- [All open issues](https://github.com/MSKazemi/ros2-kubernetes-lab/issues).
 
 **Please read the full issue description before starting.** For first contributions, choose one small issue and comment “I'd like to work on this.” Issues are intentionally left unassigned initially so contributors can volunteer; a comment is an invitation to coordinate, not a guarantee of exclusive ownership. If someone else is already working on the task, coordinate in the issue instead of duplicating work.
 
@@ -41,8 +41,8 @@ The repository uses one concise [AGENTS.md](./AGENTS.md) instruction set for Cod
 
 1. Fork this repository (if needed), or clone it:
    ```sh
-   git clone https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment.git
-   cd Vagrant-Kubernetes-ROS2-Deployment
+   git clone https://github.com/MSKazemi/ros2-kubernetes-lab.git
+   cd ros2-kubernetes-lab
    ```
 2. Create a branch for **one** issue, for example:
    ```sh

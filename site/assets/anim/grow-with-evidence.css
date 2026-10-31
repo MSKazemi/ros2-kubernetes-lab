@@ -1,0 +1,34 @@
+/* Phase 4 page: the publish-listen-fix-measure loop. Visuals keyed on the framework's .s-ge-K classes. */
+.loop .ring{fill:none;stroke:var(--line);stroke-width:6}
+.loop .arc{fill:none;stroke:var(--cyan);stroke-width:6;stroke-linecap:round}
+.loop .arrow{fill:var(--cyan)}
+/* The closing arc (back to the start) draws last. */
+.loop .a3{transition-delay:.7s}
+.loop.s-ge-1 .a0,.loop.s-ge-2 .a1,.loop.s-ge-3 .a2,.loop.s-ge-3 .a3{stroke-dashoffset:0}
+.loop.s-ge-1 .ar0,.loop.s-ge-2 .ar1,.loop.s-ge-3 .ar2{opacity:1}
+.loop.s-ge-3 .ar3{opacity:1;transition-delay:1.3s}
+/* Marker rides the ring one quarter turn per step; it hides behind each stop's label. */
+.loop .runner{transform-origin:360px 280px;transform:rotate(calc(var(--step,0) * 90deg));transition:transform 1.1s var(--ease)}
+.loop:not(.is-ready) .runner{display:none}
+.loop .dot{fill:var(--amber);filter:drop-shadow(0 0 8px rgba(255,166,110,.8))}
+/* Stops: dim until reached, cyan once reached. */
+.loop .node{--c:var(--cyan)}
+.loop.is-ready .node{--c:var(--dim)}
+.loop.s-ge-0 .n0,.loop.s-ge-1 .n1,.loop.s-ge-2 .n2,.loop.s-ge-3 .n3{--c:var(--cyan)}
+.loop .node rect{fill:var(--panel);stroke:var(--c);stroke-width:4;transition:stroke .5s var(--ease)}
+.loop .node .ttl{font:600 26px var(--display);fill:var(--ink)}
+.loop .node .det{font:400 18px var(--body);fill:var(--sub)}
+.loop[data-step="0"] .n0 rect,.loop[data-step="1"] .n1 rect,.loop[data-step="2"] .n2 rect,.loop[data-step="3"] .n3 rect{stroke-width:7;fill:#16304a}
+
+.sc-table caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sc-table tbody th{background:none;color:#e6f4ff;font:700 13px var(--body);border-top:1px solid #2d435e;padding:17px;vertical-align:top;min-width:180px}
+.sc-table td .lab-chip{margin:0 6px 6px 0;white-space:normal}
+.sc-table{min-width:720px}
+.pager .sc-card h3{margin-top:12px}
+
+
+/* Small screens: the SVG scales to roughly 0.4x, so enlarge text in viewBox units and drop secondary detail. */
+@media (max-width:640px){
+  .loop .node .ttl{font-size:30px;transform:translateY(14px)}
+  .loop .node .det{display:none}
+}
