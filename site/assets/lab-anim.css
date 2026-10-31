@@ -1,0 +1,60 @@
+/* Lab animation framework styles. Pair with lab-anim.js. Tokens come from docs.css (:root). */
+.lab-anim{--amber:#ffa66e;--ok:#66ebda;--warn:#ffa66e;--dim:#7a8ca8;--ease:cubic-bezier(.22,.8,.26,1);
+  margin:28px 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(20,32,55,.9),rgba(12,20,36,.96))}
+.lab-anim__head{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:1px solid var(--line)}
+.lab-anim__title{margin:0;font:600 1.02rem/1.3 var(--display);color:var(--ink)}
+.lab-anim__tag{font:500 .72rem/1 var(--mono);color:var(--amber);border:1px solid rgba(255,166,110,.45);
+  border-radius:999px;padding:6px 10px;letter-spacing:.02em}
+.lab-anim__stage{position:relative;padding:8px;background:
+  radial-gradient(900px 340px at 20% 0%,rgba(115,151,255,.10),transparent 60%),
+  radial-gradient(700px 300px at 90% 100%,rgba(102,235,218,.08),transparent 60%)}
+.lab-anim__stage svg{display:block;width:100%;height:auto;max-height:520px}
+.lab-anim__stage text{font-family:var(--body);fill:var(--ink)}
+.lab-anim__stage .mono{font-family:var(--mono)}
+.lab-anim__stage .sub{fill:var(--sub)}
+.lab-anim__bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 18px;border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);background:rgba(8,13,24,.55)}
+.lab-anim__bar button{appearance:none;cursor:pointer;font:600 .84rem/1 var(--body);color:var(--ink);
+  background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:10px 16px;min-height:40px;
+  transition:border-color .18s,background .18s,color .18s}
+.lab-anim__bar button:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan)}
+.lab-anim__bar button:focus-visible,.lab-anim__steps button:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.lab-anim__bar button:disabled{opacity:.42;cursor:default}
+.lab-anim__bar button[aria-pressed=true]{border-color:var(--cyan);color:var(--cyan)}
+.lab-anim__status{margin-left:auto;font:500 .8rem/1.4 var(--mono);color:var(--sub)}
+.lab-anim__steps{list-style:none;margin:0;padding:12px;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.lab-anim__steps li{margin:0}
+.lab-anim__steps button{width:100%;height:100%;text-align:left;appearance:none;cursor:pointer;display:grid;gap:6px;
+  align-content:start;padding:14px 15px;border-radius:12px;border:1px solid var(--line);background:rgba(16,27,46,.7);
+  color:var(--sub);font:400 .88rem/1.5 var(--body);transition:border-color .25s,background .25s,color .25s,transform .25s var(--ease)}
+.lab-anim__steps b{font:600 .95rem/1.3 var(--display);color:var(--ink)}
+.lab-anim__steps li.is-done button{border-color:rgba(102,235,218,.35)}
+.lab-anim__steps li.is-current button{border-color:var(--cyan);background:rgba(102,235,218,.08);color:var(--ink);transform:translateY(-2px)}
+.lab-anim__note{margin:0;padding:12px 18px 16px;font:400 .82rem/1.55 var(--body);color:var(--sub)}
+
+/* Reusable status vocabulary (always pair colour with a text label, never colour alone). */
+.lab-chip{display:inline-flex;align-items:center;gap:6px;font:600 .72rem/1 var(--mono);padding:5px 9px;border-radius:999px;
+  border:1px solid var(--line);color:var(--sub)}
+.lab-chip--done{color:var(--ok);border-color:rgba(102,235,218,.5)}
+.lab-chip--planned{color:var(--amber);border-color:rgba(255,166,110,.5)}
+.lab-chip--legacy{color:#c9b3ff;border-color:rgba(161,147,255,.5)}
+
+/* Helpers for animation authors */
+.lab-anim .fade{opacity:0;transition:opacity .6s var(--ease)}
+.lab-anim .rise{opacity:0;transform:translateY(10px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.lab-anim .draw{stroke-dasharray:var(--len,400);stroke-dashoffset:var(--len,400);transition:stroke-dashoffset 1.1s var(--ease)}
+/* No-JS / not-ready: show the finished picture. JS adds .is-ready then data-step. */
+.lab-anim:not(.is-ready) .fade,.lab-anim:not(.is-ready) .rise{opacity:1;transform:none}
+.lab-anim:not(.is-ready) .draw{stroke-dashoffset:0}
+.lab-anim:not(.is-ready) .lab-anim__bar{display:none}  /* controls do nothing without JS */
+
+@media (max-width:640px){
+  .lab-anim__steps{grid-template-columns:1fr}
+  .lab-anim__status{margin-left:0;width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  .lab-anim *,.lab-anim *::before,.lab-anim *::after{animation:none!important;transition:none!important}
+}
+.lab-anim.is-reduced *{animation:none!important;transition:none!important}

@@ -1,7 +1,7 @@
 # Software Disclaimer and Responsible-Use Notice
 
 **Template for:** Vagrant-Kubernetes-ROS2-Deployment  
-**Repository:** https://github.com/MSKazemi/Vagrant-Kubernetes-ROS2-Deployment  
+**Repository:** https://github.com/MSKazemi/ros2-kubernetes-lab<br>
 **Notice version:** 2026-10-17
 
 > **Read this together with the repository's actual license.** This is a notice of risks, warranty disclaimers and limitations to the extent allowed by law. It does **not** create a separate binding agreement merely because someone views, clones or uses this repository, override a software license, exclude mandatory legal obligations, or prevent litigation. It is not a promise that the software is safe, certified or legally compliant.

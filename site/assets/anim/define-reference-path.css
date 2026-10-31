@@ -1,0 +1,65 @@
+/* Phase 1 animation: "One message, three hops". Visuals keyed on .s-ge-K and [data-step].
+   Base rules (no .is-ready) render the finished picture, so no-JS visitors see everything. */
+.define-path .t{font:500 16px var(--body);fill:var(--ink)}
+.define-path .t-strong{font:700 16px var(--body);fill:var(--ink)}
+.define-path .t-sub{font:500 15px var(--body);fill:var(--sub)}
+.define-path .t-amber{font:700 16px var(--body);fill:var(--amber)}
+.define-path .t-ok{font:700 16px var(--body);fill:var(--ok)}
+.define-path .t-mono{font:600 16px var(--mono);fill:var(--ink)}
+
+.define-path .banner rect{fill:rgba(115,151,255,.10);stroke:var(--blue);stroke-width:2;transition:stroke .4s var(--ease)}
+.define-path .worker{fill:rgba(16,27,46,.85);stroke:var(--line);stroke-width:2;transition:stroke .4s var(--ease)}
+.define-path .pod-ros{fill:rgba(102,235,218,.10);stroke:var(--ok);stroke-width:2.5}
+.define-path .pod-stress{fill:rgba(122,140,168,.10);stroke:var(--dim);stroke-width:2.5;stroke-dasharray:7 6}
+.define-path .cni{fill:rgba(255,166,110,.08);stroke:var(--amber);stroke-width:2.5;transition:stroke .4s var(--ease)}
+.define-path .hop{fill:none;stroke:var(--amber);stroke-width:3.5;stroke-dasharray:8 8;stroke-linecap:round;animation:dp-march 1.2s linear infinite}
+.define-path .dot{fill:var(--bg);stroke:var(--amber);stroke-width:3.5}
+.define-path .unverified rect{fill:rgba(255,166,110,.10);stroke:var(--amber);stroke-width:2;stroke-dasharray:6 5}
+.define-path .cell-ok{fill:rgba(102,235,218,.08);stroke:var(--ok);stroke-width:2.5}
+.define-path .cell-no{fill:rgba(255,166,110,.08);stroke:var(--amber);stroke-width:2.5;stroke-dasharray:7 6}
+
+/* Reveal by step: hidden only once the framework is ready. */
+.define-path.is-ready .k1,.define-path.is-ready .k2,.define-path.is-ready .k3{opacity:0;transform:translateY(8px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.define-path.is-ready.s-ge-1 .k1,.define-path.is-ready.s-ge-2 .k2,.define-path.is-ready.s-ge-3 .k3{opacity:1;transform:none}
+.define-path.is-ready .k2 .hop{transition:opacity .6s var(--ease)}
+
+/* Highlight the group that belongs to the current step. */
+.define-path[data-step="0"] .banner rect{stroke:var(--cyan);stroke-width:3}
+.define-path[data-step="1"] .pod-ros{stroke-width:4}
+.define-path[data-step="2"] .cni{stroke:var(--cyan);stroke-width:4}
+.define-path[data-step="3"] .cell-ok,.define-path[data-step="3"] .cell-no{stroke-width:4}
+
+/* The hollow marker is a conceptual message; it is not a measurement. */
+.define-path:not(.is-ready) .dot{opacity:0}
+.define-path.is-ready.s-ge-2 .dot{animation:dp-travel 3.2s ease-in-out infinite}
+@keyframes dp-travel{0%{transform:translateX(0);opacity:0}12%{opacity:1}85%{opacity:1}100%{transform:translateX(272px);opacity:0}}
+@keyframes dp-march{to{stroke-dashoffset:-16}}
+
+@media (max-width:640px){
+  .define-path .t,.define-path .t-strong,.define-path .t-amber,.define-path .t-ok,.define-path .t-mono{font-size:26px}
+  .define-path .t-sub{font-size:24px}
+}
+
+/* Page layout helpers (issue list, pager). */
+.phase-issues{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:14px}
+.phase-issues li{display:grid;grid-template-columns:auto 1fr auto;gap:6px 16px;align-items:start;padding:18px 20px;
+  border:1px solid #334862;border-radius:14px;background:#111f32}
+.phase-issues .issue-no{font:700 14px var(--mono);color:#91eddf;white-space:nowrap}
+.phase-issues h3{font:600 17px/1.35 var(--display);margin:0 0 4px;color:#ebf5ff}
+.phase-issues p{margin:0;font-size:14px;color:#b1c2d7;line-height:1.65}
+.phase-issues .lab-chip{justify-self:end}
+.phase-pager{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:stretch;margin:0}
+.phase-pager a{flex:1 1 260px;display:block;padding:18px 20px;border:1px solid #334862;border-radius:14px;background:#111f32;color:inherit;text-decoration:none;transition:border-color .2s,transform .2s}
+.phase-pager a:hover{border-color:#63bcb2;text-decoration:none;transform:translateY(-2px)}
+.phase-pager small{display:block;font:700 12px var(--mono);color:#91eddf;margin-bottom:4px}
+.phase-pager strong{font:600 17px/1.35 var(--display);color:#ebf5ff}
+.phase-pager .next{text-align:right}
+.phase-hub-link{margin:18px 0 0;font-size:14px}
+.exit-list li{margin:0 0 8px}
+@media (max-width:640px){
+  .phase-issues li{grid-template-columns:1fr}
+  .phase-issues .lab-chip{justify-self:start}
+  .phase-pager .next{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){.phase-pager a:hover{transform:none}}
