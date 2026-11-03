@@ -1,6 +1,5 @@
 # Software Disclaimer and Responsible-Use Notice
 
-**Template for:** Vagrant-Kubernetes-ROS2-Deployment  
 **Repository:** https://github.com/MSKazemi/ros2-kubernetes-lab<br>
 **Notice version:** 2026-10-17
 

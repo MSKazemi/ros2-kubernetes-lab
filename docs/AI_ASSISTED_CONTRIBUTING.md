@@ -60,7 +60,7 @@ codex --version
 codex
 ```
 
-Follow the interactive sign-in instructions for your account, or the official setup for API-key authentication if that is how you use Codex. See the [Codex CLI project](https://github.com/openai/codex) and [Codex quickstart](https://developers.openai.com/codex/quickstart). Codex recognizes [AGENTS.md](../AGENTS.md) as repository-level instructions.
+Follow the interactive sign-in instructions for your account, or the official setup for API-key authentication if that is how you use Codex. See the [Codex CLI project](https://github.com/openai/codex) and [Codex quickstart](https://learn.chatgpt.com/docs/quickstart). Codex recognizes [AGENTS.md](../AGENTS.md) as repository-level instructions.
 
 **Do not install both unless you want to.** Use either tool from the repository root so it can find the source and instructions. If you cannot install a CLI, use an officially supported editor/web experience with repository access and the same workflow.
 
@@ -180,5 +180,5 @@ A human maintainer will review the result. Do not ask your coding agent to merge
 - [Claude Code: quickstart](https://code.claude.com/docs/en/quickstart)
 - [Claude Code: CLAUDE.md / AGENTS.md instructions](https://code.claude.com/docs/en/memory)
 - [Codex CLI and supported installation methods](https://github.com/openai/codex)
-- [Codex: quickstart](https://developers.openai.com/codex/quickstart)
-- [Codex: repository-level AGENTS.md](https://developers.openai.com/codex/guides/agents-md)
+- [Codex: quickstart](https://learn.chatgpt.com/docs/quickstart)
+- [Codex: repository-level AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md)

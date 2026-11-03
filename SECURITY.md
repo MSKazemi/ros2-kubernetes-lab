@@ -1,4 +1,4 @@
-# Security policy — Vagrant-Kubernetes-ROS2-Deployment
+# Security policy — ros2-kubernetes-lab
 
 **Published:** 2026-10-17  
 **Support commitment:** No specific security response deadline, support window or fix guarantee is promised by this file. Maintainership and available updates depend on the project and applicable law.

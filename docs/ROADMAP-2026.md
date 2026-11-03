@@ -1,6 +1,6 @@
 # ROS 2 Kubernetes Lab: modernization, adoption and growth roadmap
 
-> Status: **Proposal** (11 October 2026). This roadmap does not indicate that new ROS distributions, Kubernetes configurations, or network modes have been validated. Current repository name is unchanged.
+> Status: **Proposal** (11 October 2026). This roadmap does not indicate that new ROS distributions, Kubernetes configurations, or network modes have been validated. At the time of this audit the repository was still named `Vagrant-Kubernetes-ROS2-Deployment`; it has since been renamed to `ros2-kubernetes-lab` (commit `43d4690`).
 >
 > Proposed name: **ROS 2 Kubernetes Lab** · proposed slug: `ros2-kubernetes-lab`.
 > Tagline: **Deploy, scale, monitor, and benchmark distributed ROS 2 applications on Kubernetes.**

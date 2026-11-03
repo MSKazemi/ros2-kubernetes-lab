@@ -72,6 +72,7 @@
 .sc-detail-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:28px;align-items:start}
 .sc-panel{border:1px solid #334862;border-radius:14px;background:#111f32;padding:26px}
 .sc-panel h3{margin-top:0}
+.sc-panel h2{font:600 20px/1.35 var(--display);color:#ebf5ff;margin:0 0 12px;letter-spacing:normal}
 .sc-panel p,.sc-panel li{font-size:13px}
 .sc-panel ul,.sc-panel ol{padding-left:22px;margin-bottom:0}
 .sc-table-wrap{width:100%;overflow-x:auto;border:1px solid #324962;border-radius:13px;margin-top:22px}

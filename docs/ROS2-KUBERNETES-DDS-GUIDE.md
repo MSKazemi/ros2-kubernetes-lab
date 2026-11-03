@@ -8,17 +8,86 @@ ROS 2 applications typically use the Data Distribution Service (DDS) through an 
 
 DDS participants must discover each other before exchanging messages. The discovery mechanism depends on the RMW, DDS vendor, and configuration. Default DDS simple discovery commonly uses multicast, which is not guaranteed to work across all pod network topologies. **ROS 2 does not universally require multicast**: supported alternatives include a Fast DDS Discovery Server and other explicit peer-discovery configurations.
 
-Read the upstream [Fast DDS ROS 2 Discovery Server tutorial](https://fast-dds.docs.eprosima.com/en/latest/fastdds/ros2/discovery_server/ros2_discovery_server.html) to understand the client/server mode. A Discovery Server can remove the requirement for multicast *discovery*, but application data delivery, addresses, ports, QoS and network policies still need testing.
+Read the upstream [Fast DDS ROS 2 Discovery Server tutorial](https://fast-dds.docs.eprosima.com/en/latest/fastdds/ros2/discovery_server/ros2_discovery_server.html) to understand the client/server mode. A Discovery Server can remove the requirement for multicast *discovery*, but application data delivery, addresses, ports, QoS and network policies still need testing. Single-host Docker tests of these configurations (including a stopped-server negative control) are listed in [Discovery configurations verified in Docker](#discovery-configurations-verified-in-docker-2026-10-31); they do not cover Kubernetes.
+
+## Discovery configurations verified in Docker (2026-10-31)
+
+**Verified in Docker on 2026-10-31, on one host, with containers on user-defined Docker bridge networks.** This is **not** Kubernetes, pod-network, CNI, `hostNetwork`, or cross-node evidence. The containers shared one Linux host and one bridge network; no pod, Service, or node was involved.
+
+Image: `ros:jazzy-ros-base-noble` (Ubuntu 24.04.5, ROS 2 Jazzy; `fast-discovery-server` is in `/opt/ros/jazzy/bin`). It does **not** include `demo_nodes_cpp` or `rmw_cyclonedds_cpp`, so the tests used `ros2 topic pub` / `ros2 topic echo` on `/agent10_chatter` (`std_msgs/msg/String`). CycloneDDS tests used an image with `apt-get install ros-jazzy-rmw-cyclonedds-cpp` added. Each run passed when `ros2 topic echo --once` printed the published `data:` line.
+
+| # | Configuration (both nodes unless noted) | Result |
+|---|---|---|
+| A | `ROS_DOMAIN_ID=10`, default RMW (Fast DDS), default `ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET` | message received |
+| B | as A, plus `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST` (no server) | **no message** (timeout); `ros2 topic info /agent10_chatter -v` prints `Unknown topic` |
+| C | `RMW_IMPLEMENTATION=rmw_fastrtps_cpp`, `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`, `ROS_DISCOVERY_SERVER=<server-ip>:11811` | message received |
+| D | as C, with `ROS_DISCOVERY_SERVER=<server-container-name>:11811` | message received |
+| E | as C, with `ROS_AUTOMATIC_DISCOVERY_RANGE` left at `SUBNET` | message received |
+| F | as C, server container stopped | **no message**; Fast DDS logs `SERVER_CLIENT_DISCOVERY Error ... Wrong domain name passed into the server's list` |
+| G | as C, server restarted | message received |
+| H | publisher `ROS_DOMAIN_ID=10`, subscriber `ROS_DOMAIN_ID=11` | **no message** |
+| I | `RMW_IMPLEMENTATION=rmw_cyclonedds_cpp`, default multicast | message received |
+| J | Cyclone, `CYCLONEDDS_URI` with `AllowMulticast=false` and two `Peer` addresses (fixed IPs on a `/24` subnet) | message received |
+| K | Cyclone, `CYCLONEDDS_URI` with `AllowMulticast=false` and no peers | **no message** |
+| L | Cyclone, `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST`, no `ROS_STATIC_PEERS` | **no message** |
+| M | Cyclone, `ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST` and `ROS_STATIC_PEERS="172.30.0.10;172.30.0.20"` | message received |
+| N | publisher on Cyclone (default config), subscriber on Fast DDS (default config) | message received |
+
+Snippets that were run (the server container used `fast-discovery-server -i 0 -l 0.0.0.0 -p 11811`, which prints `Server Addresses: UDPv4:[0.0.0.0]:11811`):
+
+```bash
+# Fast DDS discovery server (test C/D/F/G)
+fast-discovery-server -i 0 -l 0.0.0.0 -p 11811
+
+# Talker and listener environment (test C/D)
+export ROS_DOMAIN_ID=10
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+export ROS_DISCOVERY_SERVER=agent10-ds:11811   # or the server's IP and :11811
+
+# CycloneDDS with explicit unicast peers (test J)
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+export CYCLONEDDS_URI='<CycloneDDS><Domain><General><AllowMulticast>false</AllowMulticast></General><Discovery><Peers><Peer address="172.30.0.10"/><Peer address="172.30.0.20"/></Peers><ParticipantIndex>auto</ParticipantIndex></Discovery></Domain></CycloneDDS>'
+
+# CycloneDDS with a static peer list (test M)
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+export ROS_STATIC_PEERS="172.30.0.10;172.30.0.20"
+
+# Publisher and subscriber used by every test
+ros2 topic pub -r 2 /agent10_chatter std_msgs/msg/String "{data: hello-from-agent10}"
+ros2 topic echo /agent10_chatter std_msgs/msg/String --once
+```
+
+What the results do and do not show:
+
+- Tests B, F, H and K are negative controls: each failed in the way the explanation predicts, so the positive results are not an artefact of the harness.
+- Test C shows the Fast DDS discovery server delivered data with the range set to `LOCALHOST`. We did **not** inspect the wire traffic, so this run does not prove which transports Fast DDS used internally; it shows only that the configuration worked in this single-host setup.
+- `ROS_STATIC_PEERS` was tested only with CycloneDDS (test M). Test N shows that the default configurations of the two RMW implementations delivered to each other on this host; it is not a general interoperability guarantee.
+- The results come from one Docker bridge on one machine. They say nothing about pod IP routing, CNI multicast policy, Kubernetes Services, `hostNetwork`, or workers on different machines. Those still need a cluster test (see [#14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14) and [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15)).
+- Upstream ROS 2 and Fast DDS documentation pages could not be read in this review (the docs site presents a bot challenge to automated fetches), so the configuration names above are taken from the runnable tests and from `fast-discovery-server --help`, not from quoted upstream text.
+
+### Troubleshooting table (commands verified in the same Docker tests)
+
+| Symptom | Likely cause | Check |
+|---|---|---|
+| `ros2 topic echo` waits and never prints | Publisher and subscriber use different `ROS_DOMAIN_ID` (test H) | `printenv ROS_DOMAIN_ID` on both sides |
+| Topic missing on the subscriber side | No discovery path: multicast is off and no discovery server or peers are set (test B) | `ros2 topic info /TOPIC_NAME -v` shows `Unknown topic` on the subscriber; a working topic shows `Publisher count: 1` |
+| Nothing received with a discovery server set | Server not running, or the address is wrong (test F) | `printenv ROS_DISCOVERY_SERVER`; check that the server process is running. Fast DDS prints `SERVER_CLIENT_DISCOVERY Error` in the node output when the server name cannot be used |
+| Cyclone publisher and subscriber cannot see each other with multicast off | No `Peer` entries in `CYCLONEDDS_URI` (test K) | `printenv CYCLONEDDS_URI`; the XML must list every peer address |
+| Cyclone works only with multicast on | `ROS_STATIC_PEERS` is missing while the discovery range is `LOCALHOST` (test L) | `printenv ROS_AUTOMATIC_DISCOVERY_RANGE ROS_STATIC_PEERS` |
+
+Do **not** use `ros2 node list` to check for a `ros2 topic pub` publisher: that node is hidden and is reported as `_ros2cli_*`, so the list can look empty while the topic works. Use `ros2 topic info -v`.
 
 ## What this repository currently provides
 
 | Area | Existing code | What can be claimed |
 |---|---|---|
 | Virtual machines | [`Vagrantfile`](../Vagrantfile) | Three Ubuntu 22.04 VMs are defined: a control plane and two workers |
-| Cluster setup | [`KubernetesClusterSetup/`](../KubernetesClusterSetup/) | Scripts request a kubeadm Kubernetes 1.29 cluster |
-| Pod networking | [`Network/network_plugin.sh`](../Network/network_plugin.sh) | Installs a Weave Net v2.8.1 manifest (archived upstream) |
+| Cluster setup | [`KubernetesClusterSetup/`](../KubernetesClusterSetup/) | Scripts request a kubeadm Kubernetes 1.29 cluster (1.29 reached end of life on 2025-02-28, per [kubernetes.io](https://kubernetes.io/releases/1.29/)) |
+| Pod networking | [`Network/network_plugin.sh`](../Network/network_plugin.sh) | Installs a Weave Net v2.8.1 manifest. The upstream [`weaveworks/weave`](https://github.com/weaveworks/weave) repository was archived (read-only) on 2024-06-20, so this manifest is not maintained |
 | ROS image (modern, container only) | [`ROS2/Dockerfile`](../ROS2/Dockerfile) | Builds from the ROS 2 Jazzy / Ubuntu 24.04 base with `demo_nodes_cpp` and `stress-ng`; checked only by an in-image local talker/listener test ([`scripts/test-ros2-image.sh`](../scripts/test-ros2-image.sh)). It is **not** referenced by the legacy `ROS2/ros_dep_*.yaml` manifests |
-| ROS image (legacy) | [`ROS2/legacy/foxy/Dockerfile`](../ROS2/legacy/foxy/Dockerfile) | Preserved recipe for ROS 2 Foxy (end of life June 2023) with `stress-ng`; the original manifests still pull a Foxy-based image (`kazemi/ros-foxy-with-stress-ng`) |
+| ROS image (legacy) | [`ROS2/legacy/foxy/Dockerfile`](../ROS2/legacy/foxy/Dockerfile) | Preserved recipe for ROS 2 Foxy (end of life 2023-06-20, per the [ROS 2 release table](https://docs.ros.org/en/iron/Releases.html)) with `stress-ng`; the original manifests still pull a Foxy-based image (`kazemi/ros-foxy-with-stress-ng`) |
 | Kubernetes workload | [`ROS2/ros_dep_1.yaml`](../ROS2/ros_dep_1.yaml) | Starts a CPU stress workload with an HPA, **not** talker/listener |
 | Manual example | [`ROS2/README.md`](../ROS2/README.md) | Describes launching `demo_nodes_cpp` talker/listener from interactive shells; review corrections in [#24](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/24) |
 

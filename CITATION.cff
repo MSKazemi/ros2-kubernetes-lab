@@ -1,12 +1,11 @@
 cff-version: 1.2.0
 message: "If you use this project, please cite it as below."
-title: "Vagrant-Kubernetes-ROS2 Deployment"
+title: "ros2-kubernetes-lab"
 abstract: "An open-source educational lab for ROS2 (Foxy, legacy) experiments on a multi-node Kubernetes cluster provisioned with Vagrant and VirtualBox (the included Kubernetes manifests start stress-ng workloads; cross-worker ROS 2 messaging has not been verified), with Weave Net CNI, a Prometheus/Grafana/Dashboard monitoring stack, and Jupyter-based data analysis."
 type: software
 authors:
   - family-names: "Seyedkazemi Ardebili"
     given-names: "Mohsen"
-year: 2024
 url: "https://github.com/MSKazemi/ros2-kubernetes-lab"
 repository-code: "https://github.com/MSKazemi/ros2-kubernetes-lab"
 license: Apache-2.0

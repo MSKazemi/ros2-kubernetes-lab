@@ -1,4 +1,4 @@
-# Safety, limitations and pre-deployment checks — Vagrant-Kubernetes-ROS2-Deployment
+# Safety, limitations and pre-deployment checks — ros2-kubernetes-lab
 
 **Scope:** Vagrant virtual machines, legacy and newer ROS 2 experiments, Kubernetes network and CPU stress workloads.  
 **Issued:** 2026-10-17  

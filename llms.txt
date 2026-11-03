@@ -1,6 +1,6 @@
 # ROS 2 on Kubernetes — Multi-Node Robotics Lab (Vagrant and VirtualBox)
 
-> Vagrant-Kubernetes-ROS2-Deployment is an open-source educational ROS 2 on Kubernetes laboratory. It uses Vagrant and VirtualBox to define three local Kubernetes virtual machines, with historical ROS 2 DDS communication examples, monitoring configurations, autoscaling stress tests, and sample Prometheus/Jupyter analysis data.
+> ros2-kubernetes-lab (formerly Vagrant-Kubernetes-ROS2-Deployment) is an open-source educational ROS 2 on Kubernetes laboratory. It uses Vagrant and VirtualBox to define three local Kubernetes virtual machines, with historical ROS 2 DDS communication examples, monitoring configurations, autoscaling stress tests, and sample Prometheus/Jupyter analysis data.
 
 ## What this repository is
 

@@ -10,7 +10,7 @@ This document provides simple, plain-English definitions for the robotics and in
 * **namespace**: A mechanism used to isolate and logically organize resources within the same cluster, acting as a "virtual cluster" to prevent interference between different projects.
 * **CNI (Container Network Interface)**: The networking component responsible for allocating IP addresses to pods and enabling them to communicate across different Kubernetes nodes.
 * **Service**: A Kubernetes abstraction that defines a logical set of pods and a network policy to access them. It provides a stable IP address even as the underlying pods are destroyed or recreated.
-* **HPA (Horizontal Pod Autoscaler)**: An autoscaling tool that dynamically increases or decreases the number of running pods based on current system load. [Read more about HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/).
+* **HPA (Horizontal Pod Autoscaler)**: An autoscaling tool that dynamically increases or decreases the number of running pods based on current system load. [Read more about HPA](https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/).
 * **VPA (Vertical Pod Autoscaler)**: A tool that automatically adjusts the CPU and memory resources requested by a pod based on its observed usage.
 
 ## ROS 2 and DDS Terminology
