@@ -24,6 +24,7 @@ import os
 import re
 import subprocess
 import sys
+from collections.abc import Iterator
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -124,7 +125,7 @@ def strip_inline_code(line: str) -> str:
     return CODE_SPAN_RE.sub(lambda m: " " * len(m.group(0)), line)
 
 
-def markdown_lines(text: str):
+def markdown_lines(text: str) -> Iterator[tuple[int, str]]:
     """Yield (line_number, line) for lines outside fenced code and HTML comments."""
     fence: tuple[str, int] | None = None
     in_comment = False
@@ -179,7 +180,7 @@ def parse_destination(line: str, start: int) -> str | None:
     return line[begin:i]
 
 
-def extract_links(text: str):
+def extract_links(text: str) -> Iterator[tuple[int, str]]:
     """Yield (line_number, raw_target) for inline links/images and reference definitions."""
     for number, raw_line in markdown_lines(text):
         line = strip_inline_code(raw_line)
@@ -268,8 +269,7 @@ def check_target(source: Path, raw: str, root: Path) -> str | None:
         return f"broken link: '{raw}' does not exist"
     if fragment and resolved.is_file() and resolved.suffix == ".md":
         wanted = fragment.lower()
-        if wanted.startswith("user-content-"):
-            wanted = wanted[len("user-content-"):]
+        wanted = wanted.removeprefix("user-content-")
         if wanted not in anchors_for(resolved):
             where = "this file" if resolved == source else display(resolved, root)
             return f"broken anchor: '{raw}' has no matching heading in {where}"
