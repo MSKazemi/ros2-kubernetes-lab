@@ -1,0 +1,24 @@
+# Python dependencies for DataAnalysis/. Install into a virtualenv, not the system Python:
+#   python3 -m venv .venv && .venv/bin/pip install -r DataAnalysis/requirements.txt
+# Pins are the latest stable PyPI releases at the time of writing (2026-10-31).
+
+# plot_namespace_cpu.py (offline plot) and the notebooks' figures
+matplotlib==3.11.2
+numpy==2.5.4
+pandas==3.1.0
+
+# backup.py: talks to a live Prometheus (only when --prometheus-url is given)
+prometheus-api-client==0.7.2
+
+# HPA.ipynb queries Prometheus over HTTP
+requests==2.34.2
+
+# imported by DataAnaysis.ipynb (not used by its code)
+PyYAML==6.0.3
+
+# helper.py imports IPython.display; ipykernel runs the notebooks
+ipython==9.18.0
+ipykernel==7.4.0
+
+# optional: headless execution of the notebooks (jupyter nbconvert --execute)
+nbconvert==7.17.2

@@ -71,9 +71,11 @@ def json_2_pandas(json_file_path):
         data = json.load(file)
     df = json_normalize(data)
     file_name, root_path = get_filename_and_root_path(json_file_path)
-    csv_file_path = os.path.join(root_path+"/csv/",file_name.replace('.json', '.csv'))
-    if not os.path.exists(os.path.dirname(root_path+"/csv/")):
-        os.makedirs(os.path.dirname(root_path+"/csv/"))
+    # os.path.join keeps this portable (Windows) and avoids "/csv/" at the filesystem
+    # root when json_file_path has no directory part.
+    csv_dir = os.path.join(root_path, "csv")
+    csv_file_path = os.path.join(csv_dir, file_name.replace('.json', '.csv'))
+    os.makedirs(csv_dir, exist_ok=True)
     df.to_csv(csv_file_path, index=False)
     return df
 
