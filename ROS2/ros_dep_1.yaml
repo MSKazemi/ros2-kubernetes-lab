@@ -71,10 +71,10 @@ spec:
       policies:
       - type: Percent
         value: 100  # Allows scaling up by 100% (doubling replicas)
-        periodSeconds: 30  # Check every 15 seconds
+        periodSeconds: 30  # Policy window: 30 seconds
     scaleDown:
-      stabilizationWindowSeconds: 0  # 60 seconds delay for scaling down
+      stabilizationWindowSeconds: 0  # No stabilization delay for scaling down
       policies:
       - type: Percent
         value: 50  # Scale down by 50% at most. Maximum percentage of replicas that can be removed (scaled down) in a single step during scaling down.
-        periodSeconds: 30  # Check every 60 seconds
+        periodSeconds: 30  # Policy window: 30 seconds

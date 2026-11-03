@@ -20,6 +20,12 @@ docker build --platform linux/amd64 --file ROS2/Dockerfile --tag ros-jazzy-lab:l
 docker run --rm -i --platform linux/amd64 ros-jazzy-lab:local bash -s < scripts/test-ros2-image.sh
 ```
 
+On **Windows PowerShell**, which has no `<` input redirection, mount the scripts folder instead (this form was verified on Linux amd64, not yet on Windows; see the [Windows and macOS guide](../../docs/WINDOWS-AND-MAC.md)):
+
+```powershell
+docker run --rm --platform linux/amd64 -v "${PWD}/scripts:/scripts:ro" ros-jazzy-lab:local bash /scripts/test-ros2-image.sh
+```
+
 The smoke script checks Ubuntu 24.04, `ROS_DISTRO=jazzy`, the ROS C++ talker/listener executables and `stress-ng`. It launches both ROS 2 example processes **inside one container**, and fails if the listener receives no message in 45 seconds. The complete smoke test is automated on PRs by [`.github/workflows/ros2-image-ci.yml`](../../.github/workflows/ros2-image-ci.yml).
 
 The smoke test is **not** a Kubernetes, multi-pod, cross-worker or DDS-discovery-server test. Those release gates are tracked in [#14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14) and [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15).

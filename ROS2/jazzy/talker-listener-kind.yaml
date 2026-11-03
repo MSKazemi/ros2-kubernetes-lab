@@ -1,0 +1,122 @@
+# ROS 2 Jazzy talker/listener across two Kubernetes workers, using a Fast DDS
+# discovery server (unicast) instead of DDS multicast discovery.
+#
+# Tested on a local kind cluster (3 nodes, Kubernetes v1.37.0, kindnet CNI):
+# default multicast discovery delivered 0 messages across nodes; this manifest
+# delivered messages from the talker (worker2) to the listener (worker).
+# See ROS2/README.md, section "Jazzy talker/listener on kind".
+#
+# Image: pinned to the digest published by the repository build (see
+# ROS2/jazzy/README.md). Apply with:
+#   kubectl apply -f ROS2/jazzy/talker-listener-kind.yaml
+# Cleanup:
+#   kubectl delete namespace ros-jazzy-demo
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ros-jazzy-demo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastdds-discovery
+  namespace: ros-jazzy-demo
+spec:
+  selector:
+    app: fastdds-discovery
+  ports:
+    - name: discovery
+      port: 11811
+      targetPort: 11811
+      protocol: UDP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fastdds-discovery-server
+  namespace: ros-jazzy-demo
+  labels:
+    app: fastdds-discovery
+spec:
+  containers:
+    - name: server
+      image: docker.io/kazemi/ros-jazzy-with-stress-ng@sha256:8dd782f9382c123dc319330f8c0d012d790ae93b6752e26df6b2b47a4cdb720c
+      imagePullPolicy: IfNotPresent
+      command: ["bash", "-c", "source /opt/ros/jazzy/setup.bash && exec fastdds discovery -i 0 -p 11811"]
+      ports:
+        - containerPort: 11811
+          protocol: UDP
+      resources:
+        requests: {cpu: 50m, memory: 64Mi}
+        limits: {cpu: 500m, memory: 256Mi}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ros-talker
+  namespace: ros-jazzy-demo
+  labels:
+    app: ros-talker
+spec:
+  restartPolicy: Never
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app: ros-listener
+          topologyKey: kubernetes.io/hostname
+  containers:
+    - name: talker
+      image: docker.io/kazemi/ros-jazzy-with-stress-ng@sha256:8dd782f9382c123dc319330f8c0d012d790ae93b6752e26df6b2b47a4cdb720c
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: RMW_IMPLEMENTATION
+          value: rmw_fastrtps_cpp
+      command:
+        - bash
+        - -c
+        - |
+          source /opt/ros/jazzy/setup.bash
+          # Wait for the discovery Service to resolve, then point the node at it.
+          until ip=$(getent hosts fastdds-discovery | awk '{print $1}') && [ -n "$ip" ]; do sleep 1; done
+          export ROS_DISCOVERY_SERVER="$ip:11811"
+          exec ros2 run demo_nodes_cpp talker
+      resources:
+        requests: {cpu: 50m, memory: 128Mi}
+        limits: {cpu: 500m, memory: 512Mi}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ros-listener
+  namespace: ros-jazzy-demo
+  labels:
+    app: ros-listener
+spec:
+  restartPolicy: Never
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app: ros-talker
+          topologyKey: kubernetes.io/hostname
+  containers:
+    - name: listener
+      image: docker.io/kazemi/ros-jazzy-with-stress-ng@sha256:8dd782f9382c123dc319330f8c0d012d790ae93b6752e26df6b2b47a4cdb720c
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: RMW_IMPLEMENTATION
+          value: rmw_fastrtps_cpp
+      command:
+        - bash
+        - -c
+        - |
+          source /opt/ros/jazzy/setup.bash
+          until ip=$(getent hosts fastdds-discovery | awk '{print $1}') && [ -n "$ip" ]; do sleep 1; done
+          export ROS_DISCOVERY_SERVER="$ip:11811"
+          exec ros2 run demo_nodes_cpp listener
+      resources:
+        requests: {cpu: 50m, memory: 128Mi}
+        limits: {cpu: 500m, memory: 512Mi}

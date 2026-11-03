@@ -20,28 +20,48 @@ source /etc/os-release
 
 command -v ros2 >/dev/null || fail "ros2 command not found"
 command -v stress-ng >/dev/null || fail "stress-ng command not found"
-executables="$(ros2 pkg executables demo_nodes_cpp)"
+# Bounded: a hung ROS 2 CLI or daemon must fail the test, not stall CI.
+executables="$(timeout 60 ros2 pkg executables demo_nodes_cpp)" \
+  || fail "ros2 pkg executables demo_nodes_cpp failed or timed out"
 grep -Eq '^demo_nodes_cpp[[:space:]]+talker$' <<< "$executables" || fail "C++ talker is missing"
 grep -Eq '^demo_nodes_cpp[[:space:]]+listener$' <<< "$executables" || fail "C++ listener is missing"
-stress-ng --version
-# Bounded CPU exercise confirms stress-ng can execute, not just print its version.
-stress-ng --cpu 1 --cpu-load 25 --timeout 2s --quiet
-printf 'PASS: ROS 2 Jazzy, Ubuntu 24.04, demo_nodes_cpp and stress-ng are runnable.\n'
 
+# Scratch space and ROS logs live in a private temp dir, so the test does not
+# depend on the working directory or $HOME being writable (e.g. with --user 1000).
 export ROS_DOMAIN_ID="${ROS_DOMAIN_ID:-42}"
 export RCUTILS_LOGGING_BUFFERED_STREAM=0
 tmpdir="$(mktemp -d)"
+export ROS_LOG_DIR="$tmpdir/ros-log"
+mkdir -p "$ROS_LOG_DIR"
 listener_pid=""
 talker_pid=""
 
+# Kill a process and all of its descendants. `ros2 run` is a Python wrapper
+# that spawns the C++ demo as a child, so killing only the wrapper orphans it.
+# shellcheck disable=SC2329 # invoked indirectly through the EXIT trap
+kill_tree() {
+  local pid="$1" child
+  for child in $(pgrep -P "$pid" 2>/dev/null || true); do
+    kill_tree "$child"
+  done
+  kill "$pid" 2>/dev/null || true
+}
+
+# shellcheck disable=SC2329 # invoked indirectly through the EXIT trap
 cleanup() {
-  if [[ -n "$talker_pid" ]]; then kill "$talker_pid" 2>/dev/null || true; fi
-  if [[ -n "$listener_pid" ]]; then kill "$listener_pid" 2>/dev/null || true; fi
+  if [[ -n "$talker_pid" ]]; then kill_tree "$talker_pid"; fi
+  if [[ -n "$listener_pid" ]]; then kill_tree "$listener_pid"; fi
   if [[ -n "$talker_pid" ]]; then wait "$talker_pid" 2>/dev/null || true; fi
   if [[ -n "$listener_pid" ]]; then wait "$listener_pid" 2>/dev/null || true; fi
   rm -rf "$tmpdir"
 }
 trap cleanup EXIT
+
+stress-ng --version
+# Bounded CPU exercise confirms stress-ng can execute, not just print its version.
+# --temp-path: stress-ng otherwise uses the cwd, which is "/" and not writable by a non-root user.
+stress-ng --cpu 1 --cpu-load 25 --timeout 2s --quiet --temp-path "$tmpdir"
+printf 'PASS: ROS 2 Jazzy, Ubuntu 24.04, demo_nodes_cpp and stress-ng are runnable.\n'
 
 # An image smoke test, not a Kubernetes/DDS cross-worker integration test.
 ros2 run demo_nodes_cpp listener > "$tmpdir/listener.log" 2>&1 &
