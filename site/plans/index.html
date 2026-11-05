@@ -9,7 +9,7 @@
 <meta name="description" content="The 90-day plan to turn a historical ROS 2 and Kubernetes lab into a verified one: four phases, their issues and the release gates. A proposal, not a promise.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Mohsen Seyedkazemi Ardebili">
-<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/plans/">
+<link rel="canonical" href="https://mskazemi.com/robo-resilience-lab/plans/">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,19 +23,19 @@
 <meta property="og:site_name" content="ROS 2 Kubernetes Lab">
 <meta property="og:title" content="Roadmap: 90-day plan for ROS 2 on Kubernetes">
 <meta property="og:description" content="Four phases, the issues behind each, and the release gates that decide when the lab can claim ROS 2 messages cross Kubernetes nodes. A proposal, not a promise.">
-<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/plans/">
-<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:url" content="https://mskazemi.com/robo-resilience-lab/plans/">
+<meta property="og:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png">
 <meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Roadmap: 90-day plan for ROS 2 on Kubernetes">
 <meta name="twitter:description" content="Four phases and the release gates between a historical lab and a verified one. A proposal, not a promise.">
-<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Roadmap: 90-day plan for ROS 2 on Kubernetes","description":"Four phases, the issues behind each, and the release gates for the ROS 2 Kubernetes Lab. A proposal, not a promise.","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"DDS"}],"mainEntity":{"@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"name":"Days 1 to 14: define the reference path","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/define-reference-path.html"},{"@type":"ListItem","position":2,"name":"Days 15 to 30: make it runnable and safe","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html"},{"@type":"ListItem","position":3,"name":"Days 31 to 60: package and document","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/package-and-document.html"},{"@type":"ListItem","position":4,"name":"Days 61 to 90: grow with evidence","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/grow-with-evidence.html"}]}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Roadmap","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/"}]}]}</script>
+<meta name="twitter:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Roadmap: 90-day plan for ROS 2 on Kubernetes","description":"Four phases, the issues behind each, and the release gates for the ROS 2 Kubernetes Lab. A proposal, not a promise.","url":"https://mskazemi.com/robo-resilience-lab/plans/","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"DDS"}],"mainEntity":{"@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"name":"Days 1 to 14: define the reference path","url":"https://mskazemi.com/robo-resilience-lab/plans/define-reference-path.html"},{"@type":"ListItem","position":2,"name":"Days 15 to 30: make it runnable and safe","url":"https://mskazemi.com/robo-resilience-lab/plans/runnable-and-safe.html"},{"@type":"ListItem","position":3,"name":"Days 31 to 60: package and document","url":"https://mskazemi.com/robo-resilience-lab/plans/package-and-document.html"},{"@type":"ListItem","position":4,"name":"Days 61 to 90: grow with evidence","url":"https://mskazemi.com/robo-resilience-lab/plans/grow-with-evidence.html"}]}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/robo-resilience-lab/"},{"@type":"ListItem","position":2,"name":"Roadmap","item":"https://mskazemi.com/robo-resilience-lab/plans/"}]}]}</script>
 </head><body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="docs-nav"><div class="sc-shell docs-nav-inner">
 <a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
-<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Roadmap</a><a href="../scenarios/">Research scenarios</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab">GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Roadmap</a><a href="../scenarios/">Research scenarios</a><a class="github-link" href="https://github.com/MSKazemi/robo-resilience-lab">GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
 
 <section class="sc-hero"><div class="sc-shell">
 <nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span>Roadmap</nav>
@@ -111,8 +111,8 @@
 <h2>How to read this plan</h2>
 <div class="sc-detail-grid">
 <div class="sc-panel"><h3>Targets, not promises</h3><ul><li>A phase can slip. The plan holds a milestone rather than skip a release gate.</li><li>A successful Docker build or a lint pass is not a substitute for end-to-end ROS 2 verification.</li><li>No usage, star or performance numbers are published here until they are measured and sourced.</li></ul></div>
-<div class="sc-callout"><h3>Help move a phase forward</h3><p>Every phase is a set of public issues. Pick a small one, comment that you would like to work on it, and open a pull request.</p><p><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue">Find a first issue ↗</a> <a class="sc-link-button sc-link-button--ghost" href="../docs/contribute.html">Contribution guide</a></p></div>
+<div class="sc-callout"><h3>Help move a phase forward</h3><p>Every phase is a set of public issues. Pick a small one, comment that you would like to work on it, and open a pull request.</p><p><a class="sc-link-button" href="https://github.com/MSKazemi/robo-resilience-lab/labels/good%20first%20issue">Find a first issue ↗</a> <a class="sc-link-button sc-link-button--ghost" href="../docs/contribute.html">Contribution guide</a></p></div>
 </div>
 </div></section>
 
-</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Plans are proposals; illustrations show sequence, not progress</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">Full roadmap source ↗</a></div></footer></body></html>
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Plans are proposals; illustrations show sequence, not progress</span><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/ROADMAP-2026.md">Full roadmap source ↗</a></div></footer></body></html>

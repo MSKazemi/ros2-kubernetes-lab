@@ -2,7 +2,7 @@
 
 This lab was built on Linux. This guide explains what works on **Windows**, **Intel Macs** and **Apple Silicon Macs**, which path to pick, and how to avoid the problems that most often break a first attempt.
 
-> **Do not overclaim.** The checks listed under [What has and has not been verified](#what-has-and-has-not-been-verified) were run on Linux. The Windows and macOS steps below follow the vendors' documentation and a simulated Windows checkout; they have not yet been run end to end on real Windows or macOS machines. If a step fails for you, please [open an issue](https://github.com/MSKazemi/ros2-kubernetes-lab/issues) with the output of `python scripts/doctor.py`.
+> **Do not overclaim.** The checks listed under [What has and has not been verified](#what-has-and-has-not-been-verified) were run on Linux. The Windows and macOS steps below follow the vendors' documentation and a simulated Windows checkout; they have not yet been run end to end on real Windows or macOS machines. If a step fails for you, please [open an issue](https://github.com/MSKazemi/robo-resilience-lab/issues) with the output of `python scripts/doctor.py`.
 
 ## 1. Pick your path
 
@@ -45,7 +45,7 @@ Look for `[OK] Scripts, Vagrantfile, Dockerfile and YAML use LF line endings`.
 
 **Other Windows tips**
 
-- Clone into a short path outside OneDrive/Dropbox, for example `C:\src\ros2-kubernetes-lab`. Sync clients lock files and long paths cause errors.
+- Clone into a short path outside OneDrive/Dropbox, for example `C:\src\robo-resilience-lab`. Sync clients lock files and long paths cause errors.
 - Use PowerShell or Windows Terminal. In Git Bash, Docker paths such as `/scripts/...` are rewritten by MSYS; prefix the command with `MSYS_NO_PATHCONV=1` if you see a `C:/Program Files/Git/...` path in an error.
 - The PowerShell prompt does not support `< file` input redirection ("The '<' operator is reserved for future use"). Use the bind-mount form shown below instead.
 
@@ -80,8 +80,8 @@ Success ends with `PASS: listener received a ROS 2 talker message inside one con
 Requirements: Windows 10/11 on x86-64, [VirtualBox](https://www.virtualbox.org/wiki/Downloads), [Vagrant](https://developer.hashicorp.com/vagrant/install), Git, and the RAM described in [Sizing](#6-sizing-the-vms-for-your-machine). Run every command in **Windows PowerShell**, not inside WSL.
 
 ```powershell
-git clone https://github.com/MSKazemi/ros2-kubernetes-lab.git C:\src\ros2-kubernetes-lab
-cd C:\src\ros2-kubernetes-lab
+git clone https://github.com/MSKazemi/robo-resilience-lab.git C:\src\robo-resilience-lab
+cd C:\src\robo-resilience-lab
 py -3 scripts/doctor.py
 $env:VAGRANT_DEFAULT_PROVIDER = "virtualbox"
 vagrant up
@@ -98,8 +98,8 @@ Everything you type **after** `vagrant ssh controlplane` is ordinary Linux/bash 
 
 ```bash
 brew install --cask virtualbox vagrant      # or install both from their websites
-git clone https://github.com/MSKazemi/ros2-kubernetes-lab.git
-cd ros2-kubernetes-lab
+git clone https://github.com/MSKazemi/robo-resilience-lab.git
+cd robo-resilience-lab
 python3 scripts/doctor.py
 vagrant up
 vagrant ssh controlplane

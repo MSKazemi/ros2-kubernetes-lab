@@ -8,7 +8,7 @@ Agents must follow [AGENTS.md](../AGENTS.md) and [CONTRIBUTING.md](../CONTRIBUTI
 
 ```text
 I am contributing to issue #89:
-https://github.com/MSKazemi/ros2-kubernetes-lab/issues/89
+https://github.com/MSKazemi/robo-resilience-lab/issues/89
 
 First read AGENTS.md, the current issue body and its parent epic #83, asking me to paste
 them if you lack GitHub access. Inspect site/scenarios, site/assets and scripts/validate-site.py.
@@ -38,7 +38,7 @@ and show checks actually run and ones still awaiting GitHub CI.
 
 **Human check:** Confirm the issue's acceptance criteria are met and that no check implies a cluster, DDS or hardware test passed.
 
-**Coordinate first:** PR [#113](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/113) already references this issue. Read it and comment there before starting, rather than opening a duplicate.
+**Coordinate first:** PR [#113](https://github.com/MSKazemi/robo-resilience-lab/pull/113) already references this issue. Read it and comment there before starting, rather than opening a duplicate.
 
 ## 3. Kubernetes validation: issue #29 — manifest schemas
 
@@ -55,7 +55,7 @@ After approval, implement minimal CI/doc changes and report actual validation.
 
 **Human check:** Any VPA schema exception must be deliberate and documented, not a fake green test.
 
-**Coordinate first:** PR [#112](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/112) already addresses this issue. Read it and comment there before starting, rather than opening a duplicate.
+**Coordinate first:** PR [#112](https://github.com/MSKazemi/robo-resilience-lab/pull/112) already addresses this issue. Read it and comment there before starting, rather than opening a duplicate.
 
 ## 4. Advanced issue #14 — ROS 2 talker/listener integration
 

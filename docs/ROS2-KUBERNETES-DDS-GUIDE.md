@@ -64,7 +64,7 @@ What the results do and do not show:
 - Tests B, F, H and K are negative controls: each failed in the way the explanation predicts, so the positive results are not an artefact of the harness.
 - Test C shows the Fast DDS discovery server delivered data with the range set to `LOCALHOST`. We did **not** inspect the wire traffic, so this run does not prove which transports Fast DDS used internally; it shows only that the configuration worked in this single-host setup.
 - `ROS_STATIC_PEERS` was tested only with CycloneDDS (test M). Test N shows that the default configurations of the two RMW implementations delivered to each other on this host; it is not a general interoperability guarantee.
-- The results come from one Docker bridge on one machine. They say nothing about pod IP routing, CNI multicast policy, Kubernetes Services, `hostNetwork`, or workers on different machines. Those still need a cluster test (see [#14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14) and [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15)).
+- The results come from one Docker bridge on one machine. They say nothing about pod IP routing, CNI multicast policy, Kubernetes Services, `hostNetwork`, or workers on different machines. Those still need a cluster test (see [#14](https://github.com/MSKazemi/robo-resilience-lab/issues/14) and [#15](https://github.com/MSKazemi/robo-resilience-lab/issues/15)).
 - Upstream ROS 2 and Fast DDS documentation pages could not be read in this review (the docs site presents a bot challenge to automated fetches), so the configuration names above are taken from the runnable tests and from `fast-discovery-server --help`, not from quoted upstream text.
 
 ### Troubleshooting table (commands verified in the same Docker tests)
@@ -89,7 +89,7 @@ Do **not** use `ros2 node list` to check for a `ros2 topic pub` publisher: that 
 | ROS image (modern, container only) | [`ROS2/Dockerfile`](../ROS2/Dockerfile) | Builds from the ROS 2 Jazzy / Ubuntu 24.04 base with `demo_nodes_cpp` and `stress-ng`; checked only by an in-image local talker/listener test ([`scripts/test-ros2-image.sh`](../scripts/test-ros2-image.sh)). It is **not** referenced by the legacy `ROS2/ros_dep_*.yaml` manifests |
 | ROS image (legacy) | [`ROS2/legacy/foxy/Dockerfile`](../ROS2/legacy/foxy/Dockerfile) | Preserved recipe for ROS 2 Foxy (end of life 2023-06-20, per the [ROS 2 release table](https://docs.ros.org/en/iron/Releases.html)) with `stress-ng`; the original manifests still pull a Foxy-based image (`kazemi/ros-foxy-with-stress-ng`) |
 | Kubernetes workload | [`ROS2/ros_dep_1.yaml`](../ROS2/ros_dep_1.yaml) | Starts a CPU stress workload with an HPA, **not** talker/listener |
-| Manual example | [`ROS2/README.md`](../ROS2/README.md) | Describes launching `demo_nodes_cpp` talker/listener from interactive shells; review corrections in [#24](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/24) |
+| Manual example | [`ROS2/README.md`](../ROS2/README.md) | Describes launching `demo_nodes_cpp` talker/listener from interactive shells; review corrections in [#24](https://github.com/MSKazemi/robo-resilience-lab/issues/24) |
 
 ## Support states and evidence
 
@@ -99,7 +99,7 @@ Three explicit states are used across the repository documentation. Only the fir
 |---|---|---|---|
 | `legacy` | Historical, unverified in this review, and built on end-of-life or archived components | Vagrant VMs (Ubuntu 22.04), kubeadm Kubernetes 1.29, Weave Net 2.8.1, ROS 2 Foxy images and `ROS2/ros_dep_*.yaml` / `ROS2/VPA.yaml` / `ROS2/ros_one.yaml` manifests | None executed in this review; static file inspection only |
 | `container tested` | The Jazzy image builds and passes a local talker/listener check **inside one container** | `ROS2/Dockerfile` (ROS 2 Jazzy, Ubuntu 24.04, linux/amd64) | [`.github/workflows/ros2-image-ci.yml`](../.github/workflows/ros2-image-ci.yml) runs [`scripts/test-ros2-image.sh`](../scripts/test-ros2-image.sh) in the container; this checks the Jazzy distro, Ubuntu 24.04, `demo_nodes_cpp`, `stress-ng` and one listener receiving one talker message locally |
-| `cross-worker verified` | A talker and listener scheduled on different Kubernetes workers exchange messages, with a repeatable scripted check | **Nothing yet.** Tracked in [#14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14) and [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15) | None |
+| `cross-worker verified` | A talker and listener scheduled on different Kubernetes workers exchange messages, with a repeatable scripted check | **Nothing yet.** Tracked in [#14](https://github.com/MSKazemi/robo-resilience-lab/issues/14) and [#15](https://github.com/MSKazemi/robo-resilience-lab/issues/15) | None |
 
 Compatibility status (review date **2026-10-27**, repository base commit `7b9cb44`):
 
@@ -160,10 +160,10 @@ Do not expose authentication tokens, cluster-admin kubeconfigs, private addresse
 
 The Vagrant and Kubernetes manifest part of the current checkout depends on ROS 2 Foxy (end of life June 2023), Kubernetes 1.29 (end of support), and an archived Weave Net version; the separate Jazzy container image is `container tested` only (see [Support states](#support-states-and-evidence)). It lacks verified deterministic cross-node DDS integration tests and is sized for a powerful local workstation. Use it as **historical learning material** and follow the work to add a maintained lab:
 
-- [Modern ROS image baseline #7](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7)
-- [Maintained DDS networking #15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15)
-- [Verified talker/listener across different workers #14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14)
-- [Lightweight kind/k3d profile #16](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16)
+- [Modern ROS image baseline #7](https://github.com/MSKazemi/robo-resilience-lab/issues/7)
+- [Maintained DDS networking #15](https://github.com/MSKazemi/robo-resilience-lab/issues/15)
+- [Verified talker/listener across different workers #14](https://github.com/MSKazemi/robo-resilience-lab/issues/14)
+- [Lightweight kind/k3d profile #16](https://github.com/MSKazemi/robo-resilience-lab/issues/16)
 
 ## Further reading
 

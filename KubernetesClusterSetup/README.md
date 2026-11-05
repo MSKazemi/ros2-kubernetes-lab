@@ -69,8 +69,8 @@ This project uses a Vagrantfile to automatically create and configure three VMs:
 To create the VMs and set up the Kubernetes cluster, clone the repository and execute the following:
 
 ```bash
-git clone git@github.com:MSKazemi/ros2-kubernetes-lab.git
-cd ros2-kubernetes-lab
+git clone git@github.com:MSKazemi/robo-resilience-lab.git
+cd robo-resilience-lab
 vagrant up | tee vagrant.log
 ```
 

@@ -1,4 +1,4 @@
-# Safety, limitations and pre-deployment checks — ros2-kubernetes-lab
+# Safety, limitations and pre-deployment checks — robo-resilience-lab
 
 **Scope:** Vagrant virtual machines, legacy and newer ROS 2 experiments, Kubernetes network and CPU stress workloads.  
 **Issued:** 2026-10-17  

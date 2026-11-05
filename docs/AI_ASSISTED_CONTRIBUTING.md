@@ -8,16 +8,16 @@ Both tools use our shared [AGENTS.md](../AGENTS.md) instructions: Codex reads it
 
 ## Choose a small, open issue
 
-Start with one of the current [good first issues](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue) or [help-wanted tasks](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/help%20wanted). Read the actual issue and its acceptance criteria. Comment politely that you would like to work on it, and check for other active PRs before spending time.
+Start with one of the current [good first issues](https://github.com/MSKazemi/robo-resilience-lab/labels/good%20first%20issue) or [help-wanted tasks](https://github.com/MSKazemi/robo-resilience-lab/labels/help%20wanted). Read the actual issue and its acceptance criteria. Comment politely that you would like to work on it, and check for other active PRs before spending time.
 
 Suggested starting points (only if still open):
 
 | Issue | Task | What you need |
 |---|---|---|
-| [#89](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/89) | Student scenario usability, accessibility and search audit | A browser, basic HTML/accessibility knowledge |
-| [#77](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/77) | Offline CI checks for Jev JSON fixtures and Markdown links | Python or GitHub Actions; wait until draft PR [#76](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/76) has landed |
-| [#55](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/55) | CPU-only simulated ROS 2 observation/action contract and mock policy | Beginner coding; PR [#113](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/113) is already in review, so coordinate there first |
-| [#29](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/29) | Offline Kubernetes manifest validation | Kubernetes YAML and CI; PR [#112](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/112) is already in review, so coordinate there first |
+| [#89](https://github.com/MSKazemi/robo-resilience-lab/issues/89) | Student scenario usability, accessibility and search audit | A browser, basic HTML/accessibility knowledge |
+| [#77](https://github.com/MSKazemi/robo-resilience-lab/issues/77) | Offline CI checks for Jev JSON fixtures and Markdown links | Python or GitHub Actions; wait until draft PR [#76](https://github.com/MSKazemi/robo-resilience-lab/pull/76) has landed |
+| [#55](https://github.com/MSKazemi/robo-resilience-lab/issues/55) | CPU-only simulated ROS 2 observation/action contract and mock policy | Beginner coding; PR [#113](https://github.com/MSKazemi/robo-resilience-lab/pull/113) is already in review, so coordinate there first |
+| [#29](https://github.com/MSKazemi/robo-resilience-lab/issues/29) | Offline Kubernetes manifest validation | Kubernetes YAML and CI; PR [#112](https://github.com/MSKazemi/robo-resilience-lab/pull/112) is already in review, so coordinate there first |
 
 Issues change quickly. Before you start, read the live issue and check its linked pull requests, so you do not duplicate work that is already open or merged. The lab's first community contributions (the glossary, the quickstart cleanup and the monitoring screenshots) are listed in [CONTRIBUTORS.md](../CONTRIBUTORS.md).
 
@@ -25,16 +25,16 @@ A documentation-only contribution does not require launching Vagrant. The histor
 
 ## Step 1 — Fork, clone, and make a branch
 
-On GitHub click **Fork** on the [project repository](https://github.com/MSKazemi/ros2-kubernetes-lab). Clone **your fork**, not the original repository (replace `YOUR_GITHUB_USERNAME`):
+On GitHub click **Fork** on the [project repository](https://github.com/MSKazemi/robo-resilience-lab). Clone **your fork**, not the original repository (replace `YOUR_GITHUB_USERNAME`):
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/ros2-kubernetes-lab.git
-cd ros2-kubernetes-lab
+git clone https://github.com/YOUR_GITHUB_USERNAME/robo-resilience-lab.git
+cd robo-resilience-lab
 git switch -c docs/issue-NNN-short-description
 git status --short
 ```
 
-Choose a branch name that matches **your** issue. The repository is now named `ros2-kubernetes-lab`; older links and clones may still use the previous name, `Vagrant-Kubernetes-ROS2-Deployment`.
+Choose a branch name that matches **your** issue. The repository is now named `robo-resilience-lab`; older links and clones may still use the previous name, `Vagrant-Kubernetes-ROS2-Deployment`.
 
 If you have write access to the original repository or use a connected cloud agent, you can work in its own feature branch instead of forking. In either case, **never make your contribution directly on `main`**.
 
