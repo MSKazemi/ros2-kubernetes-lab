@@ -43,7 +43,7 @@ Exit codes: `0` all files valid, `1` at least one invalid (including unparseable
 | [`dq_validate.py`](dq_validate.py) | Validator (`validate_document/text/file`) and CLI. |
 | [`schema/synthetic-episodes.v1.schema.json`](schema/synthetic-episodes.v1.schema.json) | JSON Schema (2020-12) documenting the structure. A test keeps its constants in sync; the Python validator is the executable authority (JSON Schema cannot express the timestamp, boundary and per-joint checks). |
 | [`fixture_gen.py`](fixture_gen.py) | Deterministic generator for [`fixtures/`](fixtures/) (closed-form sine waves, no randomness). `--check` detects drift. |
-| [`fixtures/valid/`](fixtures/valid/), [`fixtures/invalid/`](fixtures/invalid/) | 2 valid and 21 invalid fixtures, each invalid one a single mutation. [`expected_diagnostics.json`](fixtures/expected_diagnostics.json) gives the one code and first path each must produce. |
+| [`fixtures/valid/`](fixtures/valid/), [`fixtures/invalid/`](fixtures/invalid/) | 2 valid and 26 invalid fixtures, each invalid one a single mutation. [`expected_diagnostics.json`](fixtures/expected_diagnostics.json) gives the one code and first path each must produce. |
 | [`fixtures/LICENSE-NOTE.md`](fixtures/LICENSE-NOTE.md) | Fixtures are synthetic and CC0-1.0; code is under the repository licence. |
 | [`tests/`](tests/) | `unittest` suite (positive, negative, robustness, CLI, fixture hygiene). |
 
@@ -64,7 +64,7 @@ One JSON object per dataset:
 | `tasks[]` | non-empty list of `{task_index, task}`; unique indices; non-blank description; each episode's `task_index` must exist | `TASK_MISSING` |
 | `episodes[]` | non-empty list | `NO_EPISODES` |
 | `episodes[].episode_index` | unique (`EPISODE_INDEX_DUPLICATE`) and exactly 0..N-1 in order (`EPISODE_INDEX_GAP`) | |
-| `episodes[].frames` | at least one frame, else `EPISODE_EMPTY`; `length` = `len(frames)` | `EPISODE_EMPTY`, `EPISODE_LENGTH_MISMATCH` |
+| `episodes[].frames` | at least one frame, else `EPISODE_EMPTY` (no frames at all); `length` must be an integer equal to `len(frames)`, else `EPISODE_LENGTH_MISMATCH` (this includes `length: 0` with frames present) | `EPISODE_EMPTY`, `EPISODE_LENGTH_MISMATCH`, `WRONG_TYPE` |
 | `episodes[].dataset_from_index/to_index` | first episode starts at 0; each starts where the previous one ended; `to - from` = number of frames | `EPISODE_BOUNDARY_GAP` |
 | `frames[].frame_index` | equals the position in the episode | `FRAME_INDEX_MISMATCH` |
 | `frames[].observation.state`, `action` | exactly 6 finite numbers inside the per-joint limits (`shoulder_pan`/`wrist_roll` +-3.1416, `shoulder_lift`/`elbow_flex` +-1.7, `wrist_flex` +-1.8 rad, `gripper` 0..0.08 m) | `DIM_MISMATCH`, `WRONG_TYPE`, `NON_FINITE_VALUE`, `OUT_OF_LIMITS` |
@@ -72,11 +72,13 @@ One JSON object per dataset:
 
 Notes on the timestamp rules. Drift is only evaluated on strictly increasing timestamps and a valid `fps`, so one root cause yields one kind of diagnostic. Timestamps are per-episode (frame 0 is expected at 0 s); that is a choice of *this* contract. `NaN`/`Infinity` literals are rejected at parse time.
 
+Type confusion. Every value taken from the document is type-checked before it is used in a set, dict or comparison lookup, so a list or object in a scalar field (for example `task_index`, camera `encoding`, `dtype`, a unit, `schema_version`) yields `WRONG_TYPE` with the field's path, and validation of the remaining episodes and frames continues. Integers too large for a float are reported as `NON_FINITE_VALUE`. `INTERNAL_ERROR` stays only as a last-resort fail-closed net; a test that replaces and deletes every node of a valid document with hostile values asserts it never fires.
+
 Every diagnostic has `code`, `severity`, `path` (RFC 6901 JSON pointer), `message` and `hint`; `--list-codes` prints the full table.
 
 ### What the tests cover
 
-Every invalid case from the issue has a fixture and a named test: dimension mismatch (frame vector, feature shape, names/units), unit mismatch, non-monotonic timestamp, fps drift, missing camera metadata (block, field and whole feature), empty episode, duplicate episode index, bad and missing licence, unknown schema version. Also: non-synthetic flag, blank task, out-of-limit values, invalid fps/tolerance, episode gaps and boundary gaps, hostile shapes (never raise), oversize and deeply nested input, diagnostic cap, the CLI exit codes and JSON report, fixture size (< 10 KB each, no image data) and generator drift.
+Every invalid case from the issue has a fixture and a named test: dimension mismatch (frame vector, feature shape, names/units), unit mismatch, non-monotonic timestamp, fps drift, missing camera metadata (block, field and whole feature), empty episode, duplicate episode index, bad and missing licence, unknown schema version. Also: non-synthetic flag, blank task, out-of-limit values, invalid fps/tolerance, episode gaps and boundary gaps, `length: 0` with frames, lists/objects in lookup fields (`WRONG_TYPE`, later episodes still checked), a mutation sweep over every node (never `INTERNAL_ERROR`), hostile shapes (never raise), oversize and deeply nested input, diagnostic cap, the CLI exit codes and JSON report, fixture size (< 10 KB each, no image data) and generator drift.
 
 ## Documented, NOT RUN: real LeRobotDataset v3 conversion
 

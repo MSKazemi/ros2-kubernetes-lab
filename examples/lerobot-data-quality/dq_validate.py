@@ -71,6 +71,14 @@ def _is_num(v: Any) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
 
 
+def _finite(v: Any) -> bool:
+    """True for a finite real number. Huge ints (not representable as float) are not finite."""
+    try:
+        return math.isfinite(v)
+    except OverflowError:
+        return False
+
+
 # --------------------------------------------------------------------------- checks
 
 
@@ -97,7 +105,7 @@ def _check_tolerance(doc: dict, fps: Optional[int], out: _Collector) -> float:
         return c.DEFAULT_TIMESTAMP_TOLERANCE_S
     tol = doc["timestamp_tolerance_s"]
     limit = 0.5 / fps if fps else float("inf")
-    if not _is_num(tol) or not math.isfinite(tol) or tol <= 0 or tol >= limit:
+    if not _is_num(tol) or not _finite(tol) or tol <= 0 or tol >= limit:
         out.add("TOLERANCE_INVALID", "/timestamp_tolerance_s", f"must be a number in (0, {limit:.6g}), got {tol!r}")
         return c.DEFAULT_TIMESTAMP_TOLERANCE_S
     return float(tol)
@@ -115,13 +123,17 @@ def _check_tasks(doc: dict, out: _Collector) -> set:
             out.add("WRONG_TYPE", p, "task entry must be an object")
             continue
         ti, text = t.get("task_index"), t.get("task")
-        if not _is_int(ti) or ti < 0:
+        if not _is_int(ti):
+            out.add("WRONG_TYPE" if "task_index" in t else "TASK_MISSING", p + "/task_index", f"task_index must be an integer >= 0, got {ti!r}")
+        elif ti < 0:
             out.add("TASK_MISSING", p + "/task_index", "task_index must be an integer >= 0")
         elif ti in ids:
             out.add("TASK_MISSING", p + "/task_index", f"duplicate task_index {ti}")
         else:
             ids.add(ti)
-        if not isinstance(text, str) or not text.strip():
+        if "task" in t and not isinstance(text, str):
+            out.add("WRONG_TYPE", p + "/task", f"task description must be a string, got {text!r}")
+        elif not isinstance(text, str) or not text.strip():
             out.add("TASK_MISSING", p + "/task", "task description must be a non-empty string")
     return ids
 
@@ -135,7 +147,9 @@ def _check_vector_feature(feats: dict, key: str, out: _Collector) -> None:
     if not isinstance(feat, dict):
         out.add("WRONG_TYPE", base, "feature must be an object")
         return
-    if feat.get("dtype") != c.VECTOR_DTYPE:
+    if "dtype" in feat and not isinstance(feat["dtype"], str):
+        out.add("WRONG_TYPE", base + "/dtype", f"dtype must be a string, got {feat['dtype']!r}")
+    elif feat.get("dtype") != c.VECTOR_DTYPE:
         out.add("FEATURE_DTYPE_BAD", base + "/dtype", f"dtype must be {c.VECTOR_DTYPE!r}, got {feat.get('dtype')!r}")
     shape = feat.get("shape")
     if not (isinstance(shape, list) and len(shape) == 1 and _is_int(shape[0])):
@@ -144,7 +158,7 @@ def _check_vector_feature(feats: dict, key: str, out: _Collector) -> None:
         out.add("DIM_MISMATCH", base + "/shape", f"shape declares {shape[0]} values, contract requires {c.VECTOR_DIM}")
     names = feat.get("names")
     if not isinstance(names, list) or not all(isinstance(n, str) for n in names):
-        out.add("FEATURE_NAMES_MISMATCH", base + "/names", "names must be a list of strings")
+        out.add("WRONG_TYPE" if "names" in feat else "MISSING_FIELD", base + "/names", f"names must be a list of strings, got {names!r}")
     elif len(names) != c.VECTOR_DIM:
         out.add("DIM_MISMATCH", base + "/names", f"{len(names)} names, contract requires {c.VECTOR_DIM}")
     elif tuple(names) != c.JOINT_NAMES:
@@ -158,7 +172,9 @@ def _check_vector_feature(feats: dict, key: str, out: _Collector) -> None:
         out.add("DIM_MISMATCH", base + "/units", f"{len(units)} units, contract requires {c.VECTOR_DIM}")
     else:
         for j, (got, want) in enumerate(zip(units, c.JOINT_UNITS)):
-            if got != want:
+            if not isinstance(got, str):
+                out.add("WRONG_TYPE", base + f"/units/{j}", f"unit must be a string, got {got!r}")
+            elif got != want:
                 out.add("UNIT_MISMATCH", base + f"/units/{j}", f"{c.JOINT_NAMES[j]}: unit {got!r}, contract requires {want!r}")
 
 
@@ -172,12 +188,17 @@ def _check_camera_feature(feats: dict, key: str, fps: Optional[int], out: _Colle
     if not isinstance(feat, dict):
         out.add("WRONG_TYPE", base, "feature must be an object")
         return
-    if feat.get("dtype") not in c.CAMERA_DTYPES:
+    if "dtype" in feat and not isinstance(feat["dtype"], str):
+        out.add("WRONG_TYPE", base + "/dtype", f"dtype must be a string, got {feat['dtype']!r}")
+    elif feat.get("dtype") not in c.CAMERA_DTYPES:
         out.add("FEATURE_DTYPE_BAD", base + "/dtype", f"dtype must be one of {list(c.CAMERA_DTYPES)}, got {feat.get('dtype')!r}")
     if feat.get("names") != c.CAMERA_SHAPE_NAMES:
         out.add("FEATURE_NAMES_MISMATCH", base + "/names", f"names must be {c.CAMERA_SHAPE_NAMES}, got {feat.get('names')!r}")
     cam = feat.get("camera")
-    if not isinstance(cam, dict):
+    if "camera" in feat and not isinstance(cam, dict):
+        out.add("WRONG_TYPE", base + "/camera", f"camera metadata must be an object, got {cam!r}")
+        return
+    if cam is None:
         out.add("CAMERA_METADATA_MISSING", base + "/camera", "camera metadata block (width, height, encoding, fps) is missing")
         return
     absent = [f for f in c.CAMERA_REQUIRED_FIELDS if f not in cam]
@@ -186,14 +207,27 @@ def _check_camera_feature(feats: dict, key: str, fps: Optional[int], out: _Colle
     w, h, enc, cfps = cam.get("width"), cam.get("height"), cam.get("encoding"), cam.get("fps")
     good = True
     for name, v in (("width", w), ("height", h)):
-        if name not in absent and not (_is_int(v) and 1 <= v <= c.MAX_CAMERA_DIM):
-            out.add("CAMERA_METADATA_INVALID", base + "/camera/" + name, f"{name} must be an integer in 1..{c.MAX_CAMERA_DIM}, got {v!r}")
+        if name in absent:
+            continue
+        if not _is_int(v):
+            out.add("WRONG_TYPE", base + "/camera/" + name, f"{name} must be an integer, got {v!r}")
             good = False
-    if "encoding" not in absent and enc not in c.CAMERA_ENCODINGS:
-        out.add("CAMERA_METADATA_INVALID", base + "/camera/encoding", f"encoding must be one of {sorted(c.CAMERA_ENCODINGS)}, got {enc!r}")
-        good = False
-    if "fps" not in absent and fps is not None and cfps != fps:
-        out.add("CAMERA_METADATA_INVALID", base + "/camera/fps", f"camera fps {cfps!r} differs from dataset fps {fps}")
+        elif not 1 <= v <= c.MAX_CAMERA_DIM:
+            out.add("CAMERA_METADATA_INVALID", base + "/camera/" + name, f"{name} must be in 1..{c.MAX_CAMERA_DIM}, got {v!r}")
+            good = False
+    if "encoding" not in absent:
+        # type-check BEFORE the dict lookup: lists/dicts are unhashable
+        if not isinstance(enc, str):
+            out.add("WRONG_TYPE", base + "/camera/encoding", f"encoding must be a string, got {enc!r}")
+            good = False
+        elif enc not in c.CAMERA_ENCODINGS:
+            out.add("CAMERA_METADATA_INVALID", base + "/camera/encoding", f"encoding must be one of {sorted(c.CAMERA_ENCODINGS)}, got {enc!r}")
+            good = False
+    if "fps" not in absent:
+        if not _is_int(cfps):
+            out.add("WRONG_TYPE", base + "/camera/fps", f"fps must be an integer, got {cfps!r}")
+        elif fps is not None and cfps != fps:
+            out.add("CAMERA_METADATA_INVALID", base + "/camera/fps", f"camera fps {cfps!r} differs from dataset fps {fps}")
     shape = feat.get("shape")
     if not (isinstance(shape, list) and len(shape) == 3 and all(_is_int(s) for s in shape)):
         out.add("FEATURE_SHAPE_BAD", base + "/shape", f"shape must be [height, width, channels], got {shape!r}")
@@ -229,7 +263,7 @@ def _check_vector(frame: dict, key: str, p: str, out: _Collector) -> None:
     for j, v in enumerate(vec):
         if not _is_num(v):
             out.add("WRONG_TYPE", f"{path}/{j}", f"{key}[{j}] must be a number, got {v!r}")
-        elif not math.isfinite(v):
+        elif not _finite(v):
             out.add("NON_FINITE_VALUE", f"{path}/{j}", f"{key}[{j}] is not finite")
         else:
             lo, hi = c.JOINT_LIMITS[j]
@@ -245,7 +279,7 @@ def _check_timestamps(frames: list, ep_path: str, fps: Optional[int], tol: float
         if not _is_num(t):
             out.add("MISSING_FIELD" if t is None else "WRONG_TYPE", p, f"timestamp must be a number (seconds), got {t!r}")
             return
-        if not math.isfinite(t):
+        if not _finite(t):
             out.add("NON_FINITE_VALUE", p, "timestamp is not finite")
             return
         ts.append(float(t))
@@ -290,7 +324,10 @@ def _check_episodes(doc: dict, fps: Optional[int], tol: float, task_ids: set, ou
                 out.add("EPISODE_INDEX_GAP", p + "/episode_index", f"expected episode_index {next_index}, got {idx}")
             next_index = idx + 1
         ti = ep.get("task_index")
-        if task_ids and ti not in task_ids:
+        # type-check BEFORE the set lookup: lists/dicts are unhashable
+        if not _is_int(ti):
+            out.add("WRONG_TYPE" if "task_index" in ep else "TASK_MISSING", p + "/task_index", f"task_index must be an integer, got {ti!r}")
+        elif task_ids and ti not in task_ids:
             out.add("TASK_MISSING", p + "/task_index", f"task_index {ti!r} is not defined in tasks")
         frames = ep.get("frames")
         if not isinstance(frames, list):
@@ -300,9 +337,12 @@ def _check_episodes(doc: dict, fps: Optional[int], tol: float, task_ids: set, ou
         else:
             nframes = len(frames)
         length = ep.get("length")
-        if nframes == 0 or length == 0:
+        if nframes == 0:
             out.add("EPISODE_EMPTY", p, "episode has no frames")
+        elif not _is_int(length):
+            out.add("WRONG_TYPE" if "length" in ep else "MISSING_FIELD", p + "/length", f"length must be an integer, got {length!r}")
         elif nframes is not None and length != nframes:
+            # includes length == 0 with a non-empty frames list
             out.add("EPISODE_LENGTH_MISMATCH", p + "/length", f"length {length!r} but {nframes} frames")
         # boundaries
         frm, to = ep.get("dataset_from_index"), ep.get("dataset_to_index")
@@ -336,6 +376,9 @@ def _validate(doc: Any, out: _Collector) -> None:
     if ver is None:
         out.add("MISSING_FIELD", "/schema_version", "schema_version is required")
         return
+    if not isinstance(ver, str):
+        out.add("WRONG_TYPE", "/schema_version", f"schema_version must be a string, got {ver!r}")
+        return
     if ver != c.SCHEMA_VERSION:
         out.add("SCHEMA_VERSION_UNKNOWN", "/schema_version", f"unsupported schema_version {ver!r}; this validator supports {c.SCHEMA_VERSION!r}")
         return  # unknown version: do not guess the rest of the layout
@@ -364,8 +407,12 @@ def validate_document(doc: Any) -> tuple[list[Diagnostic], bool]:
     return out.items, out.truncated
 
 
+class _NonFiniteLiteral(ValueError):
+    """Raised by the JSON parser for NaN / Infinity / -Infinity literals."""
+
+
 def _reject_constant(name: str) -> None:
-    raise ValueError(name)
+    raise _NonFiniteLiteral(name)
 
 
 def validate_text(text: str) -> tuple[list[Diagnostic], bool]:
@@ -376,8 +423,10 @@ def validate_text(text: str) -> tuple[list[Diagnostic], bool]:
         doc = json.loads(text, parse_constant=_reject_constant)
     except json.JSONDecodeError as exc:
         return [Diagnostic("MALFORMED_JSON", "", f"line {exc.lineno} column {exc.colno}: {exc.msg}", c.CODES["MALFORMED_JSON"][1])], False
-    except ValueError as exc:  # NaN / Infinity / -Infinity literals
+    except _NonFiniteLiteral as exc:  # NaN / Infinity / -Infinity literals
         return [Diagnostic("NON_FINITE_VALUE", "", f"JSON literal {exc} is not allowed", c.CODES["NON_FINITE_VALUE"][1])], False
+    except ValueError as exc:  # e.g. integer literal with too many digits
+        return [Diagnostic("MALFORMED_JSON", "", f"unparseable value: {exc}", c.CODES["MALFORMED_JSON"][1])], False
     except RecursionError:
         return [Diagnostic("MALFORMED_JSON", "", "nesting too deep", c.CODES["MALFORMED_JSON"][1])], False
     return validate_document(doc)

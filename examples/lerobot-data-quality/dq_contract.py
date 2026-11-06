@@ -89,7 +89,7 @@ CODES = {
     "CAMERA_METADATA_INVALID": ("Camera metadata is inconsistent or out of range.", "Make width/height/encoding/fps agree with the feature shape and dataset fps."),
     "TASK_MISSING": ("A task description is missing or unresolvable.", "Provide non-empty tasks[] and a valid task_index per episode."),
     "NO_EPISODES": ("The episodes list is missing or empty.", "A dataset needs at least one episode."),
-    "EPISODE_EMPTY": ("An episode has no frames.", "Remove it or add frames; zero-length episodes are rejected."),
+    "EPISODE_EMPTY": ("An episode has an empty frames list.", "Remove it or add frames; episodes without frames are rejected."),
     "EPISODE_INDEX_DUPLICATE": ("Two episodes share an episode_index.", "Give every episode a unique, increasing index."),
     "EPISODE_INDEX_GAP": ("episode_index values are not 0..N-1 in order.", "Renumber episodes contiguously from 0."),
     "EPISODE_LENGTH_MISMATCH": ("'length' differs from the number of frames.", "Set length to len(frames)."),

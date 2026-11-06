@@ -219,6 +219,139 @@ class NamedCases(unittest.TestCase):
         self.assertEqual(codes(d), ["NOT_SYNTHETIC"])
 
 
+class UnhashableAndTypeConfusion(unittest.TestCase):
+    """Lists/dicts (unhashable) and other wrong types in lookup fields must give WRONG_TYPE,
+    never INTERNAL_ERROR, and later episodes/frames must still be validated."""
+
+    BAD = ([0], {"a": 0})
+
+    def _later_defect(self, d):
+        # a defect in the LAST episode that must still be reported
+        d["episodes"][2]["frames"][3]["timestamp"] = 0.33  # expected 0.3
+
+    def test_task_index_list_and_dict(self):
+        for bad in self.BAD:
+            with self.subTest(bad=bad):
+                d = base()
+                d["episodes"][0]["task_index"] = bad
+                self._later_defect(d)
+                diags, _ = v.validate_document(d)
+                got = [(x.code, x.path) for x in diags]
+                self.assertEqual(got[0], ("WRONG_TYPE", "/episodes/0/task_index"))
+                self.assertIn(("TIMESTAMP_FPS_DRIFT", "/episodes/2/frames/3/timestamp"), got)
+                self.assertNotIn("INTERNAL_ERROR", [c_ for c_, _ in got])
+                self.assertTrue(all(x.hint and x.message for x in diags))
+
+    def test_camera_encoding_list_and_dict(self):
+        for bad in self.BAD:
+            with self.subTest(bad=bad):
+                d = base()
+                d["features"]["observation.images.front"]["camera"]["encoding"] = bad
+                self._later_defect(d)
+                diags, _ = v.validate_document(d)
+                got = [(x.code, x.path) for x in diags]
+                self.assertIn(("WRONG_TYPE", "/features/observation.images.front/camera/encoding"), got)
+                self.assertIn(("TIMESTAMP_FPS_DRIFT", "/episodes/2/frames/3/timestamp"), got)
+                self.assertNotIn("INTERNAL_ERROR", [c_ for c_, _ in got])
+                self.assertNotIn("CAMERA_METADATA_INVALID", [c_ for c_, _ in got])
+
+    def test_other_lookup_fields(self):
+        cases = [
+            (("features", "action", "dtype"), "WRONG_TYPE"),
+            (("features", "action", "units", 0), "WRONG_TYPE"),
+            (("features", "observation.images.front", "dtype"), "WRONG_TYPE"),
+            (("features", "observation.images.front", "camera", "fps"), "WRONG_TYPE"),
+            (("features", "observation.images.front", "camera", "width"), "WRONG_TYPE"),
+            (("schema_version",), "WRONG_TYPE"),
+            (("license",), "WRONG_TYPE"),
+            (("tasks", 0, "task_index"), "WRONG_TYPE"),
+            (("tasks", 0, "task"), "WRONG_TYPE"),
+            (("episodes", 0, "episode_index"), "WRONG_TYPE"),
+            (("episodes", 0, "length"), "WRONG_TYPE"),
+        ]
+        for loc, want in cases:
+            for bad in self.BAD:
+                with self.subTest(loc=loc, bad=bad):
+                    d = base()
+                    node = d
+                    for k in loc[:-1]:
+                        node = node[k]
+                    node[loc[-1]] = bad
+                    diags, _ = v.validate_document(d)
+                    got = [x.code for x in diags]
+                    self.assertIn(want, got)
+                    self.assertNotIn("INTERNAL_ERROR", got)
+                    path = "/" + "/".join(str(k) for k in loc)
+                    self.assertIn(path, [x.path for x in diags])
+
+    def test_camera_block_wrong_type(self):
+        d = base()
+        d["features"]["observation.images.front"]["camera"] = [1]
+        diags, _ = v.validate_document(d)
+        self.assertEqual([(x.code, x.path) for x in diags], [("WRONG_TYPE", "/features/observation.images.front/camera")])
+        d["features"]["observation.images.front"]["camera"] = {"a": 0}  # an object, but fields missing
+        self.assertEqual(set(codes(d)), {"CAMERA_METADATA_MISSING"})
+
+    def test_length_zero_with_frames_is_length_mismatch_not_empty(self):
+        d = base()
+        d["episodes"][1]["length"] = 0
+        diags, _ = v.validate_document(d)
+        self.assertEqual([(x.code, x.path) for x in diags], [("EPISODE_LENGTH_MISMATCH", "/episodes/1/length")])
+        self.assertIn("0", diags[0].message)
+
+    def test_huge_numbers_are_not_internal_errors(self):
+        big = 10 ** 400  # not representable as float
+        for loc in (("fps",), ("timestamp_tolerance_s",), ("episodes", 0, "frames", 1, "timestamp"),
+                    ("episodes", 0, "frames", 1, "action", 0)):
+            with self.subTest(loc=loc):
+                d = base()
+                node = d
+                for k in loc[:-1]:
+                    node = node[k]
+                node[loc[-1]] = big
+                got = codes(d)
+                self.assertTrue(got)
+                self.assertNotIn("INTERNAL_ERROR", got)
+        diags, _ = v.validate_text('{"x": 1e999}')  # parses to inf: not a NaN literal
+        self.assertNotIn("INTERNAL_ERROR", [d.code for d in diags])
+        diags, _ = v.validate_text('{"x": ' + "9" * 5000 + "}")  # Python int digit limit -> ValueError
+        self.assertEqual([d.code for d in diags], ["MALFORMED_JSON"])
+
+    def test_mutation_sweep_never_internal_error(self):
+        """Replace every node of a valid document with hostile values; no raise, no INTERNAL_ERROR."""
+        hostile = (None, True, "x", 7, -1, 1.5, float("inf"), 10 ** 400, [], [0], {}, {"a": 1}, [[0]], [{"a": []}])
+        paths = []
+
+        def walk(node, path):
+            paths.append(path)
+            items = node.items() if isinstance(node, dict) else enumerate(node) if isinstance(node, list) else ()
+            for k, child in items:
+                walk(child, path + (k,))
+
+        walk(base(), ())
+        paths = [p for p in paths if p]  # the root is covered by test_non_object_documents_never_raise
+        self.assertGreater(len(paths), 200)
+        for path in paths:
+            for bad in hostile:
+                d = base()
+                node = d
+                for k in path[:-1]:
+                    node = node[k]
+                node[path[-1]] = bad
+                diags, _ = v.validate_document(d)
+                if any(x.code == "INTERNAL_ERROR" for x in diags):
+                    self.fail(f"INTERNAL_ERROR for {path} = {bad!r}")
+        # also delete every node
+        for path in paths:
+            d = base()
+            node = d
+            for k in path[:-1]:
+                node = node[k]
+            del node[path[-1]]
+            diags, _ = v.validate_document(d)
+            self.assertNotIn("INTERNAL_ERROR", [x.code for x in diags], path)
+
+
 class Robustness(unittest.TestCase):
     def test_non_object_documents_never_raise(self):
         for doc in (None, [], 5, "x", True, [{"a": 1}]):
@@ -286,7 +419,8 @@ class FixtureHygiene(unittest.TestCase):
 
     def test_no_image_payload_in_fixtures(self):
         for rel in g.build_all():
-            text = open(os.path.join(FIX, rel), encoding="utf-8").read()
+            with open(os.path.join(FIX, rel), encoding="utf-8") as fh:
+                text = fh.read()
             self.assertNotIn("data_b64", text)
             self.assertNotIn("base64", text.lower())
 

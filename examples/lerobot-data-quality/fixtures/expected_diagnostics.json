@@ -79,6 +79,26 @@
     "code": "FPS_INVALID",
     "path": "/fps"
   },
+  "invalid/wrong_type_task_index_list.json": {
+    "code": "WRONG_TYPE",
+    "path": "/episodes/1/task_index"
+  },
+  "invalid/wrong_type_task_index_dict.json": {
+    "code": "WRONG_TYPE",
+    "path": "/episodes/1/task_index"
+  },
+  "invalid/wrong_type_camera_encoding_list.json": {
+    "code": "WRONG_TYPE",
+    "path": "/features/observation.images.front/camera/encoding"
+  },
+  "invalid/wrong_type_camera_encoding_dict.json": {
+    "code": "WRONG_TYPE",
+    "path": "/features/observation.images.front/camera/encoding"
+  },
+  "invalid/episode_length_zero_with_frames.json": {
+    "code": "EPISODE_LENGTH_MISMATCH",
+    "path": "/episodes/1/length"
+  },
   "invalid/frame_index_mismatch.json": {
     "code": "FRAME_INDEX_MISMATCH",
     "path": "/episodes/0/frames/2/frame_index"

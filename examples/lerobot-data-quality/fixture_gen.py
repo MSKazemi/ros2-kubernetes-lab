@@ -200,6 +200,26 @@ def m_frame_index(d):
     d["episodes"][0]["frames"][2]["frame_index"] = 7
 
 
+def m_task_list(d):
+    d["episodes"][1]["task_index"] = [0]
+
+
+def m_task_dict(d):
+    d["episodes"][1]["task_index"] = {"a": 0}
+
+
+def m_enc_list(d):
+    d["features"]["observation.images.front"]["camera"]["encoding"] = ["rgb8"]
+
+
+def m_enc_dict(d):
+    d["features"]["observation.images.front"]["camera"]["encoding"] = {"x": 1}
+
+
+def m_length_zero(d):
+    d["episodes"][1]["length"] = 0  # frames are still present
+
+
 # name -> (mutation, expected code, expected first path)
 INVALID = {
     "dim_mismatch_frame_action": (m_dim_frame, "DIM_MISMATCH", "/episodes/1/frames/2/action"),
@@ -222,6 +242,11 @@ INVALID = {
     "task_description_blank": (m_task, "TASK_MISSING", "/tasks/0/task"),
     "value_out_of_limits": (m_limits, "OUT_OF_LIMITS", "/episodes/0/frames/1/observation.state/5"),
     "fps_invalid": (m_fps, "FPS_INVALID", "/fps"),
+    "wrong_type_task_index_list": (m_task_list, "WRONG_TYPE", "/episodes/1/task_index"),
+    "wrong_type_task_index_dict": (m_task_dict, "WRONG_TYPE", "/episodes/1/task_index"),
+    "wrong_type_camera_encoding_list": (m_enc_list, "WRONG_TYPE", "/features/observation.images.front/camera/encoding"),
+    "wrong_type_camera_encoding_dict": (m_enc_dict, "WRONG_TYPE", "/features/observation.images.front/camera/encoding"),
+    "episode_length_zero_with_frames": (m_length_zero, "EPISODE_LENGTH_MISMATCH", "/episodes/1/length"),
     "frame_index_mismatch": (m_frame_index, "FRAME_INDEX_MISMATCH", "/episodes/0/frames/2/frame_index"),
 }
 
