@@ -182,7 +182,9 @@ class HandoffSimulator:
     def renew(self, executor_id: str, epoch: int | None = None) -> str:
         ex = self.executors[executor_id]
         claimed = ex.epoch if epoch is None else epoch
-        if claimed < self.epoch:
+        if type(claimed) is not int:
+            verdict = Reason.MALFORMED_EFFECT
+        elif claimed < self.epoch:
             verdict = Reason.STALE_EXECUTOR
         elif executor_id != self.owner:
             verdict = Reason.NOT_STATE_OWNER
@@ -242,9 +244,17 @@ class HandoffSimulator:
                       steps_before_ack_loss: int = 0, origin_available: bool = True) -> dict[str, Any]:
         if fault not in FAULTS:
             raise ValueError(f"unknown fault {fault!r}")
-        to = bundle.get("handoff", {}).get("to_executor") if isinstance(bundle, dict) else None
-        dest = self.executors.get(to)
+        # Shape and digest are checked BEFORE any lookup keyed by a bundle value, so a malformed
+        # bundle (None, wrong container types, unhashable destination) is a typed rejection, never an exception.
+        try:
+            pre = ms.validate_structure(bundle)
+            ms.validate_digest(pre)
+        except Rejection as exc:
+            self._log("validate", result="REJECTED", reason=exc.reason, field=exc.field)
+            return self._result("REJECTED", exc.reason)
+        dest = self.executors.get(pre["handoff"]["to_executor"])  # validated str: hashable
         if dest is None:
+            self._log("validate", result="REJECTED", reason=Reason.WRONG_DESTINATION, field="handoff.to_executor")
             return self._result("REJECTED", Reason.WRONG_DESTINATION)
         # PREPARE happened at the origin when the bundle was built; VALIDATE runs here.
         try:
@@ -258,7 +268,7 @@ class HandoffSimulator:
             self._log("abort", reason="destination_unreachable", note="nothing committed; origin retains ownership")
             return self._result("ABORTED", "destination_unreachable")
         # COMMIT: consume nonce/sequence, bump epoch, publish the grant to the sink.
-        origin = self.executors[doc["handoff"]["from_executor"]]
+        origin = self.executors[self.owner]  # validate_for_commit proved from_executor == owner
         self.seen_nonces.add(doc["handoff"]["nonce"])
         self.last_sequence = doc["handoff"]["sequence"]
         self.epoch += 1
@@ -313,6 +323,8 @@ def simulator_from_setup(setup: dict[str, Any]) -> HandoffSimulator:
 
 def run_script(script: dict[str, Any]) -> dict[str, Any]:
     """Execute one handoff-script fixture. Returns a report; ``ok`` is True iff every expectation held."""
+    if not isinstance(script, dict):
+        raise ValueError("script fixture must be a JSON object")
     if script.get("fixture_kind") != SIM_KIND or script.get("synthetic") is not True:
         raise ValueError("not a synthetic handoff-script fixture")
     sim = simulator_from_setup(script["setup"])
@@ -371,7 +383,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         paths = args.scripts or sorted(SCRIPT_DIR.glob("*.json"))
         reports = [run_script(json.loads(p.read_text(encoding="utf-8"))) for p in paths]
-    except (OSError, ValueError, KeyError, TypeError) as exc:
+    except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
         print(f"handoff_sim: invalid input: {exc}", file=sys.stderr)
         return 2
     for rep in reports:

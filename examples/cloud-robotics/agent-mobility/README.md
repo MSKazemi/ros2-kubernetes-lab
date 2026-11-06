@@ -12,7 +12,7 @@ Specification and rationale: [`docs/cloud-robotics/agent-mobility/`](../../../do
 | [`handoff_sim.py`](handoff_sim.py) | Coordinator, epoch-fencing effect sink, executors, handoff with fault injection and rollback; runs script fixtures |
 | [`validate_bundle.py`](validate_bundle.py) | CLI that checks `bundle-check` fixtures and compares each verdict to its expectation |
 | [`fixture_gen.py`](fixture_gen.py) | Deterministic generator for every JSON fixture (`--check` detects drift) |
-| [`fixtures/bundles/`](fixtures/bundles/) | 35 `bundle-check` fixtures: one accepted control, one per bundle rejection reason (33), and one multi-mismatch case |
+| [`fixtures/bundles/`](fixtures/bundles/) | 37 `bundle-check` fixtures: one accepted control, one per bundle rejection reason (33), one multi-mismatch case, and two malformed-shape cases (`handoff` null, destination a list) |
 | [`fixtures/scripts/`](fixtures/scripts/) | 11 `handoff-script` fixtures: happy path, stale executor, effect-gate rejections, lease, rollback, parking, abort, refusal, ping-pong |
 | [`tests/`](tests/) | `unittest` suite; fails if any rejection reason lacks a fixture |
 
@@ -38,6 +38,7 @@ Exit codes: `0` all expectations met, `1` an expectation failed (or fixture drif
 * **Replay:** a bundle nonce is single use (`REPLAYED_NONCE`), handoff sequences must increase (`STALE_SEQUENCE`), effect IDs are single use (`REPLAYED_EFFECT`), and effect sequences are gap-free per epoch.
 * **Compatibility:** frame, map revision, robot class, unit convention, capabilities, sensors (presence, type, units) and action command, space and units must match; a mismatch refuses the handoff and nothing adapts silently.
 * **Staleness:** expired and future-dated bundles, bundles whose checkpoint lags the authoritative ledger, expired leases.
+* **Malformed input:** a bundle of any JSON shape (null, wrong container types, unhashable values) yields a typed `REJECTED` result and leaves owner, epoch, sequence and nonce set unchanged; it never raises (table-driven regression tests).
 * **Rollback:** a committed handoff whose destination never activates is rolled back by issuing a **new, higher** epoch to the origin, which resumes from the sink ledger; or the mission is parked (no owner) when the origin is unavailable or the bundle says `park`. Aborts before commit change nothing.
 
 ## Fixture conventions

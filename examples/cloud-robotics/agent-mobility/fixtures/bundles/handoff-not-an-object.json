@@ -1,0 +1,133 @@
+{
+  "bundle": {
+    "handoff": null,
+    "integrity": {
+      "algorithm": "sha256",
+      "digest": "947d13e56f24350105e4763d6871a733694f8cdcef19ca3cfd3f1c8b5cdeaae6"
+    },
+    "mission": {
+      "mission_revision": 1,
+      "steps": [
+        "wp-01",
+        "wp-02",
+        "wp-03",
+        "wp-04",
+        "wp-05"
+      ],
+      "task_id": "inspection-001"
+    },
+    "ownership": {
+      "epoch": 1,
+      "lease_expires_tick": 50,
+      "state_owner": "cloud-01"
+    },
+    "progress": {
+      "committed_effect_ids": [
+        "inspection-001-cloud-01-e1-s0",
+        "inspection-001-cloud-01-e1-s1"
+      ],
+      "completed": [
+        "wp-01",
+        "wp-02"
+      ],
+      "cursor": 2
+    },
+    "requirements": {
+      "action": {
+        "command": "navigate_to_waypoint",
+        "space": "waypoint_goal",
+        "units": "m"
+      },
+      "capabilities": [
+        "inspect_waypoint",
+        "report_status"
+      ],
+      "frame_id": "map",
+      "map_revision": "synthetic-map-v1",
+      "robot_class": "sim-mobile-base",
+      "sensors": [
+        {
+          "name": "front_range",
+          "type": "range",
+          "units": "m"
+        },
+        {
+          "name": "camera_front",
+          "type": "rgb_image",
+          "units": "pixel"
+        }
+      ],
+      "units": {
+        "angle": "rad",
+        "length": "m",
+        "time": "s"
+      }
+    },
+    "rollback": {
+      "on_failure": "reissue_to_origin",
+      "origin_executor": "cloud-01",
+      "resume_from": "effect_ledger"
+    },
+    "schema": "mission-state/v1",
+    "simulated": true
+  },
+  "context": {
+    "coordinator": {
+      "epoch": 1,
+      "last_sequence": 0,
+      "ledger_effect_ids": [
+        "inspection-001-cloud-01-e1-s0",
+        "inspection-001-cloud-01-e1-s1"
+      ],
+      "owner": "cloud-01",
+      "seen_nonces": []
+    },
+    "destination_profile": {
+      "actions": [
+        {
+          "command": "navigate_to_waypoint",
+          "space": "waypoint_goal",
+          "units": "m"
+        }
+      ],
+      "capabilities": [
+        "inspect_waypoint",
+        "report_status",
+        "extra_skill"
+      ],
+      "executor_id": "edge-01",
+      "frame_id": "map",
+      "map_revision": "synthetic-map-v1",
+      "robot_class": "sim-mobile-base",
+      "sensors": [
+        {
+          "name": "front_range",
+          "type": "range",
+          "units": "m"
+        },
+        {
+          "name": "camera_front",
+          "type": "rgb_image",
+          "units": "pixel"
+        }
+      ],
+      "supported_schemas": [
+        "mission-state/v1"
+      ],
+      "units": {
+        "angle": "rad",
+        "length": "m",
+        "time": "s"
+      }
+    },
+    "now_tick": 5
+  },
+  "description": "handoff is null instead of an object.",
+  "expect": {
+    "ok": false,
+    "reason": "WRONG_TYPE"
+  },
+  "fixture_kind": "bundle-check",
+  "name": "handoff-not-an-object",
+  "synthetic": true
+}

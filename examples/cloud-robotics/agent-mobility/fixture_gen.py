@@ -130,6 +130,10 @@ def bundle_cases() -> dict[str, tuple[str, str | None, Callable[[], tuple[Any, d
         # shape
         "malformed-document": ("Bundle is a JSON array, not an object.", R.MALFORMED_DOCUMENT,
                                lambda: ([], base_context())),
+        "handoff-not-an-object": ("handoff is null instead of an object.", R.WRONG_TYPE,
+                                  _edit(_set("handoff", None))),
+        "destination-is-a-list": ("handoff.to_executor is a list (unhashable), not an identifier.", R.WRONG_TYPE,
+                                  _edit(_set("handoff.to_executor", ["edge-01"]))),
         "missing-field": ("The rollback block is absent.", R.MISSING_FIELD, _edit(_del("rollback"))),
         "unknown-field": ("An undeclared top-level field is present.", R.UNKNOWN_FIELD, _edit(_set("extra", 1))),
         "wrong-type": ("ownership.epoch is a string.", R.WRONG_TYPE, _edit(_set("ownership.epoch", "1"))),

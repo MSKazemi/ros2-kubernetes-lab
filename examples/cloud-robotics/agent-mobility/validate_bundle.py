@@ -26,6 +26,8 @@ KIND = "bundle-check"
 
 def check_fixture(fixture: dict[str, Any]) -> dict[str, Any]:
     """Run one bundle-check fixture. Raises ValueError if the fixture file itself is invalid."""
+    if not isinstance(fixture, dict):
+        raise ValueError("fixture must be a JSON object")
     if (fixture.get("fixture_kind") != KIND or fixture.get("synthetic") is not True
             or set(fixture) != {"fixture_kind", "synthetic", "name", "description", "expect", "context", "bundle"}):
         raise ValueError("not a synthetic bundle-check fixture")

@@ -7,7 +7,7 @@
 | ID | Failure | Expected behaviour | Reason / outcome | Fixture |
 | --- | --- | --- | --- | --- |
 | FC-01 | Bundle is not an object, or a field is missing or unknown | Refuse before anything else | `MALFORMED_DOCUMENT`, `MISSING_FIELD`, `UNKNOWN_FIELD` | B: `malformed-document`, `missing-field`, `unknown-field` |
-| FC-02 | Wrong type, out-of-range value or bad identifier | Refuse | `WRONG_TYPE`, `BAD_VALUE`, `BAD_IDENTIFIER` | B: `wrong-type`, `bad-value`, `bad-identifier` |
+| FC-02 | Wrong type, out-of-range value or bad identifier | Refuse | `WRONG_TYPE`, `BAD_VALUE`, `BAD_IDENTIFIER` | B: `wrong-type`, `bad-value`, `bad-identifier`, `handoff-not-an-object`, `destination-is-a-list` |
 | FC-03 | Unknown schema version, or non-simulated document | Refuse | `UNSUPPORTED_SCHEMA_VERSION`, `NOT_SIMULATED` | B: `unsupported-schema-version`, `not-simulated` |
 | FC-04 | Content altered after sealing | Refuse (accidental-change detection only) | `DIGEST_MISMATCH` | B: `digest-mismatch` |
 | FC-05 | Progress claims inconsistent (`completed` is not the step prefix) or owner fields disagree | Refuse | `PROGRESS_INCONSISTENT`, `INCONSISTENT_BUNDLE` | B: `progress-inconsistent`, `inconsistent-bundle` |
@@ -29,6 +29,7 @@
 | FC-21 | Destination activates and commits steps, acknowledgement lost | **ROLLED_BACK**; origin resumes from the *ledger*, destination's committed effects kept, destination fenced | `ROLLED_BACK`, then `STALE_EXECUTOR` | S: `rollback-ack-lost-after-effects` |
 | FC-22 | Rollback impossible (origin unavailable) or policy is `park` | **PARKED**: no owner, all effects refused (fail closed) | `PARKED`, `NOT_STATE_OWNER` | S: `park-origin-unavailable`, `park-by-policy` |
 | FC-23 | Repeated handoffs (A to B to A) | Epoch increases each time; ledger gap-free; fenced executor self-fences | `COMPLETED` | S: `ping-pong-handoffs` |
+| FC-24 | Bundle of any malformed JSON shape (null, string, list, `handoff` not an object, unhashable destination, wrong nested types) | Typed `REJECTED` result, no exception; owner, epoch, sequence, nonces, ledger and executor beliefs unchanged | one of the shape reasons (`MALFORMED_DOCUMENT`, `MISSING_FIELD`, `WRONG_TYPE`, `BAD_VALUE`, `BAD_IDENTIFIER`, `UNSUPPORTED_SCHEMA_VERSION`, `NOT_SIMULATED`) or `WRONG_DESTINATION` for an unknown executor | `MalformedBundleTests` (40 cases) in `tests/test_handoff_sim.py`; B: `handoff-not-an-object`, `destination-is-a-list` |
 
 ## 2. Not covered (listed so the toy is not over-read)
 

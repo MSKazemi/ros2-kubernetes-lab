@@ -97,6 +97,8 @@ The validator reports the **first** failing check in this fixed order (so result
 
 Replay is checked before the epoch so that re-submitting an already committed bundle is reported as a replay rather than as a generic stale epoch.
 
+This order is that of `validate_for_commit`. The simulator's `submit_bundle` additionally resolves the destination executor right after the shape and digest checks (steps 1 and 2), so for a bundle with several faults at once an unknown destination (`WRONG_DESTINATION`) is reported before `MISSION_COMPLETE` or expiry; for a bundle with a single fault, and for any bundle addressed to a known destination, the two agree.
+
 ## 9. What the digest and this schema do NOT provide
 
 No authentication of the origin, no confidentiality, no non-repudiation, no attestation of the destination, no durable atomic commit, no exactly-once execution, and no guarantee about any physical robot. Do not reuse the toy validator or sink as a safety gateway.

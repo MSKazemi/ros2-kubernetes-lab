@@ -13,7 +13,7 @@ from support import BUNDLES, SCRIPTS, fg, hs, load, ms, valid_pair, vb
 
 class FixtureVerdictTests(unittest.TestCase):
     def test_fixture_directory_is_not_empty(self):
-        self.assertGreaterEqual(len(BUNDLES), 30)
+        self.assertGreaterEqual(len(BUNDLES), 35)
 
     def test_each_bundle_fixture_matches_expectation(self):
         for path in BUNDLES:

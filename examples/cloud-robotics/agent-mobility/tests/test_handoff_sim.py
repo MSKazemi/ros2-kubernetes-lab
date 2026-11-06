@@ -8,7 +8,7 @@ import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
-from support import SCRIPTS, fg, hs, load, make_sim, ms
+from support import SCRIPTS, fg, hs, load, make_sim, ms, valid_pair
 
 
 class ScriptFixtureTests(unittest.TestCase):
@@ -207,6 +207,166 @@ class RollbackTests(unittest.TestCase):
         sim = make_sim()
         with self.assertRaises(ValueError):
             sim.handoff("edge-01", fault="meteor")
+
+
+def _mut(path, value, reseal=False):
+    """Return a factory for a valid bundle with one value replaced (no reseal: shape is checked first)."""
+    def build():
+        bundle = fg.base_bundle()
+        if path is None:
+            return value
+        *parents, last = path.split(".")
+        node = bundle
+        for part in parents:
+            node = node[part]
+        node[last] = value
+        return ms.seal(bundle) if reseal else bundle
+    return build
+
+
+R = ms.Reason
+MALFORMED_BUNDLES = [
+    # the bundle itself
+    ("bundle None", _mut(None, None), R.MALFORMED_DOCUMENT),
+    ("bundle list", _mut(None, []), R.MALFORMED_DOCUMENT),
+    ("bundle str", _mut(None, "bundle"), R.MALFORMED_DOCUMENT),
+    ("bundle int", _mut(None, 7), R.MALFORMED_DOCUMENT),
+    ("bundle empty dict", _mut(None, {}), R.MISSING_FIELD),
+    # handoff container
+    ("handoff null", _mut("handoff", None), R.WRONG_TYPE),
+    ("handoff str", _mut("handoff", "x"), R.WRONG_TYPE),
+    ("handoff list", _mut("handoff", ["x"]), R.WRONG_TYPE),
+    ("handoff int", _mut("handoff", 5), R.WRONG_TYPE),
+    ("handoff empty", _mut("handoff", {}), R.MISSING_FIELD),
+    # destination value
+    ("to_executor list", _mut("handoff.to_executor", ["x"]), R.WRONG_TYPE),
+    ("to_executor dict", _mut("handoff.to_executor", {"a": 1}), R.WRONG_TYPE),
+    ("to_executor int", _mut("handoff.to_executor", 5), R.WRONG_TYPE),
+    ("to_executor None", _mut("handoff.to_executor", None), R.WRONG_TYPE),
+    ("to_executor bad identifier", _mut("handoff.to_executor", "bad id"), R.BAD_IDENTIFIER),
+    ("to_executor unknown executor", _mut("handoff.to_executor", "ghost-01", reseal=True), R.WRONG_DESTINATION),
+    # other nested containers and scalars
+    ("mission null", _mut("mission", None), R.WRONG_TYPE),
+    ("mission steps str", _mut("mission.steps", "wp-01"), R.WRONG_TYPE),
+    ("progress completed str", _mut("progress.completed", "wp-01"), R.WRONG_TYPE),
+    ("progress completed dict item", _mut("progress.completed", [{"a": 1}, "wp-02"]), R.WRONG_TYPE),
+    ("effect ids nested list", _mut("progress.committed_effect_ids", [["a"], "b"]), R.WRONG_TYPE),
+    ("ownership list", _mut("ownership", []), R.WRONG_TYPE),
+    ("ownership owner list", _mut("ownership.state_owner", ["cloud-01"]), R.WRONG_TYPE),
+    ("requirements null", _mut("requirements", None), R.WRONG_TYPE),
+    ("requirements sensors int item", _mut("requirements.sensors", [1]), R.WRONG_TYPE),
+    ("requirements sensor name list", _mut("requirements.sensors",
+                                           [{"name": ["a"], "type": "range", "units": "m"}]), R.WRONG_TYPE),
+    ("requirements units null", _mut("requirements.units", None), R.WRONG_TYPE),
+    ("requirements capabilities nested", _mut("requirements.capabilities", [["a"]]), R.WRONG_TYPE),
+    ("rollback null", _mut("rollback", None), R.WRONG_TYPE),
+    ("rollback policy list", _mut("rollback.on_failure", ["park"]), R.BAD_VALUE),
+    ("rollback policy dict", _mut("rollback.on_failure", {"park": 1}), R.BAD_VALUE),
+    ("integrity null", _mut("integrity", None), R.WRONG_TYPE),
+    ("integrity digest int", _mut("integrity.digest", 5), R.WRONG_TYPE),
+    ("integrity digest list", _mut("integrity.digest", ["a"]), R.WRONG_TYPE),
+    ("schema list", _mut("schema", ["mission-state/v1"]), R.UNSUPPORTED_SCHEMA_VERSION),
+    ("schema dict", _mut("schema", {"v": 1}), R.UNSUPPORTED_SCHEMA_VERSION),
+    ("simulated string", _mut("simulated", "true"), R.NOT_SIMULATED),
+    ("nonce list", _mut("handoff.nonce", ["nonce-abcdef"]), R.WRONG_TYPE),
+    ("sequence float", _mut("handoff.sequence", 1.0), R.WRONG_TYPE),
+    ("sequence bool", _mut("handoff.sequence", True), R.WRONG_TYPE),
+]
+
+
+class MalformedBundleTests(unittest.TestCase):
+    """A malformed bundle is a typed rejection: no exception, and no coordinator state changes."""
+
+    @staticmethod
+    def snapshot(sim):
+        return (sim.owner, sim.epoch, sim.last_sequence, frozenset(sim.seen_nonces), list(sim.sink.ledger),
+                sim.sink.epoch, sim.sink.owner, sim.sink.last_seq, sim.lease_expires_tick,
+                {k: (e.active, e.epoch, e.next_seq) for k, e in sim.executors.items()})
+
+    def test_table_is_broad(self):
+        self.assertGreaterEqual(len(MALFORMED_BUNDLES), 35)
+
+    def test_submit_bundle_returns_typed_rejection_and_changes_nothing(self):
+        for label, build, reason in MALFORMED_BUNDLES:
+            with self.subTest(case=label):
+                sim = make_sim()
+                sim.step("cloud-01")
+                before = self.snapshot(sim)
+                res = sim.submit_bundle(build())          # must not raise
+                self.assertEqual(res["outcome"], "REJECTED")
+                self.assertEqual(res["reason"], reason)
+                self.assertEqual(res["verdict"], f"REJECTED:{reason}")
+                self.assertIn(reason, ms.Reason.all())
+                self.assertEqual(before, self.snapshot(sim))
+                self.assertEqual(sim.owner, "cloud-01")
+                self.assertEqual(sim.epoch, 1)
+                self.assertEqual(sim.seen_nonces, set())
+                self.assertIsNone(sim.last_bundle)
+
+    def test_rejected_malformed_bundle_does_not_burn_the_nonce(self):
+        sim = make_sim()
+        sim.step("cloud-01")
+        good = sim.build_bundle("edge-01")
+        bad = copy.deepcopy(good)
+        bad["handoff"] = None
+        self.assertEqual(sim.submit_bundle(bad)["outcome"], "REJECTED")
+        self.assertEqual(sim.submit_bundle(good)["outcome"], "COMPLETED")
+
+    def test_validate_for_commit_raises_only_typed_rejections(self):
+        for label, build, reason in MALFORMED_BUNDLES:
+            if reason == R.WRONG_DESTINATION:
+                continue  # needs the simulator's executor table
+            with self.subTest(case=label):
+                _, ctx = valid_pair()
+                with self.assertRaises(ms.Rejection) as cm:
+                    ms.validate_for_commit(build(), ctx)
+                self.assertEqual(cm.exception.reason, reason)
+
+    def test_handoff_api_with_malformed_destination_never_raises(self):
+        for dest in (["edge-01"], {"a": 1}, 5, None, "bad id", "ghost-01"):
+            with self.subTest(dest=dest):
+                sim = make_sim()
+                before = self.snapshot(sim)
+                res = sim.handoff(dest)
+                self.assertEqual(res["outcome"], "REJECTED")
+                self.assertEqual(before, self.snapshot(sim))
+
+    def test_malformed_renew_epoch_is_typed(self):
+        sim = make_sim()
+        for epoch in ("1", [1], 1.5, True):
+            with self.subTest(epoch=epoch):
+                self.assertEqual(sim.renew("cloud-01", epoch), ms.Reason.MALFORMED_EFFECT)
+
+    def test_clis_reject_non_object_json_with_exit_two(self):
+        import validate_bundle as vb
+        for text in ("[]", "null", '"x"', "5"):
+            with self.subTest(text=text), tempfile.TemporaryDirectory() as tmp:
+                p = Path(tmp) / "f.json"
+                p.write_text(text, encoding="utf-8")
+                for main in (hs.main, vb.main):
+                    out, err = io.StringIO(), io.StringIO()
+                    with redirect_stdout(out), redirect_stderr(err):
+                        self.assertEqual(main([str(p)]), 2)
+
+
+class CheckOrderTests(unittest.TestCase):
+    """Pins a documented multi-fault difference between the simulator and validate_for_commit."""
+
+    def test_unknown_destination_precedes_expiry_in_simulator_only(self):
+        sim = make_sim()
+        unknown = sim.build_bundle("ghost-01")
+        known = sim.build_bundle("edge-01")
+        sim.tick(20)                                  # both bundles are now past expires_tick (10)
+        self.assertGreater(sim.now, unknown["handoff"]["expires_tick"])
+        # simulator: destination lookup comes right after shape and digest
+        self.assertEqual(sim.submit_bundle(unknown)["verdict"], "REJECTED:WRONG_DESTINATION")
+        # validator with a known destination: freshness is reached and reported
+        ctx = sim._context(sim.executors["edge-01"].profile)
+        with self.assertRaises(ms.Rejection) as cm:
+            ms.validate_for_commit(known, ctx)
+        self.assertEqual(cm.exception.reason, ms.Reason.BUNDLE_EXPIRED)
+        # single fault: the simulator agrees with the validator
+        self.assertEqual(sim.submit_bundle(known)["verdict"], "REJECTED:BUNDLE_EXPIRED")
 
 
 class SinkTests(unittest.TestCase):
