@@ -15,8 +15,8 @@ permissions:
 jobs:
   host-os:
     name: Static checks on ${{ matrix.os }}
-    # Run only in the public repository; the private mirror and forks execute nothing.
-    if: github.repository == 'MSKazemi/robo-resilience-lab'
+    # Run only in public repositories; a private repository (or private copy) executes nothing.
+    if: github.event.repository.private == false
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     strategy:

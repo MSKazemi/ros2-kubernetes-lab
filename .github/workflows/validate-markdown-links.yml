@@ -22,8 +22,8 @@ permissions:
 jobs:
   markdown-links:
     name: Local Markdown links and anchors (no network)
-    # Run only in the public repository; the private mirror and forks execute nothing.
-    if: github.repository == 'MSKazemi/robo-resilience-lab'
+    # Run only in public repositories; a private repository (or private copy) executes nothing.
+    if: github.event.repository.private == false
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:

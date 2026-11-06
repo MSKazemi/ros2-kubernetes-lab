@@ -151,11 +151,11 @@ else
   script_step scan-secrets scripts/ci/scan-secrets.py .
 fi
 
-# ---- 9. workflow guard (opt-in until the guard patch has landed) -------------------
+# ---- 9. workflow guard (opt-in until every workflow carries the job guard) -------------------
 if [[ "${RRL_REQUIRE_REPO_GUARD:-0}" == 1 ]]; then
   step workflow-repo-guard "$PY" -I scripts/ci/repo_guard.py check
 else
-  maybe_skip workflow-repo-guard "opt-in: set RRL_REQUIRE_REPO_GUARD=1 once the private-CI guard patch is applied"
+  maybe_skip workflow-repo-guard "opt-in: set RRL_REQUIRE_REPO_GUARD=1 to require the public-repositories-only job guard in every workflow"
 fi
 
 (( list )) && exit 0

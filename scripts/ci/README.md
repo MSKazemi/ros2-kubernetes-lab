@@ -10,7 +10,7 @@ builds, or that a cluster starts.
 | `run-offline-checks.sh` | one entry point that runs the fast checks below and prints PASS / FAIL / SKIP per step |
 | `scan-secrets.py` | scan tracked files for credentials and for material that must stay private |
 | `scan-secrets.config.json` | neutral shipped config for the scanner (ignored paths; empty denylists and allowlist) |
-| `repo_guard.py` | add or verify a job-level `github.repository` guard in `.github/workflows/*.yml` |
+| `repo_guard.py` | add, migrate or verify the job-level `github.event.repository.private == false` guard in `.github/workflows/*.yml` |
 
 ## Run everything
 
@@ -120,25 +120,46 @@ This is a pattern scanner. It finds common, recognisable credential shapes; it d
 prove a repository is free of secrets, and it does not replace rotating a credential that
 was ever committed.
 
-## Workflow repository guard
+## Workflow job guard: public repositories only
 
-The private mirror of this repository tracks the same workflow files as the public one
-but must execute and publish nothing. `repo_guard.py` makes every job start with
-`if: github.repository == 'MSKazemi/robo-resilience-lab' && (<original condition>)`.
+A private repository, or any private copy of this one, tracks the same workflow files as the
+public repository but must execute and publish nothing, while forks of the public repository keep
+running CI. `repo_guard.py` makes every job start with
+
+    if: github.event.repository.private == false && (<original condition>)
+
+so a job is skipped whenever the repository is private and behaves as before otherwise (the public
+repository and its public forks). Only this exact expression counts; other spellings such as
+`!github.event.repository.private`, `github.event.repository.private != true` or `... == 'false'` are
+reported as unguarded because the exact text is what was reviewed.
 
 ```sh
-python3 scripts/ci/repo_guard.py check                       # verify (needs PyYAML); exit 1 if a job is unguarded
+python3 scripts/ci/repo_guard.py check                       # verify (needs PyYAML); exit 1 on any problem
 python3 scripts/ci/repo_guard.py apply --dry-run             # show what would change
-python3 scripts/ci/repo_guard.py apply                       # rewrite .github/workflows/* in place (idempotent)
-python3 scripts/ci/repo_guard.py apply --repo OWNER/NAME     # a different canonical repository
+python3 scripts/ci/repo_guard.py apply                       # add or migrate in .github/workflows/* (idempotent)
+python3 scripts/ci/repo_guard.py apply --legacy-repo OWNER/NAME   # recognise another retired repository-name guard
 ```
+
+**Migration.** The earlier guard was `github.repository == 'OWNER/NAME'` (default: this repository's
+public name). `check` reports it as `LEGACY` and says to run `apply`. `apply` rewrites
+`legacy && (orig)` to `guard && (orig)` and a bare legacy guard to the bare new guard, leaving `orig`
+untouched, and replaces the old explanatory comment. A legacy guard in any other shape
+(`legacy && a && b`) makes `apply` stop with an error; edit it by hand. The former `--repo` option was
+removed because the guard no longer names a repository; `--legacy-repo` only matters for migration.
+
+**Triggers without a repository payload.** `check` fails a workflow whose `on:` (string, list or mapping)
+includes `schedule`. A scheduled run has no `github.event.repository`, GitHub treats `null == false` as true,
+and the job would therefore run in a private repository. `push`, `pull_request`, `pull_request_target`,
+`workflow_dispatch`, `workflow_run`, `repository_dispatch`, `release`, `issues` and `workflow_call`
+(which inherits the caller's payload) carry a repository. `apply` prints a warning for `schedule` but
+cannot fix it; `check` is the gate.
 
 `check` and `apply` parse each condition (`&&`, `||`, `!`, comparisons, parentheses, string
 literals, optional `${{ }}`) and accept a job only if the guard is a top-level AND-conjunct of the
 **whole** condition. `g`, `g && (a)`, `g && a && b`, `(g) && a` and `g && (a || b)` pass.
 `g && a || b` does not, because `&&` binds tighter than `||` and that means `(g && a) || b`,
-which runs in any repository; `a || g`, `!g && a`, `g != 'x'` and a guard text inside a string
-literal fail too, and so does anything the parser cannot read.
+which runs in a private repository too; `a || g`, `!g && a`, `g != true` and a guard text inside a string
+literal fail as well, and so does anything the parser cannot read.
 
 `${{ }}` is removed only when it is one wrapper around the whole condition. Text outside it
 (`${{ a }} && ${{ b }}`) makes `apply` stop with an error naming the file and job (exit 2, file untouched)
@@ -148,9 +169,9 @@ and `check` report the job as unguarded; fix those by hand.
 touch a job whose `if:` is a block scalar, quoted, multi-line or carries a trailing
 comment; edit those by hand. Step-level `if:` lines are left alone.
 
-A job guard is a **safety measure**. It does not prove GitHub Actions is disabled in the
-private repository: the workflows still start and report skipped jobs. Disabling Actions
-there is a repository setting that needs the owner's explicit approval.
+A job guard is a **safety measure**. It does not prove GitHub Actions is disabled in a private
+repository: the workflows still start and report skipped jobs. Disabling Actions there is a
+repository setting that needs the owner's explicit approval.
 
 ## Tests
 
