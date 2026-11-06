@@ -15,7 +15,9 @@ It is NOT a trust boundary: coordinator, sink and executors share one Python pro
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -26,6 +28,35 @@ from mission_state import Reason, Rejection
 HERE = Path(__file__).resolve().parent
 SCRIPT_DIR = HERE / "fixtures" / "scripts"
 SIM_KIND = "handoff-script"
+
+MAX_TICKS = 1_000_000_000  # upper bound for the logical clock and for any single duration
+_NONCE_UNSAFE = re.compile(r"[^A-Za-z0-9_-]")      # complement of mission_state.NONCE_RE's alphabet
+_ID_UNSAFE = re.compile(r"[^A-Za-z0-9_.:-]")       # complement of mission_state.ID_RE's alphabet
+
+
+def fit_token(text: str, budget: int, unsafe: "re.Pattern[str]") -> str:
+    """Derive a token of at most ``budget`` characters over a safe alphabet from ``text``.
+
+    ``text`` is returned unchanged when it is already safe and short enough. Otherwise unsafe
+    characters become ``_``, the text part is truncated, and an 8-hex stable hash of the ORIGINAL
+    text is appended, so inputs that differ only in the cut-off or replaced part stay distinct.
+    Callers append their counters AFTER this token, so a counter is never truncated.
+    """
+    if budget < 10:
+        raise ValueError(f"identifier budget too small ({budget})")
+    safe = unsafe.sub("_", text)
+    if safe == text and len(text) <= budget:
+        return text
+    tag = hashlib.sha256(text.encode("utf-8")).hexdigest()[:8]
+    return safe[: budget - 9] + "_" + tag
+
+
+def _nonneg_int(value: Any, where: str, maximum: int = MAX_TICKS) -> int:
+    """Script/API integers: non-bool int in [0, maximum]; anything else is a script error (ValueError)."""
+    if type(value) is not int or value < 0 or value > maximum:
+        raise ValueError(f"{where}: expected an integer in [0, {maximum}], got {value!r}"[:200])
+    return value
+
 
 OUTCOMES = ("COMPLETED", "ABORTED", "REJECTED", "ROLLED_BACK", "PARKED")
 FAULTS = (None, "destination_unreachable", "destination_crash", "ack_lost")
@@ -111,8 +142,10 @@ class Executor:
         self.active = False
 
     def build_effect(self, task_id: str, step: str) -> dict[str, Any]:
+        suffix = f"-e{self.epoch}-s{self.next_seq}"
+        base = fit_token(f"{task_id}-{self.id}", 64 - len(suffix), _ID_UNSAFE)
         return {"executor": self.id, "epoch": self.epoch, "effect_seq": self.next_seq,
-                "effect_id": f"{task_id}-{self.id}-e{self.epoch}-s{self.next_seq}", "step": step}
+                "effect_id": base + suffix, "step": step}
 
 
 # --------------------------------------------------------------------------- simulator
@@ -120,10 +153,22 @@ class HandoffSimulator:
     def __init__(self, *, task_id: str, steps: list[str], requirements: dict[str, Any],
                  profiles: list[dict[str, Any]], initial_owner: str, lease_ticks: int = 50,
                  bundle_ttl: int = 10, mission_revision: int = 1):
+        if not isinstance(task_id, str) or ms.ID_RE.fullmatch(task_id) is None:
+            raise ValueError("task_id must match the identifier pattern")
+        if (not isinstance(steps, list) or not steps or len(set(map(str, steps))) != len(steps)
+                or not all(isinstance(x, str) and ms.ID_RE.fullmatch(x) for x in steps)):
+            raise ValueError("steps must be a non-empty list of unique identifiers")
+        if not isinstance(requirements, dict) or not isinstance(profiles, list):
+            raise ValueError("requirements must be an object and executors a list")
+        _nonneg_int(lease_ticks, "lease_ticks")
+        _nonneg_int(bundle_ttl, "bundle_ttl")
         self.task_id, self.steps, self.requirements = task_id, list(steps), requirements
         self.mission_revision, self.lease_ticks, self.bundle_ttl = mission_revision, lease_ticks, bundle_ttl
-        self.executors = {p["executor_id"]: Executor(p) for p in profiles}
-        if initial_owner not in self.executors:
+        try:
+            self.executors = {p["executor_id"]: Executor(p) for p in profiles}
+        except (Rejection, KeyError, TypeError) as exc:
+            raise ValueError(f"invalid executor profile: {exc}") from exc
+        if not isinstance(initial_owner, str) or initial_owner not in self.executors:
             raise ValueError("initial_owner must be one of the executors")
         self.now = 0
         self.owner: str | None = initial_owner
@@ -140,6 +185,11 @@ class HandoffSimulator:
 
     # -- time and logging
     def tick(self, n: int = 1) -> None:
+        """Advance the logical clock by ``n`` ticks. ``n`` MUST be a non-bool integer in [0, MAX_TICKS];
+        0 is allowed (a documented no-op). The clock never moves backwards and never exceeds MAX_TICKS."""
+        n = _nonneg_int(n, "tick n")
+        if self.now + n > MAX_TICKS:
+            raise ValueError("tick: logical clock would exceed MAX_TICKS")
         self.now += n
 
     def _log(self, event: str, **data: Any) -> None:
@@ -211,7 +261,9 @@ class HandoffSimulator:
                          "committed_effect_ids": list(self.sink.effect_ids)},
             "ownership": {"state_owner": self.owner, "epoch": self.epoch,
                           "lease_expires_tick": self.lease_expires_tick},
-            "handoff": {"handoff_id": f"{self.task_id}-h{n:03d}", "nonce": f"nonce-{self.task_id}-{n:04d}"[:64],
+            "handoff": {"handoff_id": fit_token(self.task_id, 64 - len(f"-h{n:03d}"), _ID_UNSAFE) + f"-h{n:03d}",
+                        "nonce": "nonce-" + fit_token(self.task_id, 64 - 6 - len(f"-{n:04d}"), _NONCE_UNSAFE)
+                                 + f"-{n:04d}",
                         "sequence": self.last_sequence + 1, "from_executor": self.owner,
                         "to_executor": to_executor, "issued_tick": self.now,
                         "expires_tick": self.now + self.bundle_ttl},
@@ -315,21 +367,86 @@ class HandoffSimulator:
 
 
 # --------------------------------------------------------------------------- scripts
-def simulator_from_setup(setup: dict[str, Any]) -> HandoffSimulator:
-    return HandoffSimulator(task_id=setup["task_id"], steps=setup["steps"], requirements=setup["requirements"],
-                            profiles=setup["executors"], initial_owner=setup["initial_owner"],
-                            lease_ticks=setup.get("lease_ticks", 50), bundle_ttl=setup.get("bundle_ttl", 10))
+SETUP_REQUIRED = {"task_id", "steps", "requirements", "initial_owner", "executors"}
+SETUP_OPTIONAL = {"lease_ticks", "bundle_ttl"}
+SCRIPT_REQUIRED = {"fixture_kind", "synthetic", "name", "setup", "ops", "expect_final"}
+SCRIPT_OPTIONAL = {"description"}
+FINAL_KEYS = {"owner", "epoch", "completed", "duplicate_effects_in_ledger"}
+# op name -> (required keys besides "op", optional keys). Every op except "tick" needs "expect".
+OP_KEYS: dict[str, tuple[set[str], set[str]]] = {
+    "tick": ({"n"}, set()),
+    "step": ({"executor", "expect"}, set()),
+    "replay_effect": ({"executor", "expect"}, set()),
+    "raw_effect": ({"effect", "expect"}, set()),
+    "renew": ({"executor", "expect"}, {"epoch"}),
+    "handoff": ({"to", "expect"}, {"fault", "deliver_fence", "steps_before_ack_loss", "origin_available",
+                                    "on_failure"}),
+    "replay_bundle": ({"expect"}, set()),
+}
 
 
-def run_script(script: dict[str, Any]) -> dict[str, Any]:
-    """Execute one handoff-script fixture. Returns a report; ``ok`` is True iff every expectation held."""
+def _keys(obj: Any, required: set[str], optional: set[str], where: str) -> dict[str, Any]:
+    if not isinstance(obj, dict):
+        raise ValueError(f"{where}: expected an object")
+    missing, extra = sorted(required - set(obj)), sorted(set(obj) - required - optional)
+    if missing or extra:
+        raise ValueError(f"{where}: missing={missing} unexpected={extra}")
+    return obj
+
+
+def simulator_from_setup(setup: Any) -> HandoffSimulator:
+    """Build a simulator from a script ``setup`` block. Any invalid input raises ValueError."""
+    s = _keys(setup, SETUP_REQUIRED, SETUP_OPTIONAL, "setup")
+    return HandoffSimulator(task_id=s["task_id"], steps=s["steps"], requirements=s["requirements"],
+                            profiles=s["executors"], initial_owner=s["initial_owner"],
+                            lease_ticks=s.get("lease_ticks", 50), bundle_ttl=s.get("bundle_ttl", 10))
+
+
+def validate_op(op: Any, sim: HandoffSimulator, index: int) -> dict[str, Any]:
+    """Strict shape/type check of one script op. Raises ValueError (a script error, CLI exit 2)."""
+    where = f"ops[{index}]"
+    if not isinstance(op, dict) or not isinstance(op.get("op"), str) or op["op"] not in OP_KEYS:
+        raise ValueError(f"{where}: unknown or missing op")
+    required, optional = OP_KEYS[op["op"]]
+    _keys({k: v for k, v in op.items() if k != "op"}, required, optional, where)
+    if "expect" in op and not isinstance(op["expect"], str):
+        raise ValueError(f"{where}.expect: expected a string")
+    if "executor" in op and (not isinstance(op["executor"], str) or op["executor"] not in sim.executors):
+        raise ValueError(f"{where}.executor: not a known executor")
+    if op["op"] == "tick":
+        _nonneg_int(op["n"], f"{where}.n")
+    if op["op"] == "handoff":
+        if not isinstance(op["to"], str):
+            raise ValueError(f"{where}.to: expected a string")
+        if op.get("fault") not in FAULTS:
+            raise ValueError(f"{where}.fault: unknown fault")
+        for key in ("deliver_fence", "origin_available"):
+            if key in op and type(op[key]) is not bool:
+                raise ValueError(f"{where}.{key}: expected a boolean")
+        if "steps_before_ack_loss" in op:
+            _nonneg_int(op["steps_before_ack_loss"], f"{where}.steps_before_ack_loss", len(sim.steps))
+        if op.get("on_failure", "reissue_to_origin") not in ms.ROLLBACK_POLICIES:
+            raise ValueError(f"{where}.on_failure: unknown policy")
+    return op
+
+
+def run_script(script: Any) -> dict[str, Any]:
+    """Execute one handoff-script fixture. Returns a report; ``ok`` is True iff every expectation held.
+
+    Raises ValueError for any malformed script (the CLI turns that into exit code 2).
+    """
     if not isinstance(script, dict):
         raise ValueError("script fixture must be a JSON object")
     if script.get("fixture_kind") != SIM_KIND or script.get("synthetic") is not True:
         raise ValueError("not a synthetic handoff-script fixture")
+    _keys(script, SCRIPT_REQUIRED, SCRIPT_OPTIONAL, "script")
+    if not isinstance(script["name"], str) or not isinstance(script["ops"], list):
+        raise ValueError("script: name must be a string and ops a list")
+    _keys(script["expect_final"], set(), FINAL_KEYS, "expect_final")
     sim = simulator_from_setup(script["setup"])
+    ops = [validate_op(op, sim, i) for i, op in enumerate(script["ops"])]  # validate everything before running
     results = []
-    for index, op in enumerate(script["ops"]):
+    for index, op in enumerate(ops):
         name = op["op"]
         if name == "tick":
             sim.tick(op["n"])
@@ -347,10 +464,8 @@ def run_script(script: dict[str, Any]) -> dict[str, Any]:
                               steps_before_ack_loss=op.get("steps_before_ack_loss", 0),
                               origin_available=op.get("origin_available", True),
                               on_failure=op.get("on_failure", "reissue_to_origin"))["verdict"]
-        elif name == "replay_bundle":
+        else:  # replay_bundle
             got = sim.replay_last_bundle()["verdict"]
-        else:
-            raise ValueError(f"unknown op {name!r}")
         results.append({"index": index, "op": name, "expected": op["expect"], "got": got,
                         "ok": got == op["expect"]})
     final = {"owner": sim.owner, "epoch": sim.epoch, "completed": sim.sink.completed,

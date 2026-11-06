@@ -349,6 +349,216 @@ class MalformedBundleTests(unittest.TestCase):
                         self.assertEqual(main([str(p)]), 2)
 
 
+class IdDerivationTests(unittest.TestCase):
+    """Derived handoff_id / nonce / effect_id satisfy the validator's patterns for ANY accepted task_id."""
+
+    LONG_A = "t" + "a" * 61 + "1"      # 63 chars
+    LONG_B = "t" + "a" * 61 + "2"      # differs only in the part that must be cut
+    TASK_IDS = ["task.1", "mission:7", "task_1", "t" * 63, "t" * 64, LONG_A, LONG_B, "t" + "b" * 63,
+                "a.b:c-d_e", "A"]
+
+    def drive(self, task_id):
+        """Five consecutive handoffs (cloud <-> edge) interleaved with four steps."""
+        sim = make_sim(task_id=task_id)
+        owner, other = "cloud-01", "edge-01"
+        nonces, handoff_ids = [], []
+        for i in range(5):
+            res = sim.handoff(other)
+            self.assertEqual(res["verdict"], "COMPLETED", (task_id, i, res))
+            nonces.append(sim.last_bundle["handoff"]["nonce"])
+            handoff_ids.append(sim.last_bundle["handoff"]["handoff_id"])
+            owner, other = other, owner
+            if i < 4:
+                self.assertEqual(sim.step(owner), "ACCEPTED", (task_id, i))
+        return sim, nonces, handoff_ids
+
+    def test_every_pattern_and_limit_is_satisfied_for_awkward_task_ids(self):
+        for task_id in self.TASK_IDS:
+            with self.subTest(task_id=task_id):
+                self.assertRegex(task_id, ms.ID_RE)
+                sim, nonces, handoff_ids = self.drive(task_id)
+                self.assertEqual(len(set(nonces)), 5)           # no spurious REPLAYED_NONCE
+                self.assertEqual(len(set(handoff_ids)), 5)
+                for n in nonces:
+                    self.assertRegex(n, ms.NONCE_RE)
+                for h in handoff_ids:
+                    self.assertRegex(h, ms.ID_RE)
+                ids = sim.sink.effect_ids
+                self.assertEqual(len(ids), 4)
+                self.assertEqual(len(set(ids)), 4)
+                for eid in ids:
+                    self.assertRegex(eid, ms.ID_RE)
+
+    def test_task_ids_differing_only_in_the_cut_part_stay_distinct(self):
+        firsts = {}
+        for task_id in (self.LONG_A, self.LONG_B, "task.1", "task_1"):
+            sim = make_sim(task_id=task_id)
+            b = sim.build_bundle("edge-01")
+            sim.step("cloud-01")
+            firsts[task_id] = (b["handoff"]["nonce"], b["handoff"]["handoff_id"], sim.sink.effect_ids[0])
+        for i, (ta, a) in enumerate(firsts.items()):
+            for tb, b in list(firsts.items())[i + 1:]:
+                for x, y in zip(a, b):
+                    self.assertNotEqual(x, y, (ta, tb))
+
+    def test_counter_is_never_truncated(self):
+        sim = make_sim(task_id="t" * 64)
+        b = sim.build_bundle("edge-01")
+        self.assertTrue(b["handoff"]["nonce"].endswith("-0001"))
+        self.assertTrue(b["handoff"]["handoff_id"].endswith("-h001"))
+        sim.step("cloud-01")
+        self.assertTrue(sim.sink.effect_ids[0].endswith("-e1-s0"))
+
+    def test_long_executor_ids_still_give_valid_effect_ids(self):
+        long_cloud = "c" + "x" * 63
+        sim = make_sim(task_id="t" * 64, initial_owner=long_cloud,
+                       executors=[fg.profile(long_cloud), fg.profile("edge-01")])
+        self.assertEqual(sim.step(long_cloud), "ACCEPTED")
+        self.assertRegex(sim.sink.effect_ids[0], ms.ID_RE)
+
+    def test_fit_token_properties(self):
+        pat = hs._ID_UNSAFE
+        self.assertEqual(hs.fit_token("inspection-001", 59, pat), "inspection-001")        # unchanged
+        self.assertEqual(hs.fit_token("a.b", 59, hs._NONCE_UNSAFE)[:3], "a_b")
+        long = hs.fit_token("x" * 100, 20, pat)
+        self.assertEqual(len(long), 20)
+        self.assertEqual(long, hs.fit_token("x" * 100, 20, pat))                              # deterministic
+        self.assertNotEqual(long, hs.fit_token("x" * 99 + "y", 20, pat))
+        with self.assertRaises(ValueError):
+            hs.fit_token("abc", 5, pat)
+
+    def test_invalid_task_id_is_a_setup_error(self):
+        for bad in ("1task", "bad id", "", "t" * 65, None, 5, ["t"]):
+            with self.subTest(task_id=bad), self.assertRaises(ValueError):
+                make_sim(task_id=bad)
+
+
+def _script(mutate=None):
+    script = copy.deepcopy(load(next(p for p in SCRIPTS if p.name == "handoff-happy-path.json")))
+    if mutate:
+        mutate(script)
+    return script
+
+
+def _op(**kw):
+    return lambda sc: sc["ops"].insert(0, kw)
+
+
+class ScriptValidationTests(unittest.TestCase):
+    """Malformed scripts are ValueError (CLI exit 2) before anything runs; the clock never goes backwards."""
+
+    BAD_TICKS = [-5, -1, 2.5, 1.0, True, False, "3", None, [1], {"n": 1}, 10 ** 18, hs.MAX_TICKS + 1]
+
+    def test_bad_tick_values_are_script_errors(self):
+        for n in self.BAD_TICKS:
+            with self.subTest(n=n):
+                with self.assertRaises(ValueError):
+                    hs.run_script(_script(_op(op="tick", n=n)))
+                sim = make_sim()
+                with self.assertRaises(ValueError):
+                    sim.tick(n)
+                self.assertEqual(sim.now, 0)
+
+    def test_tick_missing_n_or_with_expect_is_a_script_error(self):
+        for op in ({"op": "tick"}, {"op": "tick", "n": 1, "expect": "x"}, {"op": "tick", "n": 1, "extra": 1}):
+            with self.subTest(op=op), self.assertRaises(ValueError):
+                hs.run_script(_script(_op(**op)))
+
+    def test_zero_is_allowed_and_is_a_no_op(self):
+        sim = make_sim()
+        sim.tick(0)
+        self.assertEqual(sim.now, 0)
+        self.assertTrue(hs.run_script(_script(_op(op="tick", n=0)))["ok"])
+
+    def test_clock_upper_bound(self):
+        sim = make_sim()
+        sim.tick(hs.MAX_TICKS)
+        self.assertEqual(sim.now, hs.MAX_TICKS)
+        with self.assertRaises(ValueError):
+            sim.tick(1)
+        self.assertEqual(sim.now, hs.MAX_TICKS)
+
+    def test_other_malformed_ops_and_setup_are_script_errors(self):
+        def op_at(i, **kw):
+            def fn(sc):
+                sc["ops"][i].update(kw)
+            return fn
+        def drop(i, key):
+            return lambda sc: sc["ops"][i].pop(key)
+        def setup(**kw):
+            return lambda sc: sc["setup"].update(kw)
+        cases = {
+            "unknown op": _op(op="teleport", expect="x"),
+            "op not a string": _op(op=["step"], expect="x"),
+            "op not an object": lambda sc: sc["ops"].insert(0, "step"),
+            "ops not a list": lambda sc: sc.update(ops={"a": 1}),
+            "step without expect": drop(0, "expect"),
+            "expect not a string": op_at(0, expect=5),
+            "expect null": op_at(0, expect=None),
+            "step without executor": drop(0, "executor"),
+            "executor unknown": op_at(0, executor="ghost-01"),
+            "executor list": op_at(0, executor=["cloud-01"]),
+            "executor int": op_at(0, executor=5),
+            "extra key": op_at(0, surprise=1),
+            "handoff to list": _op(op="handoff", to=["edge-01"], expect="x"),
+            "handoff fault unknown": _op(op="handoff", to="edge-01", fault="meteor", expect="x"),
+            "handoff fault list": _op(op="handoff", to="edge-01", fault=["ack_lost"], expect="x"),
+            "deliver_fence int": _op(op="handoff", to="edge-01", deliver_fence=1, expect="x"),
+            "origin_available str": _op(op="handoff", to="edge-01", origin_available="no", expect="x"),
+            "on_failure unknown": _op(op="handoff", to="edge-01", on_failure="explode", expect="x"),
+            "steps_before_ack_loss negative": _op(op="handoff", to="edge-01", steps_before_ack_loss=-1, expect="x"),
+            "steps_before_ack_loss bool": _op(op="handoff", to="edge-01", steps_before_ack_loss=True, expect="x"),
+            "steps_before_ack_loss float": _op(op="handoff", to="edge-01", steps_before_ack_loss=1.0, expect="x"),
+            "steps_before_ack_loss huge": _op(op="handoff", to="edge-01", steps_before_ack_loss=10 ** 18, expect="x"),
+            "steps_before_ack_loss above steps": _op(op="handoff", to="edge-01", steps_before_ack_loss=6, expect="x"),
+            "raw_effect missing effect": _op(op="raw_effect", expect="x"),
+            "renew executor unknown": _op(op="renew", executor="ghost-01", expect="x"),
+            "setup lease negative": setup(lease_ticks=-1),
+            "setup lease bool": setup(lease_ticks=True),
+            "setup lease str": setup(lease_ticks="5"),
+            "setup lease float": setup(lease_ticks=2.5),
+            "setup lease huge": setup(lease_ticks=10 ** 18),
+            "setup bundle_ttl negative": setup(bundle_ttl=-3),
+            "setup extra key": setup(surprise=1),
+            "setup task_id invalid": setup(task_id="bad id"),
+            "setup steps duplicate": setup(steps=["wp-01", "wp-01"]),
+            "setup steps empty": setup(steps=[]),
+            "setup steps not list": setup(steps="wp-01"),
+            "setup owner unknown": setup(initial_owner="ghost-01"),
+            "setup owner list": setup(initial_owner=["cloud-01"]),
+            "setup executors not list": setup(executors={"a": 1}),
+            "setup executor profile invalid": setup(executors=[{"executor_id": "cloud-01"}]),
+            "setup executor entry not object": setup(executors=["cloud-01"]),
+            "setup requirements not object": setup(requirements=[]),
+            "setup null": lambda sc: sc.update(setup=None),
+            "expect_final unknown key": lambda sc: sc["expect_final"].update(surprise=1),
+            "expect_final not object": lambda sc: sc.update(expect_final=[]),
+            "name missing": lambda sc: sc.pop("name"),
+            "name not string": lambda sc: sc.update(name=5),
+            "unknown top-level key": lambda sc: sc.update(surprise=1),
+        }
+        for label, mutate in cases.items():
+            with self.subTest(case=label), self.assertRaises(ValueError):
+                hs.run_script(_script(mutate))
+
+    def test_valid_scripts_still_pass_after_strict_validation(self):
+        for path in SCRIPTS:
+            self.assertTrue(hs.run_script(load(path))["ok"], path.name)
+
+    def test_cli_exits_two_for_bad_tick_and_other_script_errors(self):
+        for label, mutate in (("tick -5", _op(op="tick", n=-5)), ("tick 2.5", _op(op="tick", n=2.5)),
+                              ("tick true", _op(op="tick", n=True)), ("tick str", _op(op="tick", n="3")),
+                              ("tick null", _op(op="tick", n=None)), ("tick huge", _op(op="tick", n=10 ** 18)),
+                              ("bad profile", lambda sc: sc["setup"].update(executors=[{"executor_id": "x"}]))):
+            with self.subTest(case=label), tempfile.TemporaryDirectory() as tmp:
+                p = Path(tmp) / "s.json"
+                p.write_text(json.dumps(_script(mutate)), encoding="utf-8")
+                out, err = io.StringIO(), io.StringIO()
+                with redirect_stdout(out), redirect_stderr(err):
+                    self.assertEqual(hs.main([str(p)]), 2)
+                self.assertEqual(out.getvalue(), "")
+
+
 class CheckOrderTests(unittest.TestCase):
     """Pins a documented multi-fault difference between the simulator and validate_for_commit."""
 
