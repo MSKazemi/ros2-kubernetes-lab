@@ -37,4 +37,7 @@ jobs:
         run: python3 -m pip install "pyyaml>=6.0.3" "pytest>=9.2"
       - name: Run offline checks
         shell: bash
+        env:
+          # The private-CI guard has landed: every job must carry the repository guard.
+          RRL_REQUIRE_REPO_GUARD: "1"
         run: bash scripts/ci/run-offline-checks.sh
