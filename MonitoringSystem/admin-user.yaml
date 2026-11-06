@@ -1,3 +1,12 @@
+# =====================================================================
+# WARNING: this admin-user binds the built-in cluster-admin ClusterRole.
+# Its token gives FULL control of the cluster (read/write every namespace,
+# read every Secret, create privileged pods). Anyone who can reach the
+# dashboard login page and obtain this token owns the cluster.
+# It is kept because monitoring.sh applies it and the lab relies on it.
+# For read-only dashboard browsing use admin-user-readonly.yaml instead.
+# Do not expose the dashboard beyond a trusted lab network.
+# =====================================================================
 # admin-user Service Account
 apiVersion: v1
 kind: ServiceAccount
