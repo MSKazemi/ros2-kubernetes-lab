@@ -46,7 +46,7 @@ The script validator verifies metadata, internal links, sitemap and registry sta
 
 - [Epic #83](https://github.com/MSKazemi/robo-resilience-lab/issues/83): track the overall program.
 - [#84](https://github.com/MSKazemi/robo-resilience-lab/issues/84) and [#89](https://github.com/MSKazemi/robo-resilience-lab/issues/89) welcome beginners; scoped language/fixture/UX tasks need no robot or cloud account.
-- [Claude Code / Codex playbook](CLAUDE-DEVELOPMENT-PLAYBOOK.md) covers issue-first development and review.
+- [AI-assisted contribution tutorial](../AI_ASSISTED_CONTRIBUTING.md) covers issue-first development and review with Claude Code or Codex.
 - [Student discoverability & SEO plan](SEO-CONTENT-PLAN.md) covers page intent and evidence-based growth.
 
 Observe root [AGENTS.md](../../AGENTS.md), [CONTRIBUTING.md](../../CONTRIBUTING.md) and [SAFETY.md](../../SAFETY.md). No autonomous push to `main`, merged PR, live robot actuation, unapproved cloud bills or secret/data publishing.

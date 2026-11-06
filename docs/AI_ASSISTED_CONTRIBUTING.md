@@ -4,7 +4,7 @@
 
 You do **not** need to be an AI expert, use both tools, or pay for an agent to contribute. You can also follow [CONTRIBUTING.md](../CONTRIBUTING.md) with your normal editor. Claude Code and Codex are **coding agents**: they can inspect checked-out repository files, suggest edits, write patches, run permitted commands, and help you prepare a pull request. They can make mistakes. **You own the result and must review it.**
 
-Both tools use our shared [AGENTS.md](../AGENTS.md) instructions: Codex reads it directly, while [CLAUDE.md](../CLAUDE.md) imports it for Claude Code. The guide below provides the human workflow; the short rules stay separate so each agent session has only the context it needs.
+Both tools use our shared [AGENTS.md](../AGENTS.md) instructions: Codex reads it directly, while Claude Code reads a `CLAUDE.md` file: create one yourself in your checkout containing the single line `@AGENTS.md` so Claude Code imports the shared rules (keep it local; do not commit it). The guide below provides the human workflow; the short rules stay separate so each agent session has only the context it needs.
 
 ## Choose a small, open issue
 
@@ -164,7 +164,7 @@ A human maintainer will review the result. Do not ask your coding agent to merge
 | Agent wants to run `vagrant up` on a small laptop | Decline; use static checks and document the missing integration test |
 | Agent cannot push your branch | Push manually with Git, or authenticate `gh` only if you decide to use it |
 | Agent opens many PRs or edits `main` | Stop; create a dedicated branch, review the diff and isolate one issue |
-| Agent instructions seem missing | From the repo root, ask it to summarize `AGENTS.md`; for Claude Code, check `/context` and `CLAUDE.md` |
+| Agent instructions seem missing | From the repo root, ask it to summarize `AGENTS.md`; for Claude Code, check `/context` and that your local `CLAUDE.md` contains `@AGENTS.md` |
 
 ## Ground rules for AI contributions
 

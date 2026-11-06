@@ -35,7 +35,7 @@ Coding agents are welcome as **assistants**, not substitutes for reviewing and t
 
 **Step-by-step beginner tutorial:** [AI-assisted contributions with Claude Code or Codex](./docs/AI_ASSISTED_CONTRIBUTING.md). **Copyable issue-specific prompts:** [Agent prompts](./docs/AGENT_PROMPTS.md).
 
-The repository uses one concise [AGENTS.md](./AGENTS.md) instruction set for Codex and [CLAUDE.md](./CLAUDE.md) for Claude Code (which imports the shared rules). Neither file authorizes an agent to push to `main`, publish images, use secrets, or merge PRs autonomously.
+The repository uses one concise [AGENTS.md](./AGENTS.md) instruction set for any coding agent. Codex reads it directly; for Claude Code, create a local `CLAUDE.md` containing the single line `@AGENTS.md` (see the [tutorial](./docs/AI_ASSISTED_CONTRIBUTING.md)). `AGENTS.md` does not authorize an agent to push to `main`, publish images, use secrets, or merge PRs autonomously.
 
 ## Make a small pull request
 
