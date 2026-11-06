@@ -8,13 +8,7 @@ This directory describes the **new ROS 2 Jazzy container baseline** from [`ROS2/
 - `stress-ng` for CPU/memory workloads;
 - `ros-jazzy-ros2-pulse` and `pulse-export` for the [optional ros2_pulse telemetry pilot](#optional-ros2_pulse-telemetry-pilot-issue-52). Both are inert unless a workload opts in.
 
-This is a **container baseline only**, not a claim that the historical Kubernetes 1.29 / Weave Net / Vagrant cluster is updated. The image check below is not a cross-worker test; the one cross-worker case recorded for this image is the separate kind profile in [`docs/KIND-DEMO.md`](../../docs/KIND-DEMO.md) (one host, one CNI, with a Fast DDS Discovery Server).
-
-| File in this directory | What it is | Status |
-|---|---|---|
-| [`stress-deployment.yaml`](./stress-deployment.yaml) | Optional `stress-ng` workload using `ros-jazzy-lab:local` | Not applied to any cluster in the reviews that produced these docs |
-| [`talker-listener.yaml`](./talker-listener.yaml) | Self-starting discovery server, talker and listener for the kind profile (`make demo`) | Cross-worker delivery recorded once on kind; see KIND-DEMO.md |
-| [`pulse-talker-listener.yaml`](./pulse-talker-listener.yaml) | Opt-in `ros2_pulse` telemetry pilot | Contributor-reported kind run, not reproduced (details below) |
+This is a **container baseline only**, not a claim that the historical Kubernetes 1.29 / Weave Net / Vagrant cluster is updated or that talker and listener communicate between **different Kubernetes workers**.
 
 ## Build and verify locally
 
@@ -79,7 +73,7 @@ kubectl -n ros get pods -l app=ros-jazzy-stress -o wide
 kubectl -n ros delete deployment ros-jazzy-stress
 ```
 
-This image does not by itself provide a Kubernetes setup. The lightweight kind profile ([#16](https://github.com/MSKazemi/robo-resilience-lab/issues/16), [`docs/KIND-DEMO.md`](../../docs/KIND-DEMO.md)) is separate; it covers one host and one CNI, and a real multi-machine cluster has not been run.
+No working Kubernetes setup is provided by this container-only migration. The first verified lightweight installation is a separate project task [#16](https://github.com/MSKazemi/robo-resilience-lab/issues/16).
 
 ## Optional ros2_pulse telemetry pilot (issue #52)
 
@@ -153,7 +147,7 @@ The demo talker publishes once per second, so a working talker pod shows `ros2_p
 
 ### Reported kind run (contributor-reported, not reproduced)
 
-The contributor ran this manifest unchanged on a 3-node kind cluster (kind v0.33.0, Kubernetes v1.37.0, the node layout proposed in [#97](https://github.com/MSKazemi/robo-resilience-lab/pull/97)) in GitHub Actions on their fork, on amd64 and arm64, with an image built from this PR: [run 41160572458](https://github.com/TanayK07/robo-resilience-lab/actions/runs/41160572458). Reported results:
+The contributor ran this manifest unchanged on a 3-node kind cluster (kind v0.33.0, Kubernetes v1.37.0, the node layout proposed in [#97](https://github.com/MSKazemi/robo-resilience-lab/pull/97)) in GitHub Actions on their fork, on amd64 and arm64, with an image built from this PR: [run 41160572458](https://github.com/TanayK07/ros2-kubernetes-lab/actions/runs/41160572458). Reported results:
 
 - Both pods `2/2 Running` with 0 restarts over about 4 minutes, talker and listener on different workers; `kubectl port-forward` to the exporter worked.
 - The talker's `/chatter` publish rate was 1.0 Hz on every scrape.

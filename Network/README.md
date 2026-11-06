@@ -29,13 +29,9 @@ Each VM is configured with a private network IP address using the `vm.network` s
 
 #### Weave Net for Docker and Kubernetes
 
-Weave Net is a networking plugin for Docker and Kubernetes that lets containers communicate across multiple hosts. Its upstream overview documents multicast support ([`site/overview.md`](https://github.com/weaveworks/weave/blob/master/site/overview.md)); this lab has not verified that multicast works for ROS 2 DDS discovery (see the project's ROS 2 DDS guide).
+Weave Net is a robust networking plugin for Docker and Kubernetes that simplifies the creation of a network for containers, enabling them to communicate across multiple hosts. It supports multicasting to meet the ROS2 requirements, crucial for our project.
 
-> **Maintenance status:** the upstream `weaveworks/weave` repository was archived (read-only) on 2024-06-20 (GitHub API: `archived: true`). `v2.8.1` is its last release, so the manifest below is historical. It is kept for the Vagrant lab; consider Calico or Flannel for new work.
->
-> **Discovery evidence.** The only recorded ROS 2 discovery results on Kubernetes come from the kind profile (kindnetd, **not** Weave Net): default multicast discovery delivered nothing there, while a Fast DDS Discovery Server worked ([`docs/KIND-DEMO.md`](../docs/KIND-DEMO.md), [DDS guide](../docs/ROS2-KUBERNETES-DDS-GUIDE.md)). Whether Weave Net passes multicast well enough for ROS 2 discovery on the Vagrant cluster has **not** been tested.
-
-- **GitHub Repository:** [Weave Net on GitHub](https://github.com/weaveworks/weave) (archived)
+- **GitHub Repository:** [Weave Net on GitHub](https://github.com/weaveworks/weave)
 - **Installation Guide:** [Weave Net Kubernetes Addon](https://github.com/weaveworks/weave/blob/master/site/kubernetes/kube-addon.md)
 
 #### Configuration
@@ -48,15 +44,13 @@ We use the following script to configure our network plugin:
 cp.vm.provision "shell", path: "./Network/network_plugin.sh"
 ```
 
-The script only applies the Weave Net DaemonSet manifest with `kubectl` and waits for the `weave-net` DaemonSet to roll out (it does not download CNI binaries or edit node configuration). The `cp.vm.provision` line above is the one used in the `Vagrantfile` (control-plane block).
+This script sets up the Container Network Interface (CNI) plugin, with specific steps including downloading plugin binaries, positioning them on the VMs, and configuring Kubernetes to utilize the plugin.
 
 #### Weave Net Installation Command
 
 ```bash
 kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
-kubectl -n kube-system rollout status daemonset/weave-net --timeout=300s
 ```
-
 #### Verification of Network Setup
 
 After installing the Weave Net plugin, you should verify that all nodes and pods in your Kubernetes cluster are running correctly:

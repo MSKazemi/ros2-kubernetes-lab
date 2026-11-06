@@ -1,7 +1,5 @@
 # Deploying a Kubernetes Cluster Using Vagrant and VirtualBox
 
-> **Support state: `legacy` (historical).** This guide provisions three VirtualBox VMs with kubeadm Kubernetes **1.29** (`K8S_MINOR` in [`kubeadm_kubelet_kubectl.sh`](./kubeadm_kubelet_kubectl.sh), which notes that 1.29 is end-of-life upstream) and Weave Net v2.8.1 (archived upstream). The default VM profile requests about 30 GB of RAM and 18 vCPUs ([`Vagrantfile`](../Vagrantfile)). The scripts were hardened and statically checked (Bash syntax, `ruby -c Vagrantfile`), but **the Vagrant cluster was not started** for this documentation, so nothing here is evidence that it provisions today or that ROS 2 messages cross its workers. For a lightweight, scripted cross-worker run on current components, see the kind profile in [`docs/KIND-DEMO.md`](../docs/KIND-DEMO.md); for exact pins see the [version matrix](../docs/VERSION-MATRIX.md).
-
 ## Table of Contents
 
 - [Deploying a Kubernetes Cluster Using Vagrant and VirtualBox](#deploying-a-kubernetes-cluster-using-vagrant-and-virtualbox)

@@ -10,7 +10,7 @@ This document provides simple, plain-English definitions for the robotics and in
 * **namespace**: A mechanism used to isolate and logically organize resources within the same cluster, acting as a "virtual cluster" to prevent interference between different projects.
 * **CNI (Container Network Interface)**: The networking component responsible for allocating IP addresses to pods and enabling them to communicate across different Kubernetes nodes.
 * **Service**: A Kubernetes abstraction that defines a logical set of pods and a network policy to access them. It provides a stable IP address even as the underlying pods are destroyed or recreated.
-* **HPA (Horizontal Pod Autoscaler)**: An autoscaling tool that dynamically increases or decreases the number of running pods based on current system load. [Read more about HPA](https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/).
+* **HPA (Horizontal Pod Autoscaler)**: An autoscaling tool that dynamically increases or decreases the number of running pods based on current system load. [Read more about HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/).
 * **VPA (Vertical Pod Autoscaler)**: A tool that automatically adjusts the CPU and memory resources requested by a pod based on its observed usage.
 
 ## ROS 2 and DDS Terminology
@@ -30,7 +30,7 @@ These labels describe how far a part of this repository has actually been verifi
 
 * **legacy**: Historical, unverified in the latest review, and based on end-of-life or archived components (ROS 2 Foxy, Kubernetes 1.29, Weave Net, the Vagrant VMs and the original `ROS2/ros_dep_*.yaml` manifests).
 * **container tested**: The ROS 2 Jazzy / Ubuntu 24.04 image builds and passes a talker/listener check inside a single container. This does not test Kubernetes or networking between nodes.
-* **cross-worker verified**: A talker and listener on different Kubernetes workers exchange messages in a repeatable test. Achieved only for the lightweight kind profile (one host, 2026-10-27, see [`KIND-DEMO.md`](./KIND-DEMO.md)); not for the Vagrant cluster, other CNIs or other hosts.
+* **cross-worker verified**: A talker and listener on different Kubernetes workers exchange messages in a repeatable test. Achieved only for the kind profile on kindnetd ([`docs/KIND-DEMO.md`](./KIND-DEMO.md), [DDS guide](./ROS2-KUBERNETES-DDS-GUIDE.md#support-states-and-evidence)); not achieved for the historical Vagrant/Weave Net cluster.
 
 ## Experiment Status Labels
 

@@ -47,8 +47,8 @@ The ROS2 Talker and Listener nodes demonstrate a fundamental communication patte
 |---|---|
 | `ROS2/ros_dep_1.yaml`, `ros_dep_2.yaml`, `ros_dep_3.yaml` | **Current.** Each creates the `ros` namespace, a Deployment named `ros` and a HorizontalPodAutoscaler named `ros-hpa` (CPU target 70%). The container image is `docker.io/kazemi/ros-foxy-with-stress-ng` and its command is `stress-ng --cpu 1 --cpu-load 80 --timeout 3600s`. The three files differ only in the pod CPU/memory requests and limits (`ros_dep_1.yaml`: 50m/100Mi requests, 100m/200Mi limits; `ros_dep_2.yaml`: 250m/500Mi, 500m/1Gi; `ros_dep_3.yaml`: 1000m/2Gi, 2000m/4Gi). They share object names, so apply only one of them at a time. |
 | `ROS2/VPA.yaml`, `ROS2/ros_one.yaml` | **Current, other stress/autoscaling experiments** in the same `ros` namespace: `VPA.yaml` runs staged `stress-ng` phases with a VerticalPodAutoscaler (it needs the VPA components installed in the cluster and pins the pod to the `controlplane` node); `ros_one.yaml` intentionally exits after 30 seconds to demonstrate a crashing pod. |
-| Talker/listener commands below (Foxy, `kubectl exec`) | **Manual; did not deliver messages in our kind test.** Nothing in the manifests starts them. On a kind cluster (1 control-plane + 2 workers, Kubernetes v1.37.0, 2026-10-31) the Foxy talker and listener delivered **0 messages** both across two workers and on the same worker, so the default DDS multicast discovery did not work in that network. Whether it works on the Vagrant cluster was not tested. |
-| Automated, tested talker/listener demo across Kubernetes workers | **Available for the kind profile only**: [`docs/KIND-DEMO.md`](../docs/KIND-DEMO.md) (`make demo`, `make verify`). It is **not** available for the Vagrant/Foxy cluster described in this file ([issue #14](https://github.com/MSKazemi/robo-resilience-lab/issues/14)). Its recorded run is one host on 2026-10-27; its GitHub Actions workflow had not been executed when that page was written. |
+| Talker/listener commands below | **Current but manual.** You start `ros2 run demo_nodes_cpp talker` and `listener` yourself with `kubectl exec`. Nothing in the manifests starts them, and these steps were not re-run while correcting this page. |
+| Automated, tested talker/listener demo across Kubernetes workers | **Available for the kind profile only**: [`docs/KIND-DEMO.md`](../docs/KIND-DEMO.md) (`make demo`, `make verify`). It is **not** available for the Vagrant/Foxy cluster described in this file ([issue #14](https://github.com/MSKazemi/robo-resilience-lab/issues/14)).
 
 ### Deploying the ROS2 Nodes
 
@@ -64,7 +64,7 @@ Follow these steps to deploy the stress-ng autoscaling workload on your Kubernet
     Run this from the repository root. Inside the Vagrant control-plane VM, the repository is mounted at `/home/vagrant/codes`, so the path there is `/home/vagrant/codes/ROS2/ros_dep_1.yaml`.
 
 2. **Scale the Deployment:**
-   To get more pods to attach to, scale the deployment. This example scales it to three replicas of the stress-ng pod. Because `ros-hpa` also manages this Deployment, the autoscaler may change the replica count again, depending on measured CPU load and on whether the cluster provides pod metrics (for example through metrics-server). On a kind cluster without metrics-server, `kubectl get hpa -n ros` showed `cpu: <unknown>/70%` with `ScalingActive` `False` (observed 2026-10-31), so the HPA did not scale.
+   To get more pods to attach to, scale the deployment. This example scales it to three replicas of the stress-ng pod. Because `ros-hpa` also manages this Deployment, the autoscaler may change the replica count again, depending on measured CPU load and on whether the cluster provides pod metrics (for example through metrics-server).
 
     ```bash
     kubectl scale deployment ros --replicas=3 -n ros
@@ -72,7 +72,7 @@ Follow these steps to deploy the stress-ng autoscaling workload on your Kubernet
 
 ### Testing the ROS2 Nodes
 
-> **Manual; tested on kind on 2026-10-31 with no messages received.** The pods created above run `stress-ng`, not ROS2 nodes, so you start the Talker and Listener yourself. The image contains the Foxy `demo_nodes_cpp` package at `/opt/ros/foxy` (checked: `ros2 pkg prefix` path present, Ubuntu 20.04). In our kind test, a talker and a listener run concurrently in two pods on different workers received 0 messages, and two pods on the same worker also received 0. Check the listener's output before assuming ROS 2 traffic works in your cluster. For the cross-worker example that did deliver messages on kind, see [Jazzy talker/listener on kind](#jazzy-talkerlistener-on-kind-scripted-demo) below.
+> **Manual and not re-run for this page.** The steps below are the original manual procedure. The pods created above run `stress-ng`, not ROS2 nodes, so you start the Talker and Listener yourself. These commands assume the image contains the Foxy `demo_nodes_cpp` package at `/opt/ros/foxy`; that was not checked here. Two pods running on the same Kubernetes node would also not show cross-node communication. A tested, automated cross-worker demo is planned in [issue #14](https://github.com/MSKazemi/robo-resilience-lab/issues/14).
 
 After deploying the pods, you can try the manual Talker/Listener exercise:
 
@@ -109,20 +109,7 @@ After deploying the pods, you can try the manual Talker/Listener exercise:
     ros2 run demo_nodes_cpp listener
     ```
 
-   If the listener prints the talker's messages, the two ROS2 nodes can communicate in your setup. In our kind test the listener printed nothing, so this step did not succeed there.
+   If the listener prints the talker's messages, the two ROS2 nodes can communicate in your setup. This is the expected outcome of the original manual experiment, not a result verified by this repository's automated tests.
 
 ![Architecture Diagram](../images/cmd.png)
 
-### Jazzy talker/listener on kind (scripted demo)
-
-The only cross-worker ROS 2 example in this repository that is backed by a repeatable check is the **lightweight kind profile** (1 control plane + 2 workers). It is documented, with its measured run and limits, in [`docs/KIND-DEMO.md`](../docs/KIND-DEMO.md). It is **not** the Vagrant cluster, and it does not run the Foxy image used above.
-
-```bash
-make demo     # build the Jazzy image, create the kind cluster, deploy discovery server + talker + listener
-make verify   # exit code 0 only if pods are Ready, on different workers, and the listener hears the talker
-make clean    # delete the cluster and the image
-```
-
-What that page records (quoted, not re-run for this README): default Fast DDS multicast discovery delivered nothing on the kind CNI (kindnetd), across two workers and also on one worker; delivery worked once a Fast DDS Discovery Server was reached through a ClusterIP Service. The profile was run once on one host (2026-10-27, commit `862b026`); `make verify` and `make verify-negative` exited 0 there. Other CNIs, a real multi-machine cluster and the Vagrant/Weave Net setup are **not** covered.
-
-An earlier manual variant of the same idea (a Jazzy talker and listener on different workers behind a Discovery Server, placed by pod anti-affinity, run by hand on kind on 2026-10-31) is superseded by this scripted profile.

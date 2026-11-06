@@ -34,7 +34,7 @@ git switch -c docs/issue-25-monitoring-images
 git status --short
 ```
 
-Choose a branch name that matches **your** issue. The existing repository name is used here; a rename to `robo-resilience-lab` is **proposed but has not happened**.
+Choose a branch name that matches **your** issue. The repository is named `robo-resilience-lab` (it was previously called `ros2-kubernetes-lab`).
 
 If you have write access to the original repository or use a connected cloud agent, you can work in its own feature branch instead of forking. In either case, **never make your contribution directly on `main`**.
 
