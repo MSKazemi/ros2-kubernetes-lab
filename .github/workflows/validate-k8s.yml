@@ -24,6 +24,8 @@ permissions:
 jobs:
   kubeconform:
     name: Kubernetes 1.29 schemas (kubeconform, no cluster)
+    # Run only in the public repository; the private mirror and forks execute nothing.
+    if: github.repository == 'MSKazemi/robo-resilience-lab'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:

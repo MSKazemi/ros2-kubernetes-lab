@@ -17,6 +17,8 @@ permissions:
 jobs:
   jazzy-image-smoke:
     name: Build image and verify local ROS messaging (amd64)
+    # Run only in the public repository; the private mirror and forks execute nothing.
+    if: github.repository == 'MSKazemi/robo-resilience-lab'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:

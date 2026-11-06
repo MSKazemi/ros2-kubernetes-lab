@@ -12,6 +12,8 @@ permissions:
 jobs:
   shell-syntax:
     name: Bash syntax (no VMs or Docker credentials)
+    # Run only in the public repository; the private mirror and forks execute nothing.
+    if: github.repository == 'MSKazemi/robo-resilience-lab'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
