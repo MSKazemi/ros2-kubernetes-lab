@@ -1,0 +1,193 @@
+{
+  "description": "The bundle's rollback policy is 'park': a failed activation parks the mission even if the origin is up.",
+  "expect_final": {
+    "completed": [
+      "wp-01"
+    ],
+    "duplicate_effects_in_ledger": 0,
+    "epoch": 3,
+    "owner": null
+  },
+  "fixture_kind": "handoff-script",
+  "name": "park-by-policy",
+  "ops": [
+    {
+      "executor": "cloud-01",
+      "expect": "ACCEPTED",
+      "op": "step"
+    },
+    {
+      "expect": "PARKED",
+      "fault": "destination_crash",
+      "on_failure": "park",
+      "op": "handoff",
+      "to": "edge-01"
+    },
+    {
+      "executor": "cloud-01",
+      "expect": "SELF_FENCED",
+      "op": "step"
+    }
+  ],
+  "setup": {
+    "bundle_ttl": 10,
+    "executors": [
+      {
+        "actions": [
+          {
+            "command": "navigate_to_waypoint",
+            "space": "waypoint_goal",
+            "units": "m"
+          }
+        ],
+        "capabilities": [
+          "inspect_waypoint",
+          "report_status",
+          "extra_skill"
+        ],
+        "executor_id": "cloud-01",
+        "frame_id": "map",
+        "map_revision": "synthetic-map-v1",
+        "robot_class": "sim-mobile-base",
+        "sensors": [
+          {
+            "name": "front_range",
+            "type": "range",
+            "units": "m"
+          },
+          {
+            "name": "camera_front",
+            "type": "rgb_image",
+            "units": "pixel"
+          }
+        ],
+        "supported_schemas": [
+          "mission-state/v1"
+        ],
+        "units": {
+          "angle": "rad",
+          "length": "m",
+          "time": "s"
+        }
+      },
+      {
+        "actions": [
+          {
+            "command": "navigate_to_waypoint",
+            "space": "waypoint_goal",
+            "units": "m"
+          }
+        ],
+        "capabilities": [
+          "inspect_waypoint",
+          "report_status",
+          "extra_skill"
+        ],
+        "executor_id": "edge-01",
+        "frame_id": "map",
+        "map_revision": "synthetic-map-v1",
+        "robot_class": "sim-mobile-base",
+        "sensors": [
+          {
+            "name": "front_range",
+            "type": "range",
+            "units": "m"
+          },
+          {
+            "name": "camera_front",
+            "type": "rgb_image",
+            "units": "pixel"
+          }
+        ],
+        "supported_schemas": [
+          "mission-state/v1"
+        ],
+        "units": {
+          "angle": "rad",
+          "length": "m",
+          "time": "s"
+        }
+      },
+      {
+        "actions": [
+          {
+            "command": "navigate_to_waypoint",
+            "space": "waypoint_goal",
+            "units": "m"
+          }
+        ],
+        "capabilities": [
+          "inspect_waypoint",
+          "report_status",
+          "extra_skill"
+        ],
+        "executor_id": "edge-mm",
+        "frame_id": "map",
+        "map_revision": "synthetic-map-v1",
+        "robot_class": "sim-mobile-base",
+        "sensors": [
+          {
+            "name": "front_range",
+            "type": "range",
+            "units": "mm"
+          },
+          {
+            "name": "camera_front",
+            "type": "rgb_image",
+            "units": "pixel"
+          }
+        ],
+        "supported_schemas": [
+          "mission-state/v1"
+        ],
+        "units": {
+          "angle": "rad",
+          "length": "m",
+          "time": "s"
+        }
+      }
+    ],
+    "initial_owner": "cloud-01",
+    "lease_ticks": 50,
+    "requirements": {
+      "action": {
+        "command": "navigate_to_waypoint",
+        "space": "waypoint_goal",
+        "units": "m"
+      },
+      "capabilities": [
+        "inspect_waypoint",
+        "report_status"
+      ],
+      "frame_id": "map",
+      "map_revision": "synthetic-map-v1",
+      "robot_class": "sim-mobile-base",
+      "sensors": [
+        {
+          "name": "front_range",
+          "type": "range",
+          "units": "m"
+        },
+        {
+          "name": "camera_front",
+          "type": "rgb_image",
+          "units": "pixel"
+        }
+      ],
+      "units": {
+        "angle": "rad",
+        "length": "m",
+        "time": "s"
+      }
+    },
+    "steps": [
+      "wp-01",
+      "wp-02",
+      "wp-03",
+      "wp-04",
+      "wp-05"
+    ],
+    "task_id": "inspection-001"
+  },
+  "synthetic": true
+}

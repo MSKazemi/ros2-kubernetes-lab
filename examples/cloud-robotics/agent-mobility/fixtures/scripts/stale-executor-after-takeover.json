@@ -1,0 +1,218 @@
+{
+  "description": "The fence notice never reaches the origin. It resumes under its old epoch and is rejected; replayed effect, replayed bundle and stale renewal are rejected too.",
+  "expect_final": {
+    "completed": [
+      "wp-01",
+      "wp-02",
+      "wp-03"
+    ],
+    "duplicate_effects_in_ledger": 0,
+    "epoch": 2,
+    "owner": "edge-01"
+  },
+  "fixture_kind": "handoff-script",
+  "name": "stale-executor-after-takeover",
+  "ops": [
+    {
+      "executor": "cloud-01",
+      "expect": "ACCEPTED",
+      "op": "step"
+    },
+    {
+      "executor": "cloud-01",
+      "expect": "ACCEPTED",
+      "op": "step"
+    },
+    {
+      "deliver_fence": false,
+      "expect": "COMPLETED",
+      "op": "handoff",
+      "to": "edge-01"
+    },
+    {
+      "executor": "cloud-01",
+      "expect": "STALE_EXECUTOR",
+      "op": "step"
+    },
+    {
+      "executor": "edge-01",
+      "expect": "ACCEPTED",
+      "op": "step"
+    },
+    {
+      "executor": "edge-01",
+      "expect": "REPLAYED_EFFECT",
+      "op": "replay_effect"
+    },
+    {
+      "expect": "REJECTED:REPLAYED_NONCE",
+      "op": "replay_bundle"
+    },
+    {
+      "executor": "cloud-01",
+      "expect": "STALE_EXECUTOR",
+      "op": "renew"
+    }
+  ],
+  "setup": {
+    "bundle_ttl": 10,
+    "executors": [
+      {
+        "actions": [
+          {
+            "command": "navigate_to_waypoint",
+            "space": "waypoint_goal",
+            "units": "m"
+          }
+        ],
+        "capabilities": [
+          "inspect_waypoint",
+          "report_status",
+          "extra_skill"
+        ],
+        "executor_id": "cloud-01",
+        "frame_id": "map",
+        "map_revision": "synthetic-map-v1",
+        "robot_class": "sim-mobile-base",
+        "sensors": [
+          {
+            "name": "front_range",
+            "type": "range",
+            "units": "m"
+          },
+          {
+            "name": "camera_front",
+            "type": "rgb_image",
+            "units": "pixel"
+          }
+        ],
+        "supported_schemas": [
+          "mission-state/v1"
+        ],
+        "units": {
+          "angle": "rad",
+          "length": "m",
+          "time": "s"
+        }
+      },
+      {
+        "actions": [
+          {
+            "command": "navigate_to_waypoint",
+            "space": "waypoint_goal",
+            "units": "m"
+          }
+        ],
+        "capabilities": [
+          "inspect_waypoint",
+          "report_status",
+          "extra_skill"
+        ],
+        "executor_id": "edge-01",
+        "frame_id": "map",
+        "map_revision": "synthetic-map-v1",
+        "robot_class": "sim-mobile-base",
+        "sensors": [
+          {
+            "name": "front_range",
+            "type": "range",
+            "units": "m"
+          },
+          {
+            "name": "camera_front",
+            "type": "rgb_image",
+            "units": "pixel"
+          }
+        ],
+        "supported_schemas": [
+          "mission-state/v1"
+        ],
+        "units": {
+          "angle": "rad",
+          "length": "m",
+          "time": "s"
+        }
+      },
+      {
+        "actions": [
+          {
+            "command": "navigate_to_waypoint",
+            "space": "waypoint_goal",
+            "units": "m"
+          }
+        ],
+        "capabilities": [
+          "inspect_waypoint",
+          "report_status",
+          "extra_skill"
+        ],
+        "executor_id": "edge-mm",
+        "frame_id": "map",
+        "map_revision": "synthetic-map-v1",
+        "robot_class": "sim-mobile-base",
+        "sensors": [
+          {
+            "name": "front_range",
+            "type": "range",
+            "units": "mm"
+          },
+          {
+            "name": "camera_front",
+            "type": "rgb_image",
+            "units": "pixel"
+          }
+        ],
+        "supported_schemas": [
+          "mission-state/v1"
+        ],
+        "units": {
+          "angle": "rad",
+          "length": "m",
+          "time": "s"
+        }
+      }
+    ],
+    "initial_owner": "cloud-01",
+    "lease_ticks": 50,
+    "requirements": {
+      "action": {
+        "command": "navigate_to_waypoint",
+        "space": "waypoint_goal",
+        "units": "m"
+      },
+      "capabilities": [
+        "inspect_waypoint",
+        "report_status"
+      ],
+      "frame_id": "map",
+      "map_revision": "synthetic-map-v1",
+      "robot_class": "sim-mobile-base",
+      "sensors": [
+        {
+          "name": "front_range",
+          "type": "range",
+          "units": "m"
+        },
+        {
+          "name": "camera_front",
+          "type": "rgb_image",
+          "units": "pixel"
+        }
+      ],
+      "units": {
+        "angle": "rad",
+        "length": "m",
+        "time": "s"
+      }
+    },
+    "steps": [
+      "wp-01",
+      "wp-02",
+      "wp-03",
+      "wp-04",
+      "wp-05"
+    ],
+    "task_id": "inspection-001"
+  },
+  "synthetic": true
+}

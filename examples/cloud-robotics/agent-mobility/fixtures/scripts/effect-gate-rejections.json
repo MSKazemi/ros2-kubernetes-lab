@@ -1,0 +1,277 @@
+{
+  "description": "Forged or malformed effects submitted straight to the sink after a takeover.",
+  "expect_final": {
+    "completed": [
+      "wp-01",
+      "wp-02",
+      "wp-03"
+    ],
+    "duplicate_effects_in_ledger": 0,
+    "epoch": 2,
+    "owner": "edge-01"
+  },
+  "fixture_kind": "handoff-script",
+  "name": "effect-gate-rejections",
+  "ops": [
+    {
+      "executor": "cloud-01",
+      "expect": "ACCEPTED",
+      "op": "step"
+    },
+    {
+      "expect": "COMPLETED",
+      "op": "handoff",
+      "to": "edge-01"
+    },
+    {
+      "executor": "edge-01",
+      "expect": "ACCEPTED",
+      "op": "step"
+    },
+    {
+      "effect": {
+        "effect_id": "forged-gap-01",
+        "effect_seq": 2,
+        "epoch": 2,
+        "executor": "edge-01",
+        "step": "wp-03"
+      },
+      "expect": "EFFECT_SEQUENCE_GAP",
+      "op": "raw_effect"
+    },
+    {
+      "effect": {
+        "effect_id": "forged-regress-01",
+        "effect_seq": 0,
+        "epoch": 2,
+        "executor": "edge-01",
+        "step": "wp-03"
+      },
+      "expect": "EFFECT_SEQUENCE_REGRESSION",
+      "op": "raw_effect"
+    },
+    {
+      "effect": {
+        "effect_id": "forged-step-01",
+        "effect_seq": 1,
+        "epoch": 2,
+        "executor": "edge-01",
+        "step": "wp-05"
+      },
+      "expect": "WRONG_NEXT_STEP",
+      "op": "raw_effect"
+    },
+    {
+      "effect": {
+        "effect_id": "forged-epoch-01",
+        "effect_seq": 1,
+        "epoch": 9,
+        "executor": "edge-01",
+        "step": "wp-03"
+      },
+      "expect": "UNKNOWN_EPOCH",
+      "op": "raw_effect"
+    },
+    {
+      "effect": {
+        "effect_id": "forged-owner-01",
+        "effect_seq": 1,
+        "epoch": 2,
+        "executor": "edge-mm",
+        "step": "wp-03"
+      },
+      "expect": "NOT_STATE_OWNER",
+      "op": "raw_effect"
+    },
+    {
+      "effect": {
+        "effect_id": "forged-stale-01",
+        "effect_seq": 1,
+        "epoch": 1,
+        "executor": "cloud-01",
+        "step": "wp-03"
+      },
+      "expect": "STALE_EXECUTOR",
+      "op": "raw_effect"
+    },
+    {
+      "effect": {
+        "executor": "edge-01"
+      },
+      "expect": "MALFORMED_EFFECT",
+      "op": "raw_effect"
+    },
+    {
+      "effect": {
+        "effect_id": "legit-after-forgeries",
+        "effect_seq": 1,
+        "epoch": 2,
+        "executor": "edge-01",
+        "step": "wp-03"
+      },
+      "expect": "ACCEPTED",
+      "op": "raw_effect"
+    }
+  ],
+  "setup": {
+    "bundle_ttl": 10,
+    "executors": [
+      {
+        "actions": [
+          {
+            "command": "navigate_to_waypoint",
+            "space": "waypoint_goal",
+            "units": "m"
+          }
+        ],
+        "capabilities": [
+          "inspect_waypoint",
+          "report_status",
+          "extra_skill"
+        ],
+        "executor_id": "cloud-01",
+        "frame_id": "map",
+        "map_revision": "synthetic-map-v1",
+        "robot_class": "sim-mobile-base",
+        "sensors": [
+          {
+            "name": "front_range",
+            "type": "range",
+            "units": "m"
+          },
+          {
+            "name": "camera_front",
+            "type": "rgb_image",
+            "units": "pixel"
+          }
+        ],
+        "supported_schemas": [
+          "mission-state/v1"
+        ],
+        "units": {
+          "angle": "rad",
+          "length": "m",
+          "time": "s"
+        }
+      },
+      {
+        "actions": [
+          {
+            "command": "navigate_to_waypoint",
+            "space": "waypoint_goal",
+            "units": "m"
+          }
+        ],
+        "capabilities": [
+          "inspect_waypoint",
+          "report_status",
+          "extra_skill"
+        ],
+        "executor_id": "edge-01",
+        "frame_id": "map",
+        "map_revision": "synthetic-map-v1",
+        "robot_class": "sim-mobile-base",
+        "sensors": [
+          {
+            "name": "front_range",
+            "type": "range",
+            "units": "m"
+          },
+          {
+            "name": "camera_front",
+            "type": "rgb_image",
+            "units": "pixel"
+          }
+        ],
+        "supported_schemas": [
+          "mission-state/v1"
+        ],
+        "units": {
+          "angle": "rad",
+          "length": "m",
+          "time": "s"
+        }
+      },
+      {
+        "actions": [
+          {
+            "command": "navigate_to_waypoint",
+            "space": "waypoint_goal",
+            "units": "m"
+          }
+        ],
+        "capabilities": [
+          "inspect_waypoint",
+          "report_status",
+          "extra_skill"
+        ],
+        "executor_id": "edge-mm",
+        "frame_id": "map",
+        "map_revision": "synthetic-map-v1",
+        "robot_class": "sim-mobile-base",
+        "sensors": [
+          {
+            "name": "front_range",
+            "type": "range",
+            "units": "mm"
+          },
+          {
+            "name": "camera_front",
+            "type": "rgb_image",
+            "units": "pixel"
+          }
+        ],
+        "supported_schemas": [
+          "mission-state/v1"
+        ],
+        "units": {
+          "angle": "rad",
+          "length": "m",
+          "time": "s"
+        }
+      }
+    ],
+    "initial_owner": "cloud-01",
+    "lease_ticks": 50,
+    "requirements": {
+      "action": {
+        "command": "navigate_to_waypoint",
+        "space": "waypoint_goal",
+        "units": "m"
+      },
+      "capabilities": [
+        "inspect_waypoint",
+        "report_status"
+      ],
+      "frame_id": "map",
+      "map_revision": "synthetic-map-v1",
+      "robot_class": "sim-mobile-base",
+      "sensors": [
+        {
+          "name": "front_range",
+          "type": "range",
+          "units": "m"
+        },
+        {
+          "name": "camera_front",
+          "type": "rgb_image",
+          "units": "pixel"
+        }
+      ],
+      "units": {
+        "angle": "rad",
+        "length": "m",
+        "time": "s"
+      }
+    },
+    "steps": [
+      "wp-01",
+      "wp-02",
+      "wp-03",
+      "wp-04",
+      "wp-05"
+    ],
+    "task_id": "inspection-001"
+  },
+  "synthetic": true
+}

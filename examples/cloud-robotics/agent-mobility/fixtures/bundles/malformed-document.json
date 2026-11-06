@@ -1,0 +1,62 @@
+{
+  "bundle": [],
+  "context": {
+    "coordinator": {
+      "epoch": 1,
+      "last_sequence": 0,
+      "ledger_effect_ids": [
+        "inspection-001-cloud-01-e1-s0",
+        "inspection-001-cloud-01-e1-s1"
+      ],
+      "owner": "cloud-01",
+      "seen_nonces": []
+    },
+    "destination_profile": {
+      "actions": [
+        {
+          "command": "navigate_to_waypoint",
+          "space": "waypoint_goal",
+          "units": "m"
+        }
+      ],
+      "capabilities": [
+        "inspect_waypoint",
+        "report_status",
+        "extra_skill"
+      ],
+      "executor_id": "edge-01",
+      "frame_id": "map",
+      "map_revision": "synthetic-map-v1",
+      "robot_class": "sim-mobile-base",
+      "sensors": [
+        {
+          "name": "front_range",
+          "type": "range",
+          "units": "m"
+        },
+        {
+          "name": "camera_front",
+          "type": "rgb_image",
+          "units": "pixel"
+        }
+      ],
+      "supported_schemas": [
+        "mission-state/v1"
+      ],
+      "units": {
+        "angle": "rad",
+        "length": "m",
+        "time": "s"
+      }
+    },
+    "now_tick": 5
+  },
+  "description": "Bundle is a JSON array, not an object.",
+  "expect": {
+    "ok": false,
+    "reason": "MALFORMED_DOCUMENT"
+  },
+  "fixture_kind": "bundle-check",
+  "name": "malformed-document",
+  "synthetic": true
+}
