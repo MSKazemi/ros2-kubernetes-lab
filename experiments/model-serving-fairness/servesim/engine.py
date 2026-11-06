@@ -9,6 +9,15 @@ Model (all parameters assumed, nothing measured):
   * A worker going down aborts its in-flight request (re-queued with its
     original arrival time and deadline, counted as ``retried``) and clears the
     worker's cache. The worker is unavailable until its window ends.
+  * Availability is an outage counter, not a flag: window start increments it,
+    window end decrements it, and the worker is usable only at 0. So for
+    back-to-back windows on one worker ([10,20] then [20,30]) the worker stays
+    down across t=20 whatever order the two events run in (DOWN is processed
+    before UP at an equal timestamp, and no dispatch can see the worker up).
+  * Equal-timestamp consequences: a completion at the exact start of a failure
+    window finishes normally (completion runs first); an arrival at the exact
+    start of a window cannot use that worker (down runs before arrival); an
+    arrival at the exact end of a window can (up runs before arrival).
 """
 
 from __future__ import annotations
@@ -29,7 +38,7 @@ _COMPLETION, _DOWN, _UP, _ARRIVAL = 0, 1, 2, 3
 class _Worker:
     index: int
     cache: ModelCache
-    up: bool = True
+    outages: int = 0          # open failure windows; the worker is usable only when 0
     current: Optional[Request] = None
     started_at: float = 0.0
     epoch: int = 0
@@ -79,7 +88,7 @@ class Simulation:
     # ---- dispatch --------------------------------------------------------
     def _dispatch(self, now: float) -> None:
         while len(self.sched):
-            idle = [w for w in self.workers if w.up and w.current is None]
+            idle = [w for w in self.workers if w.outages == 0 and w.current is None]
             if not idle:
                 return
             req = self.sched.pop(now)
@@ -126,7 +135,7 @@ class Simulation:
                 last_completion = max(last_completion, t)
             elif kind == _DOWN:
                 w = data
-                w.up = False
+                w.outages += 1
                 if w.current is not None:
                     req = w.current
                     w.busy_time += t - w.started_at
@@ -137,7 +146,7 @@ class Simulation:
                     self.sched.push(req)
                 w.cache.clear()
             elif kind == _UP:
-                data.up = True
+                data.outages -= 1
             else:  # arrival
                 req = data
                 cap = cfg.queue_capacity

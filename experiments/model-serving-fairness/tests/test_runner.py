@@ -92,5 +92,41 @@ class RunnerTests(unittest.TestCase):
                 self.assertEqual(code, 0)
 
 
+    def test_worker_down_cli_adjacent_windows_keep_worker_down(self):
+        # One worker, one request at t=25 (service 1.0). Windows 0:10:20 and 0:20:30 are
+        # back-to-back, so the request cannot start before t=30 -> latency 6.0 s (not 1.0 s).
+        cfg = {"name": "t", "seed": 1, "duration": 60.0, "workers": 1, "cache_capacity": 1.0,
+               "models": {"m": {"service_time": 1.0}},
+               "clients": [{"id": "c", "arrival": {"kind": "fixed", "times": [25.0]},
+                            "models": ["m"], "deadline": 100.0}]}
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "cfg.json")
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump(cfg, fh)
+            code, out, _ = call("--config", path, "--seeds", "1", "--schedulers", "fifo",
+                                "--placements", "first_idle", "--worker-down", "0:10:20",
+                                "--worker-down", "0:20:30", "--json-out", "-")
+        self.assertEqual(code, 0)
+        run = json.loads(out)["runs"][0]
+        self.assertEqual(len(run["worker_failures"]), 2)
+        self.assertEqual(run["latency_s"]["p50"], 6.0)
+
+    def test_worker_down_cli_adjacent_to_config_window(self):
+        cfg = {"name": "t", "seed": 1, "duration": 60.0, "workers": 1, "cache_capacity": 1.0,
+               "models": {"m": {"service_time": 1.0}},
+               "failures": [{"worker": 0, "start": 10.0, "end": 20.0}],
+               "clients": [{"id": "c", "arrival": {"kind": "fixed", "times": [25.0]},
+                            "models": ["m"], "deadline": 100.0}]}
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "cfg.json")
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump(cfg, fh)
+            code, out, _ = call("--config", path, "--seeds", "1", "--schedulers", "fifo",
+                                "--placements", "first_idle", "--worker-down", "0:20:30",
+                                "--json-out", "-")
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out)["runs"][0]["latency_s"]["p50"], 6.0)
+
+
 if __name__ == "__main__":
     unittest.main()

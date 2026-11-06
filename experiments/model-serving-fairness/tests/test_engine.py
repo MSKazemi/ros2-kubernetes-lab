@@ -186,5 +186,66 @@ class WorkerFailureTests(unittest.TestCase):
         self.assertEqual(res.requests[0].finish, 3.0)
 
 
+class FailureWindowBoundaryTests(unittest.TestCase):
+    """Equal-timestamp behaviour of failure windows (regression tests for adjacent windows)."""
+
+    ADJACENT = [{"worker": 0, "start": 10.0, "end": 20.0}, {"worker": 0, "start": 20.0, "end": 30.0}]
+
+    def test_adjacent_windows_same_worker_stay_down(self):
+        # arrivals at 15 (first window), 25 (second window), 35 (after both). service 1.0.
+        # Worker 0 is down over all of [10, 30): r15 starts at 30, r25 at 31 (after r15), r35 at 35.
+        res = run(make_raw([fixed("c", [15.0, 25.0, 35.0], 100)]), failures=self.ADJACENT)
+        self.assertEqual([t for (t, _i, _w, _h) in res.dispatch_log], [30.0, 31.0, 35.0])
+        for t, _i, w, _h in res.dispatch_log:
+            self.assertFalse(w == 0 and 10.0 <= t < 30.0, f"dispatch to down worker at t={t}")
+
+    def test_adjacent_windows_inflight_aborted_and_restarts_after_second(self):
+        # service 10 s starting at t=5 is aborted at t=10 and can only restart at t=30.
+        models = {"m": {"service_time": 10.0}}
+        res = run(make_raw([fixed("c", [5.0], 100)], models), failures=self.ADJACENT)
+        r = res.requests[0]
+        self.assertEqual((r.first_start, r.finish, r.attempts), (5.0, 40.0, 2))
+        self.assertEqual(res.retried, 1)
+
+    def test_adjacent_windows_other_worker_serves_meanwhile(self):
+        res = run(make_raw([fixed("c", [15.0, 25.0], 100)], workers=2), failures=self.ADJACENT)
+        self.assertEqual([w for (_t, _i, w, _h) in res.dispatch_log], [1, 1])
+
+    def test_adjacent_windows_listed_in_reverse_order(self):
+        res = run(make_raw([fixed("c", [25.0], 100)]), failures=list(reversed(self.ADJACENT)))
+        self.assertEqual(res.requests[0].first_start, 30.0)
+
+    def test_windows_on_different_workers_may_overlap(self):
+        # w0 down [10,20], w1 down [15,25]. r12 -> w1 [12,13]; r17: both down, starts 20 on w0;
+        # r22: w0 is idle again (21), w1 still down -> w0 at 22.
+        failures = [{"worker": 0, "start": 10.0, "end": 20.0}, {"worker": 1, "start": 15.0, "end": 25.0}]
+        res = run(make_raw([fixed("c", [12.0, 17.0, 22.0], 100)], workers=2), failures=failures)
+        self.assertEqual([(t, w) for (t, _i, w, _h) in res.dispatch_log], [(12.0, 1), (20.0, 0), (22.0, 0)])
+
+    def test_window_end_coincides_with_completion_and_arrival(self):
+        # w1 down [1, 3]. r_a (service 3.0) runs on w0 and completes at t=3.0, the instant w1
+        # comes back and r_c arrives. r_b arrived at 1.5 and waits. Order at t=3.0:
+        # completion -> r_b starts on w0; up -> w1 usable; arrival -> r_c starts on w1.
+        models = {"m": {"service_time": 1.0}, "long": {"service_time": 3.0}}
+        clients = [fixed("a", [0.0], 100, "long"), fixed("b", [1.5], 100), fixed("c", [3.0], 100)]
+        failures = [{"worker": 1, "start": 1.0, "end": 3.0}]
+        res = run(make_raw(clients, models, workers=2), failures=failures)
+        self.assertEqual([(t, i, w) for (t, i, w, _h) in res.dispatch_log],
+                         [(0.0, 0, 0), (3.0, 1, 0), (3.0, 2, 1)])
+
+    def test_completion_at_window_start_completes_normally(self):
+        # service 1.0 from t=0 finishes exactly when the window opens at t=1.0: not aborted.
+        res = run(make_raw([fixed("c", [0.0], 100)]), failures=[{"worker": 0, "start": 1.0, "end": 2.0}])
+        self.assertEqual((res.requests[0].finish, res.retried), (1.0, 0))
+
+    def test_arrival_at_window_start_waits_and_arrival_at_end_runs(self):
+        res = run(make_raw([fixed("c", [1.0], 100)]), failures=[{"worker": 0, "start": 1.0, "end": 2.0}])
+        self.assertEqual(res.requests[0].first_start, 2.0)
+        res = run(make_raw([fixed("c", [2.0], 100)]), failures=[{"worker": 0, "start": 1.0, "end": 2.0}])
+        self.assertEqual(res.requests[0].first_start, 2.0)
+        res = run(make_raw([fixed("c", [1.5], 100)]), failures=[{"worker": 0, "start": 1.0, "end": 2.0}])
+        self.assertEqual(res.requests[0].first_start, 2.0)
+
+
 if __name__ == "__main__":
     unittest.main()

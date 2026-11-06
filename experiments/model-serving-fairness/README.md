@@ -65,6 +65,11 @@ Output is byte-identical for the same arguments; there are no timestamps and no 
   `--worker-down W:START:END`. At `start` the worker's in-flight request is aborted and
   re-queued with its original arrival time and deadline (counted in
   `retried_after_worker_failure`), and its cache is cleared; the worker is unusable until `end`.
+  Windows on one worker may be back-to-back (`[10,20]` then `[20,30]` keeps the worker down
+  across t=20) but may not overlap; windows on different workers may overlap. Availability is
+  tracked as an outage counter, so event order at an equal timestamp cannot bring a worker up
+  early. At an equal timestamp a completion finishes normally before a window opens, an arrival
+  at a window's start cannot use that worker, and an arrival at its end can.
 * **Overload controls**: `queue_capacity` rejects arrivals when that many requests are already
   waiting (`rejected`); `drop_expired` discards a request at dispatch if its deadline has
   already passed (`dropped`). Both are off by default. `drain: false` stops at `duration`
