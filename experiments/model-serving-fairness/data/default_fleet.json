@@ -1,0 +1,30 @@
+{
+  "name": "default-fleet-assumed-params",
+  "seed": 1,
+  "duration": 120.0,
+  "workers": 2,
+  "cache_capacity": 7.0,
+  "drr_quantum": 0.1,
+  "starvation_wait": 2.0,
+  "models": {
+    "detector-small": {"service_time": 0.040, "load_cost": 0.3, "size": 1.0, "service_jitter": 0.2},
+    "detector-large": {"service_time": 0.120, "load_cost": 1.0, "size": 3.0, "service_jitter": 0.2},
+    "segmenter":      {"service_time": 0.080, "load_cost": 0.6, "size": 2.0, "service_jitter": 0.2},
+    "grasp-planner":  {"service_time": 0.060, "load_cost": 0.4, "size": 1.0, "service_jitter": 0.2}
+  },
+  "clients": [
+    {"id": "robot-a", "arrival": {"kind": "periodic", "period": 0.25, "jitter": 0.1},
+     "models": ["detector-small"], "deadline": 0.6},
+    {"id": "robot-b", "arrival": {"kind": "periodic", "period": 0.5, "offset": 0.1, "jitter": 0.1},
+     "models": ["segmenter"], "deadline": 0.8},
+    {"id": "robot-c", "arrival": {"kind": "periodic", "period": 0.5, "offset": 0.3, "jitter": 0.1},
+     "models": ["grasp-planner"], "deadline": 0.8},
+    {"id": "robot-d", "arrival": {"kind": "poisson", "rate": 3.0},
+     "models": {"detector-small": 3, "segmenter": 1}, "deadline": 0.8},
+    {"id": "robot-e", "arrival": {"kind": "poisson", "rate": 1.5},
+     "models": ["detector-large"], "deadline": 1.0},
+    {"id": "noisy-f", "noisy": true,
+     "arrival": {"kind": "bursty", "burst_interval": 8.0, "burst_size": 30, "burst_gap": 0.005, "offset": 2.0},
+     "models": {"detector-large": 1, "segmenter": 1}, "deadline": 0.8}
+  ]
+}

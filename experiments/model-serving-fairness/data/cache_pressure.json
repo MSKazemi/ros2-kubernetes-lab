@@ -1,0 +1,23 @@
+{
+  "name": "cache-pressure-assumed-params",
+  "seed": 1,
+  "duration": 120.0,
+  "workers": 3,
+  "cache_capacity": 2.0,
+  "drr_quantum": 0.1,
+  "starvation_wait": 2.0,
+  "models": {
+    "m-a": {"service_time": 0.050, "load_cost": 0.4, "size": 1.0, "service_jitter": 0.2},
+    "m-b": {"service_time": 0.050, "load_cost": 0.4, "size": 1.0, "service_jitter": 0.2},
+    "m-c": {"service_time": 0.050, "load_cost": 0.4, "size": 1.0, "service_jitter": 0.2},
+    "m-d": {"service_time": 0.050, "load_cost": 0.4, "size": 1.0, "service_jitter": 0.2}
+  },
+  "clients": [
+    {"id": "robot-a", "arrival": {"kind": "poisson", "rate": 1.5}, "models": ["m-a"], "deadline": 0.5},
+    {"id": "robot-b", "arrival": {"kind": "poisson", "rate": 1.5}, "models": ["m-b"], "deadline": 0.5},
+    {"id": "robot-c", "arrival": {"kind": "poisson", "rate": 1.5}, "models": ["m-c"], "deadline": 0.5},
+    {"id": "robot-d", "arrival": {"kind": "poisson", "rate": 1.5}, "models": ["m-d"], "deadline": 0.5},
+    {"id": "robot-e", "arrival": {"kind": "periodic", "period": 0.5, "jitter": 0.1},
+     "models": ["m-a", "m-b", "m-c", "m-d"], "deadline": 0.5}
+  ]
+}
