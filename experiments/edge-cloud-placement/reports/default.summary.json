@@ -1,0 +1,233 @@
+{
+  "banner": "SIMULATION: all values are SIMULATED model outputs computed from the config and seed. They are not measurements of any robot, network or cloud service. Nothing is actuated.",
+  "config_sha256": "cb925c242ed300dd871ebb5b7ae78616144eee28699ad83d45b811fab0e793a3",
+  "description": "ILLUSTRATIVE parameters for a SIMULATION. These are not measurements of any robot, network or cloud service.",
+  "label": "SIMULATION",
+  "measured": false,
+  "policies": {
+    "always_local": {
+      "actuated": false,
+      "applied_by_source": {
+        "local": 275,
+        "remote": 0
+      },
+      "by_capture_time": {
+        "during_outage_or_recovery": {
+          "on_time": 38,
+          "on_time_rate": 0.95,
+          "requests": 40
+        },
+        "otherwise": {
+          "on_time": 237,
+          "on_time_rate": 0.911538,
+          "requests": 260
+        }
+      },
+      "deadline_miss": 25,
+      "deadline_miss_causes": {
+        "ineligible_source": 0,
+        "late_response": 25,
+        "no_response": 0,
+        "no_viable_executor": 0,
+        "remote_rejected": 0,
+        "superseded_response": 0
+      },
+      "fallback_count": 0,
+      "fallback_launched": 0,
+      "on_time_applied": 275,
+      "on_time_rate": 0.916667,
+      "policy": "always_local",
+      "rejected_by_reason": {
+        "duplicate_response_id": 0,
+        "ineligible_source": 0,
+        "late_after_deadline": 25,
+        "superseded_request": 0,
+        "unknown_request_id": 2
+      },
+      "remote_rejects": {},
+      "remote_timeouts": 0,
+      "requests_total": 300,
+      "routed_local": 300,
+      "routed_remote": 0,
+      "simulated_latency_ms": {
+        "max": 190,
+        "mean": 170.175,
+        "p50": 170,
+        "p95": 188
+      },
+      "sink_decisions_total": 302,
+      "stale_rejected": 25
+    },
+    "always_remote": {
+      "actuated": false,
+      "applied_by_source": {
+        "local": 0,
+        "remote": 210
+      },
+      "by_capture_time": {
+        "during_outage_or_recovery": {
+          "on_time": 3,
+          "on_time_rate": 0.075,
+          "requests": 40
+        },
+        "otherwise": {
+          "on_time": 207,
+          "on_time_rate": 0.796154,
+          "requests": 260
+        }
+      },
+      "deadline_miss": 90,
+      "deadline_miss_causes": {
+        "ineligible_source": 0,
+        "late_response": 9,
+        "no_response": 42,
+        "no_viable_executor": 0,
+        "remote_rejected": 39,
+        "superseded_response": 0
+      },
+      "fallback_count": 0,
+      "fallback_launched": 0,
+      "on_time_applied": 210,
+      "on_time_rate": 0.7,
+      "policy": "always_remote",
+      "rejected_by_reason": {
+        "duplicate_response_id": 9,
+        "ineligible_source": 0,
+        "late_after_deadline": 9,
+        "superseded_request": 0,
+        "unknown_request_id": 2
+      },
+      "remote_rejects": {
+        "ineligible_memory": 32,
+        "overloaded": 7
+      },
+      "remote_timeouts": 51,
+      "requests_total": 300,
+      "routed_local": 0,
+      "routed_remote": 300,
+      "simulated_latency_ms": {
+        "max": 345,
+        "mean": 117.429,
+        "p50": 114,
+        "p95": 134
+      },
+      "sink_decisions_total": 230,
+      "stale_rejected": 9
+    },
+    "deadline_aware": {
+      "actuated": false,
+      "applied_by_source": {
+        "local": 86,
+        "remote": 171
+      },
+      "by_capture_time": {
+        "during_outage_or_recovery": {
+          "on_time": 28,
+          "on_time_rate": 0.7,
+          "requests": 40
+        },
+        "otherwise": {
+          "on_time": 229,
+          "on_time_rate": 0.880769,
+          "requests": 260
+        }
+      },
+      "deadline_miss": 43,
+      "deadline_miss_causes": {
+        "ineligible_source": 0,
+        "late_response": 16,
+        "no_response": 21,
+        "no_viable_executor": 0,
+        "remote_rejected": 6,
+        "superseded_response": 0
+      },
+      "fallback_count": 0,
+      "fallback_launched": 0,
+      "on_time_applied": 257,
+      "on_time_rate": 0.856667,
+      "policy": "deadline_aware",
+      "rejected_by_reason": {
+        "duplicate_response_id": 8,
+        "ineligible_source": 0,
+        "late_after_deadline": 16,
+        "superseded_request": 0,
+        "unknown_request_id": 2
+      },
+      "remote_rejects": {
+        "ineligible_memory": 1,
+        "overloaded": 5
+      },
+      "remote_timeouts": 23,
+      "requests_total": 300,
+      "routed_local": 100,
+      "routed_remote": 200,
+      "simulated_latency_ms": {
+        "max": 327,
+        "mean": 133.712,
+        "p50": 122,
+        "p95": 184
+      },
+      "sink_decisions_total": 283,
+      "stale_rejected": 16
+    },
+    "hedged_fallback": {
+      "actuated": false,
+      "applied_by_source": {
+        "local": 110,
+        "remote": 170
+      },
+      "by_capture_time": {
+        "during_outage_or_recovery": {
+          "on_time": 37,
+          "on_time_rate": 0.925,
+          "requests": 40
+        },
+        "otherwise": {
+          "on_time": 243,
+          "on_time_rate": 0.934615,
+          "requests": 260
+        }
+      },
+      "deadline_miss": 20,
+      "deadline_miss_causes": {
+        "ineligible_source": 0,
+        "late_response": 19,
+        "no_response": 0,
+        "no_viable_executor": 0,
+        "remote_rejected": 1,
+        "superseded_response": 0
+      },
+      "fallback_count": 29,
+      "fallback_launched": 135,
+      "on_time_applied": 280,
+      "on_time_rate": 0.933333,
+      "policy": "hedged_fallback",
+      "rejected_by_reason": {
+        "duplicate_response_id": 116,
+        "ineligible_source": 0,
+        "late_after_deadline": 20,
+        "superseded_request": 0,
+        "unknown_request_id": 2
+      },
+      "remote_rejects": {
+        "ineligible_memory": 1,
+        "overloaded": 5
+      },
+      "remote_timeouts": 23,
+      "requests_total": 300,
+      "routed_local": 100,
+      "routed_remote": 200,
+      "simulated_latency_ms": {
+        "max": 334,
+        "mean": 147.664,
+        "p50": 126,
+        "p95": 270
+      },
+      "sink_decisions_total": 418,
+      "stale_rejected": 20
+    }
+  },
+  "schema_version": 1,
+  "seed": 20261106,
+  "simulation": true
+}
