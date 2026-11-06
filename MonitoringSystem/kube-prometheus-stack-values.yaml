@@ -747,15 +747,16 @@ alertmanager:
     ## Storage is the definition of how storage will be used by the Alertmanager instances.
     ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/storage.md
     ##
-    storage: {}
-    volumeClaimTemplate:
-      spec:
-        storageClassName: local-storage
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 10Gi
-        selector: {}
+    ## The volumeClaimTemplate MUST be nested under storage (see Prometheus note above).
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-storage
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+          selector: {}
 
 
     ## The external URL the Alertmanager instances will be available under. This is necessary to generate correct URLs. This is necessary if Alertmanager is not served from root of a DNS name. string  false
@@ -965,6 +966,10 @@ grafana:
   ##
   defaultDashboardsEditable: true
 
+  ## WARNING: well-known default password, published in MonitoringSystem/README.md.
+  ## Grafana is exposed on a NodePort (see grafana.service below). Change it before
+  ## the node is reachable from any network you do not fully trust, e.g. at install
+  ## time: helm install ... --set grafana.adminPassword='<strong-password>'
   adminPassword: prom-operator
 
   rbac:
@@ -1120,6 +1125,7 @@ grafana:
   ##
   service:
     portName: http-web
+    # WARNING: NodePort exposes Grafana on every node IP. Protected only by adminPassword.
     type: NodePort # Updated by Mohsen
     nodePort: 30000 # Updated by Mohsen
 
@@ -2408,10 +2414,13 @@ prometheusOperator:
 
     patch:
       enabled: true
+      ## Pinned to the chart's own certgen image. The old ingress-nginx
+      ## v20221220 image rejects the --secret-type flag used by chart 92.x
+      ## and the install hangs at the admission-create hook (verified on kind).
       image:
-        registry: registry.k8s.io
-        repository: ingress-nginx/kube-webhook-certgen
-        tag: v20221220-controller-v1.5.1-58-g787ea74b6
+        registry: ghcr.io
+        repository: jkroepke/kube-webhook-certgen
+        tag: 1.11.0
         sha: ""
         pullPolicy: IfNotPresent
       resources: {}
@@ -3016,6 +3025,9 @@ prometheus:
     ## Service type
     ##
     # type: ClusterIP => Default
+    # WARNING: Prometheus has NO built-in authentication. This NodePort makes the
+    # query UI and API reachable on every node IP. Use ClusterIP + kubectl port-forward
+    # for untrusted networks (see MonitoringSystem/README.md).
     type: NodePort
 
     ## Additional ports to open for Prometheus service
@@ -3577,7 +3589,8 @@ prometheus:
 
     ## Maximum size of metrics
     ##
-    retentionSize: ""
+    ## Keep below the 10Gi local PV size (see pv.yaml) so the TSDB cannot fill the disk.
+    retentionSize: "8GB"
 
     ## Allow out-of-order/out-of-bounds samples ingested into Prometheus for a specified duration
     ## See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#tsdb
@@ -3678,17 +3691,17 @@ prometheus:
     ## Prometheus StorageSpec for persistent data
     ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/storage.md
     ##
-    storageSpec: {}
-    # Using PersistentVolumeClaim
-    #
-    volumeClaimTemplate:
-      spec:
-        storageClassName: local-storage
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 10Gi
-      selector: {}
+    ## Using PersistentVolumeClaim. The volumeClaimTemplate MUST be nested under
+    ## storageSpec: the chart ignores a sibling key (verified with helm template).
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-storage
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+        selector: {}
 
     ## Using tmpfs volume
     ##
@@ -4409,15 +4422,15 @@ thanosRuler:
     ## Storage is the definition of how storage will be used by the ThanosRuler instances.
     ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/storage.md
     ##
-    storage: {}
-    volumeClaimTemplate:
-      spec:
-        storageClassName: local-storage
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 10Gi
-      selector: {}
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-storage
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+        selector: {}
 
     ## AlertmanagerConfig define configuration for connecting to alertmanager.
     ## Only available with Thanos v0.10.0 and higher. Maps to the alertmanagers.config Thanos Ruler arg.
