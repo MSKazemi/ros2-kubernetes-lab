@@ -50,7 +50,7 @@ claude --version
 claude
 ```
 
-Follow the sign-in prompts and permission requests. The official [Claude Code quickstart](https://code.claude.com/docs/en/quickstart) recommends native installation for many platforms; use its instructions if you do not want the npm option. Claude Code reads [CLAUDE.md](../CLAUDE.md), which explicitly imports [AGENTS.md](../AGENTS.md).
+Follow the sign-in prompts and permission requests. The official [Claude Code quickstart](https://code.claude.com/docs/en/quickstart) recommends native installation for many platforms; use its instructions if you do not want the npm option. Claude Code reads a local, uncommitted `CLAUDE.md` that imports [AGENTS.md](../AGENTS.md) (see the note at the top of this guide).
 
 ### Option B: OpenAI Codex
 
