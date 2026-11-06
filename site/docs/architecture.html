@@ -1,11 +1,139 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#080d18"><title>ROS 2 Kubernetes architecture | ROS 2 Kubernetes Lab</title><meta name="description" content="Architecture and network reference for a historical 3-node Vagrant Kubernetes lab and a separate Jazzy container baseline."><meta name="robots" content="index, follow"><link rel="canonical" href="https://mskazemi.com/robo-resilience-lab/docs/architecture.html"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="../assets/docs.css"><meta property="og:type" content="article"><meta property="og:title" content="ROS 2 Kubernetes architecture"><meta property="og:description" content="Architecture and network reference for a historical 3-node Vagrant Kubernetes lab and a separate Jazzy container baseline."><meta property="og:url" content="https://mskazemi.com/robo-resilience-lab/docs/architecture.html"><meta property="og:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="640"><meta property="og:image:alt" content="ROS 2 Kubernetes Lab: educational lab banner, one control plane and two workers"><meta property="og:site_name" content="ROS 2 Kubernetes Lab"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png"><meta name="twitter:image:alt" content="ROS 2 Kubernetes Lab: educational lab banner, one control plane and two workers"><meta name="twitter:title" content="ROS 2 Kubernetes architecture | ROS 2 Kubernetes Lab"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/robo-resilience-lab/"},{"@type":"ListItem","position":2,"name":"Docs","item":"https://mskazemi.com/robo-resilience-lab/docs/"},{"@type":"ListItem","position":3,"name":"Architecture","item":"https://mskazemi.com/robo-resilience-lab/docs/architecture.html"}]}</script></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#080d18"><title>ROS 2 Kubernetes architecture | ROS 2 Kubernetes Lab</title><meta name="description" content="Layered diagram of the lab: the Jazzy image and kind baseline, the historical Vagrant, Foxy and Weave Net profile, and what is not established."><meta name="robots" content="index, follow"><link rel="canonical" href="https://mskazemi.com/robo-resilience-lab/docs/architecture.html"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="../assets/docs.css"><meta property="og:type" content="article"><meta property="og:title" content="ROS 2 Kubernetes architecture"><meta property="og:description" content="Layered diagram of the lab: the Jazzy image and kind baseline, the historical Vagrant, Foxy and Weave Net profile, and what is not established."><meta property="og:url" content="https://mskazemi.com/robo-resilience-lab/docs/architecture.html"><meta property="og:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="640"><meta property="og:image:alt" content="ROS 2 Kubernetes Lab: educational lab banner, one control plane and two workers"><meta property="og:site_name" content="ROS 2 Kubernetes Lab"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png"><meta name="twitter:image:alt" content="ROS 2 Kubernetes Lab: educational lab banner, one control plane and two workers"><meta name="twitter:title" content="ROS 2 Kubernetes architecture | ROS 2 Kubernetes Lab"><meta name="twitter:description" content="Layered diagram of the lab: the Jazzy image and kind baseline, the historical Vagrant, Foxy and Weave Net profile, and what is not established."><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/robo-resilience-lab/"},{"@type":"ListItem","position":2,"name":"Docs","item":"https://mskazemi.com/robo-resilience-lab/docs/"},{"@type":"ListItem","position":3,"name":"Architecture","item":"https://mskazemi.com/robo-resilience-lab/docs/architecture.html"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"ROS 2 Kubernetes architecture","description":"Layered diagram of the lab: the Jazzy image and kind baseline, the historical Vagrant, Foxy and Weave Net profile, and what is not established.","url":"https://mskazemi.com/robo-resilience-lab/docs/architecture.html","mainEntityOfPage":"https://mskazemi.com/robo-resilience-lab/docs/architecture.html","inLanguage":"en","isAccessibleForFree":true,"author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"isPartOf":{"@type":"WebSite","name":"ROS 2 Kubernetes Lab","url":"https://mskazemi.com/robo-resilience-lab/"}}</script>
+<style>
+/* docs-ux (issue #89): page-level usability layer, additive to assets/docs.css. Move into docs.css when the owner of that file agrees. */
+main:focus,[tabindex="-1"]:focus{outline:none}
+summary:focus-visible,[tabindex="0"]:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.skip-link{left:12px;top:0;border-radius:0 0 8px 8px;font-weight:700;font-size:14px;transform:translateY(-150%)}
+.skip-link:focus{transform:none;outline:3px solid #fff;outline-offset:2px}
+.doc-content :target{scroll-margin-top:100px}
+.doc-callout p,.doc-step p,.doc-intro-card p{font-size:14px;line-height:1.7}
+.doc-table{font-size:13px}
+.aside-note{font-size:12px}
+.doc-aside nav a,.docs-nav-links a{font-size:13px}
+.doc-badge{font-size:11px}
+.doc-crumbs{font-size:12px}
+.doc-crumbs a,.doc-next a,.docs-footer a{display:inline-flex;align-items:center;min-height:24px}
+.doc-crumbs a{padding-inline:2px}
+.doc-sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.doc-pre{display:flex;flex-direction:column;margin:20px 0 26px}
+.doc-pre pre{margin:0;border-top-left-radius:0;border-top-right-radius:0}
+.doc-copy{order:-1;align-self:flex-end;min-height:32px;padding:5px 14px;border:1px solid #30435c;border-bottom:0;border-radius:8px 8px 0 0;background:#14233a;color:#c9d9ec;font:600 12px var(--body);cursor:pointer}
+.doc-copy:hover{color:var(--cyan)}
+.doc-copy:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.entry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:22px 0 8px}
+.entry-card{min-width:0;display:flex;flex-direction:column;gap:8px;border:1px solid #32465b;border-radius:11px;background:#111f32;padding:20px}
+.entry-card h3{margin:0;font-size:18px;line-height:1.3}
+.entry-card .eyebrow{color:var(--cyan);font:600 11px var(--mono);letter-spacing:1px}
+.entry-card p{margin:0;font-size:14px;line-height:1.65}
+.entry-card ul{margin:4px 0 0;padding-left:20px}
+.entry-card li{margin:0 0 4px;font-size:14px}
+.arch-fig{display:grid;gap:28px;grid-template-columns:minmax(0,500px) minmax(0,1fr);align-items:start;margin:26px 0 12px}
+.arch-svg{display:block;width:100%;height:auto;max-width:520px;background:#0a1322;border:1px solid #2b3a53;border-radius:12px}
+.arch-row{fill:#101b2e;stroke-width:1.6}
+.arch-row-cur{stroke:#66ebda}
+.arch-row-hist{stroke:#ffa66e;stroke-dasharray:6 4}
+.arch-row-ne{stroke:#a193ff;stroke-width:2.2;stroke-dasharray:1.5 5;stroke-linecap:round}
+.arch-title{fill:#f1f5fc;font:600 16px var(--body)}
+.arch-sub{fill:#b9c8dc;font:15px var(--body)}
+.arch-head{font:700 14.5px var(--mono);letter-spacing:1.2px}
+.arch-head-cur{fill:#66ebda}.arch-head-hist{fill:#ffa66e}.arch-head-ne{fill:#b8adff}
+.lay{transition:opacity .2s}
+.arch-figure[data-show="current"] .lay-hist,.arch-figure[data-show="current"] .lay-ne,
+.arch-figure[data-show="hist"] .lay-cur,.arch-figure[data-show="hist"] .lay-ne,
+.arch-figure[data-show="ne"] .lay-cur,.arch-figure[data-show="ne"] .lay-hist{opacity:.3}
+.arch-side h3{margin-top:0}
+.arch-legend{list-style:none;padding:0;margin:0 0 18px}
+.arch-legend li{display:flex;align-items:flex-start;gap:12px;padding:0;margin:0 0 12px;font-size:14px;line-height:1.55}
+.arch-legend .sw{flex:none;width:34px;height:16px;margin-top:4px;border-radius:4px;border:2px solid #66ebda}
+.arch-legend .sw-hist{border-style:dashed;border-color:#ffa66e}
+.arch-legend .sw-ne{border-style:dotted;border-color:#a193ff}
+.arch-filter[hidden]{display:none}
+.arch-filter{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.arch-filter button{min-height:44px;padding:8px 14px;border:1px solid #43647a;border-radius:999px;background:transparent;color:#d7e4f5;font:600 13px var(--body);cursor:pointer}
+.arch-filter button:hover{border-color:var(--cyan)}
+.arch-filter button[aria-pressed="true"]{background:#66ebda;border-color:#66ebda;color:#071c24}
+.arch-filter button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+@media(max-width:900px){.arch-fig{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:720px){
+.entry-grid{grid-template-columns:1fr}
+.doc-aside nav a,.docs-nav-links a{min-height:44px;display:inline-flex;align-items:center}
+.doc-aside nav a{padding:7px 12px}
+.docs-nav-links{gap:0 16px}
+.doc-content p,.doc-content li,.doc-table td{overflow-wrap:break-word}
+}
+@media(prefers-contrast:more){
+.doc-content p,.doc-content li,.doc-table td,.aside-note,.doc-aside nav a{color:#dbe6f4}
+.doc-callout,.doc-step,.doc-table-wrap,.entry-card,.doc-aside{border-color:#9bb0cc}
+.doc-content a{text-decoration:underline;text-underline-offset:3px}
+}
+@media(forced-colors:active){
+.arch-row{fill:Canvas;stroke:CanvasText}.arch-title,.arch-sub,.arch-head{fill:CanvasText}
+.arch-svg{border-color:CanvasText;background:Canvas}
+.arch-filter button,.doc-copy{border:1px solid ButtonText}
+.arch-filter button[aria-pressed="true"]{background:Highlight;color:HighlightText}
+.skip-link{background:Canvas;color:LinkText;border:1px solid LinkText}
+}
+@media(prefers-reduced-motion:reduce){.lay{transition:none}.doc-tile:hover{transform:none}}
+</style>
+<script defer src="../script.js"></script></head><body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="docs-nav"><div class="docs-container docs-nav-inner"><a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a><nav class="docs-nav-links" aria-label="Documentation navigation"><a href="../">Website</a><a href="./">Docs</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/robo-resilience-lab">Source on GitHub ↗</a></nav></div></header>
 <div class="docs-container docs-main"><aside class="doc-aside" aria-label="Documentation sections"><span class="aside-title">FIELD GUIDE / INDEX</span><nav aria-label="Documentation pages"><a href="./">Documentation</a><a href="./getting-started.html">Getting started</a><a href="./architecture.html" aria-current="page">Architecture</a><a href="./lab-paths.html">Learning paths</a><a href="./contribute.html">Contribute</a></nav><div class="aside-divider"></div><p class="aside-note">Educational &amp; research lab. The historical Vagrant profile and Jazzy container have different verification boundaries.</p></aside>
 <main class="doc-content" id="main" tabindex="-1"><div class="doc-crumbs"><a href="../">Lab</a><span>/</span><a href="./">Docs</a><span>/</span>ROS 2 Kubernetes architecture</div><div class="doc-kicker" style="margin-top:29px">PRACTICAL FIELD GUIDE</div><h1>ROS 2 Kubernetes architecture</h1><p class="lead">Understand the layers of a local robotics infrastructure lab, from Ubuntu virtual machines and kubeadm to ROS 2 DDS discovery and monitoring, without confusing planned integrations with proven behavior.</p>
 <div class="doc-badges"><span class="doc-badge legacy">VAGRANT CLUSTER / HISTORICAL</span><span class="doc-badge">JAZZY IMAGE / SEPARATE</span></div>
+<h2 id="layers">Layers at a glance</h2>
+<p>Read each group from the top row down: a row runs on the rows below it. Line style and the group label carry the status, not colour alone. The diagram is conceptual; it is not a live cluster view.</p>
+<figure class="arch-fig arch-figure" id="arch-figure" data-show="all" style="margin-inline:0">
+<svg class="arch-svg" viewBox="0 0 440 780" role="img" aria-labelledby="arch-t arch-d" focusable="false">
+<title id="arch-t">Layered view of the lab: current baseline, historical profile, and what is not established</title>
+<desc id="arch-d">Three groups. Rows higher in a group run on the rows below them. Current baseline: ROS 2 Jazzy talker and listener, the Jazzy container image with an image-local smoke test, and a three-node kind cluster with one recorded run. Historical and not re-validated: legacy workloads, Prometheus and Grafana monitoring, Weave Net, Kubernetes 1.29 with kubeadm, and three Vagrant VirtualBox VMs. Not established: cross-worker DDS on the Vagrant profile, and production, real-time or safety-critical use.</desc>
+<g class="lay lay-cur">
+<text class="arch-head arch-head-cur" x="12" y="27">CURRENT BASELINE</text>
+<rect class="arch-row arch-row-cur" x="10" y="38" width="420" height="58" rx="9"/>
+<text class="arch-title" x="26" y="62">ROS 2 Jazzy talker / listener</text>
+<text class="arch-sub" x="26" y="84">demo_nodes_cpp on Ubuntu 24.04</text>
+<rect class="arch-row arch-row-cur" x="10" y="104" width="420" height="58" rx="9"/>
+<text class="arch-title" x="26" y="128">Container image</text>
+<text class="arch-sub" x="26" y="150">ROS2/Dockerfile · image-local smoke test</text>
+<rect class="arch-row arch-row-cur" x="10" y="170" width="420" height="58" rx="9"/>
+<text class="arch-title" x="26" y="194">kind cluster: 1 control plane + 2 workers</text>
+<text class="arch-sub" x="26" y="216">Fast DDS Discovery Server · one recorded run</text>
+</g>
+<g class="lay lay-hist">
+<text class="arch-head arch-head-hist" x="12" y="263">HISTORICAL · NOT RE-VALIDATED</text>
+<rect class="arch-row arch-row-hist" x="10" y="274" width="420" height="58" rx="9"/>
+<text class="arch-title" x="26" y="298">Workloads: stress-ng, ROS 2 Foxy YAML</text>
+<text class="arch-sub" x="26" y="320">ROS2/ros_dep_*.yaml · no talker/listener starts</text>
+<rect class="arch-row arch-row-hist" x="10" y="340" width="420" height="58" rx="9"/>
+<text class="arch-title" x="26" y="364">Monitoring: Prometheus + Grafana</text>
+<text class="arch-sub" x="26" y="386">MonitoringSystem/ · historical setup</text>
+<rect class="arch-row arch-row-hist" x="10" y="406" width="420" height="58" rx="9"/>
+<text class="arch-title" x="26" y="430">CNI: Weave Net</text>
+<text class="arch-sub" x="26" y="452">Network/ · historical choice</text>
+<rect class="arch-row arch-row-hist" x="10" y="472" width="420" height="58" rx="9"/>
+<text class="arch-title" x="26" y="496">Kubernetes 1.29 via kubeadm</text>
+<text class="arch-sub" x="26" y="518">KubernetesClusterSetup/</text>
+<rect class="arch-row arch-row-hist" x="10" y="538" width="420" height="58" rx="9"/>
+<text class="arch-title" x="26" y="562">Vagrant + VirtualBox, 3 Ubuntu 22.04 VMs</text>
+<text class="arch-sub" x="26" y="584">Vagrantfile · ~30 GB RAM, 18 vCPUs requested</text>
+</g>
+<g class="lay lay-ne">
+<text class="arch-head arch-head-ne" x="12" y="631">NOT ESTABLISHED</text>
+<rect class="arch-row arch-row-ne" x="10" y="642" width="420" height="58" rx="9"/>
+<text class="arch-title" x="26" y="666">Cross-worker DDS on the Vagrant profile</text>
+<text class="arch-sub" x="26" y="688">no evidence for Weave Net + Foxy</text>
+<rect class="arch-row arch-row-ne" x="10" y="708" width="420" height="58" rx="9"/>
+<text class="arch-title" x="26" y="732">Production, real-time or safety-critical use</text>
+<text class="arch-sub" x="26" y="754">not claimed and not tested</text>
+</g>
+</svg>
+<figcaption class="arch-side"><h3>How to read it</h3>
+<ul class="arch-legend"><li><span class="sw" aria-hidden="true"></span><span><strong>Current baseline</strong> (solid outline). What the repository tests today: an image-local smoke test and a kind profile with a delivery check that its guide records running once.</span></li><li><span class="sw sw-hist" aria-hidden="true"></span><span><strong>Historical</strong> (dashed outline). Kept for study. Kubernetes 1.29, ROS 2 Foxy and Weave Net were not re-validated for this page.</span></li><li><span class="sw sw-ne" aria-hidden="true"></span><span><strong>Not established</strong> (dotted outline). No evidence is checked in, so the lab makes no claim.</span></li></ul>
+<div class="arch-filter" data-layer-filter="arch-figure" role="group" aria-label="Highlight one group in the diagram" hidden><button type="button" data-show="all" aria-pressed="true">All</button><button type="button" data-show="current" aria-pressed="false">Current</button><button type="button" data-show="hist" aria-pressed="false">Historical</button><button type="button" data-show="ne" aria-pressed="false">Not established</button></div>
+</figcaption></figure>
+<div class="doc-table-wrap" tabindex="0" role="region" aria-label="Layer-by-layer evidence table"><table class="doc-table"><caption class="doc-sr-only">Each layer with its status, the files that document it, and what not to infer</caption><thead><tr><th scope="col">Layer</th><th scope="col">Status</th><th scope="col">Where to inspect it</th><th scope="col">Do not infer</th></tr></thead><tbody><tr><th scope="row">ROS 2 Jazzy talker / listener</th><td>Current baseline</td><td><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/ROS2/Dockerfile">ROS2/Dockerfile</a>, <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/scripts/test-ros2-image.sh">scripts/test-ros2-image.sh</a></td><td>Anything about clusters: the test runs two processes in one container.</td></tr><tr><th scope="row">kind cluster, 1 control plane + 2 workers</th><td>Current baseline · one recorded run</td><td><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/KIND-DEMO.md">docs/KIND-DEMO.md</a>, <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/kind/ros2k8s-demo.yaml">kind/ros2k8s-demo.yaml</a>, <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/scripts/verify-ros2.sh">scripts/verify-ros2.sh</a></td><td>That it works on your host, on arm64, macOS or Windows, or with another network plugin.</td></tr><tr><th scope="row">Vagrant VMs, Kubernetes 1.29, Weave Net</th><td>Historical</td><td><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/Vagrantfile">Vagrantfile</a>, <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/KubernetesClusterSetup/">KubernetesClusterSetup/</a>, <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/Network/">Network/</a></td><td>That a fresh install on a modern host works.</td></tr><tr><th scope="row">Workload YAML: stress-ng, ROS 2 Foxy</th><td>Historical</td><td><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/ROS2/">ROS2/</a> (ros_dep_*.yaml, legacy/)</td><td>That a ROS 2 talker and listener start automatically.</td></tr><tr><th scope="row">Prometheus, Grafana, analysis notebooks</th><td>Historical</td><td><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/MonitoringSystem/">MonitoringSystem/</a>, <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/DataAnalysis/">DataAnalysis/</a></td><td>Live or modern measurements.</td></tr><tr><th scope="row">Cross-worker DDS on the Vagrant profile</th><td>Not established</td><td><a href="https://github.com/MSKazemi/robo-resilience-lab/issues/14">issue #14</a></td><td>That it works, or that it fails: nothing checked in tests it.</td></tr><tr><th scope="row">Production, real-time or safety-critical use</th><td>Not claimed</td><td><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/DISCLAIMER.md">DISCLAIMER.md</a>, <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/SAFETY.md">SAFETY.md</a></td><td>Suitability for any real robot.</td></tr></tbody></table></div>
 <h2 id="topology">Three-node historical topology</h2><p>The Vagrantfile defines a VirtualBox private network with one Kubernetes control-plane VM and two worker VMs. These are <strong>Kubernetes nodes</strong> rather than ROS 2 application nodes. The control plane initializes kubeadm and workers join using a generated command.</p>
-<div class="doc-table-wrap"><table class="doc-table"><thead><tr><th>VM</th><th>Role</th><th>IP</th><th>vCPUs</th><th>RAM</th></tr></thead><tbody>
+<div class="doc-table-wrap" tabindex="0" role="region" aria-label="Historical Vagrant VM sizing table"><table class="doc-table"><caption class="doc-sr-only">VM names, roles, IP addresses, vCPUs and RAM from the Vagrantfile</caption><thead><tr><th scope="col">VM</th><th scope="col">Role</th><th scope="col">IP</th><th scope="col">vCPUs</th><th scope="col">RAM</th></tr></thead><tbody>
 <tr><td><code>controlplane</code></td><td>Control plane</td><td>192.168.56.10</td><td>14</td><td>18,240 MB</td></tr>
 <tr><td><code>worker1</code></td><td>Worker</td><td>192.168.56.11</td><td>2</td><td>6,096 MB</td></tr>
 <tr><td><code>worker2</code></td><td>Worker</td><td>192.168.56.12</td><td>2</td><td>6,096 MB</td></tr>
@@ -21,11 +149,11 @@ Kubernetes ↔ networking/CNI ↔ application pods
 Monitoring examples ↔ Prometheus / Grafana
 Historical data      ↔ Python / Jupyter</code></pre><p>Illustrates component relationships, not a verified active cluster.</p></div>
 <h2 id="dds">ROS 2 messaging and DDS networking</h2>
-<p>ROS 2 applications exchange messages through a middleware implementation (RMW), often using DDS discovery and transport. <strong>Default multicast discovery is not guaranteed across Kubernetes CNI implementations.</strong> Discovery modes depend on your RMW and configuration; alternatives include an explicit Fast DDS Discovery Server.</p>
+<p>ROS 2 applications exchange messages through a middleware implementation (RMW), often using DDS discovery and transport. <strong>Default multicast discovery is not guaranteed across Kubernetes CNI implementations.</strong> Discovery modes depend on your RMW and configuration; alternatives include an explicit Fast DDS Discovery Server. In the kind profile's recorded run, default multicast discovery did not deliver messages and the Discovery Server did; the <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/KIND-DEMO.md#dds-discovery-findings-what-was-tested">findings table</a> has the details and limits.</p>
 <p>The original lab installs historical Weave Net. A modern networking experiment should test pod-to-pod connectivity, DNS or advertised locator reachability, discovery mode, UDP transport, namespace isolation and restart behavior on distinct worker nodes. See the <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/ROS2-KUBERNETES-DDS-GUIDE.md">repository DDS troubleshooting guide</a> and <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/15">network modernization issue #15</a>.</p>
 <h2 id="containers">Jazzy image and legacy workload manifests</h2>
 <p>The modern <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/ROS2/Dockerfile">Dockerfile</a> uses ROS 2 Jazzy / Ubuntu 24.04 and demo nodes. The automated smoke script checks two processes in the same container. The historical root-level Kubernetes YAML uses <code>stress-ng</code> and does not auto-launch a cross-worker ROS 2 talker/listener.</p>
-<div class="doc-callout warning"><h3>A smoke test is not an integration test</h3><p>No checked-in test in the current version proves message delivery across two different Kubernetes workers. Release gates for such a claim are tracked in <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/14">#14</a>.</p></div>
+<div class="doc-callout warning"><h3>A smoke test is not an integration test</h3><p>The image smoke test checks two processes inside one container. The separate kind profile on <code>main</code> adds a script that checks delivery across two workers, and its guide records one run on one host (<a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/KIND-DEMO.md">kind demo guide</a>). Nothing checked in tests the historical Vagrant and Weave Net profile. Open questions are tracked in <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/14">#14</a>.</p></div>
 <h2 id="observability">Monitoring and experimentation</h2>
 <p>Monitoring scripts and configuration for Prometheus, Grafana, Metrics Server and the Kubernetes Dashboard exist as historical educational references. The separate DataAnalysis directory contains Python and Jupyter analysis over historical metrics; those plots are not measurements of a new modern cluster.</p>
 <p>Study the source in <a href="https://github.com/MSKazemi/robo-resilience-lab/tree/main/MonitoringSystem">MonitoringSystem</a> and <a href="https://github.com/MSKazemi/robo-resilience-lab/tree/main/DataAnalysis">DataAnalysis</a>. Security hardening, maintained UI replacements and credible end-to-end measurements remain tracked in the <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/ROADMAP-2026.md">roadmap</a>.</p>
