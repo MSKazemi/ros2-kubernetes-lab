@@ -9,7 +9,7 @@
 <meta name="description" content="Proposal, not benchmarked: a synthetic ROS 2 edge/cloud AI placement study with deterministic constraints and optional Jev advisory rankings.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Mohsen Seyedkazemi Ardebili">
-<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/scenarios/edge-cloud-inference.html">
+<link rel="canonical" href="https://mskazemi.com/robo-resilience-lab/scenarios/edge-cloud-inference.html">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,30 +20,32 @@
 <link rel="stylesheet" href="../assets/anim/s2-edge-cloud.css">
 <script defer src="../assets/lab-anim.js"></script>
 <script defer src="../assets/scenarios.js"></script>
+<link rel="stylesheet" href="assets/explain/explain.css">
+<script defer src="assets/explain/explain.js"></script>
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ROS 2 Kubernetes Lab">
 <meta property="og:title" content="Edge vs Cloud Robotics AI | Jev Placement Experiments">
 <meta property="og:description" content="Proposal, not benchmarked: a synthetic ROS 2 edge/cloud AI placement study with deterministic constraints and optional Jev advisory rankings.">
-<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/scenarios/edge-cloud-inference.html">
-<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:url" content="https://mskazemi.com/robo-resilience-lab/scenarios/edge-cloud-inference.html">
+<meta property="og:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png">
 <meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Edge vs Cloud Robotics AI | Jev Placement Experiments">
 <meta name="twitter:description" content="Proposal, not benchmarked: a synthetic ROS 2 edge/cloud AI placement study with deterministic constraints and optional Jev advisory rankings.">
-<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Edge vs Cloud Robotics AI | Jev Placement Experiments","headline":"Edge vs Cloud Robotics AI | Jev Placement Experiments","description":"Design a network-aware ROS 2 edge/cloud AI inference placement study with Jev advisory rankings, deterministic constraints and reproducible latency experiments.","url":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/edge-cloud-inference.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/"},{"@type":"ListItem","position":3,"name":"Edge/cloud placement","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/edge-cloud-inference.html"}]}]}</script>
+<meta name="twitter:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Edge vs Cloud Robotics AI | Jev Placement Experiments","headline":"Edge vs Cloud Robotics AI | Jev Placement Experiments","description":"Design a network-aware ROS 2 edge/cloud AI inference placement study with Jev advisory rankings, deterministic constraints and reproducible latency experiments.","url":"https://mskazemi.com/robo-resilience-lab/scenarios/edge-cloud-inference.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/robo-resilience-lab/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/robo-resilience-lab/scenarios/"},{"@type":"ListItem","position":3,"name":"Edge/cloud placement","item":"https://mskazemi.com/robo-resilience-lab/scenarios/edge-cloud-inference.html"}]}]}</script>
 </head><body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="docs-nav"><div class="sc-shell docs-nav-inner">
 <a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
-<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/robo-resilience-lab/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
 <section class="sc-hero"><div class="sc-shell sc-hero-inner">
 <div><nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Scenarios</a><span>/</span>Edge/cloud placement</nav>
 <span class="sc-kicker">SCENARIO 02 · P2 / NETWORK RESEARCH</span>
 <h1>Edge vs Cloud AI Inference Placement for ROS 2</h1>
 <p class="sc-lead">Which AI workload belongs on a robot, at a nearby edge service, or in Kubernetes? Compare feasibility filters with Jev&#39;s structured advice under unreliable networks.</p>
 <div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · not benchmarked</span><span class="sc-pill">MSc → PhD</span><span class="sc-pill">Start with synthetic inputs</span></div>
-<div class="sc-actions"><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/85">Collaborate on issue #85 ↗</a><a class="sc-link-button sc-link-button--ghost" href="./results.html">View evidence registry</a></div>
+<div class="sc-actions"><a class="sc-link-button" href="https://github.com/MSKazemi/robo-resilience-lab/issues/85">Collaborate on issue #85 ↗</a><a class="sc-link-button sc-link-button--ghost" href="./results.html">View evidence registry</a></div>
 </div><div class="sc-visual">
 <div class="sc-visual-header"><span>CONCEPTUAL WORKFLOW / NOT LIVE</span><b>ROBOTICS · CLOUD · AI</b></div>
 <svg class="sc-motif" viewBox="0 0 500 240" aria-hidden="true" focusable="false">
@@ -125,6 +127,270 @@
 <div class="sc-panel"><h3>Audience & learning targets</h3><p><strong>Edge AI · systems researchers · Kubernetes</strong> · MSc → PhD · Start with synthetic inputs</p><ul class="sc-mini-list"><li>Separate compute placement policy from hard real-time robot control.</li><li>Apply numeric deadlines, data residency and memory bounds in code.</li><li>Design repeatable RTT, jitter, loss, disconnect and recovery profiles.</li><li>Collect action age, availability and cost without invented benchmarks.</li></ul></div>
 </div>
 </div></section>
+<!-- xp:begin (generated from storyboards.py; edit that, or edit this block by hand) -->
+<section class="sc-section" id="explain" aria-labelledby="xp-title"><div class="sc-shell">
+<span class="sc-overline">Interactive explanation</span>
+<h2 id="xp-title">Step through one placement decision and see what gets rejected</h2>
+<p class="sc-intro">A robot request has a deadline. Plain code decides whether the model runs locally or on a remote service, and a non-actuating sink then accepts or rejects each answer. The five cases follow the logic of the deterministic simulator in experiments/edge-cloud-placement. The numbers are small declared inputs chosen for teaching. They are not simulator output and not measurements.</p>
+<div class="xp" data-xp id="xp-player" role="group" aria-labelledby="xp-title" data-scenario="s2">
+<ul class="xp-badges" aria-label="Status of this explanation">
+<li class="xp-badge xp-badge--status">Status: simulated</li>
+<li class="xp-badge xp-badge--sim">Storyboard: illustrative, hand-authored</li>
+<li class="xp-badge xp-badge--na">Measured results: N/A (not run)</li>
+<li class="xp-badge">Registry status: planned, nothing measured</li>
+</ul>
+<ol class="xp-flow" aria-label="Pipeline stages, left to right">
+<li data-stage="request" data-kind="data"><span class="xp-kind">data</span><b>Request</b><span class="xp-mark" aria-hidden="true"></span></li>
+<li data-stage="eligibility" data-kind="code"><span class="xp-kind">plain code</span><b>Eligibility</b><span class="xp-mark" aria-hidden="true"></span></li>
+<li data-stage="policy" data-kind="code"><span class="xp-kind">plain code</span><b>Placement policy</b><span class="xp-mark" aria-hidden="true"></span></li>
+<li data-stage="advisor" data-kind="advisory"><span class="xp-kind">advisory only, optional</span><b>Advisory model</b><span class="xp-mark" aria-hidden="true"></span></li>
+<li data-stage="sink" data-kind="code"><span class="xp-kind">plain code</span><b>Non-actuating sink</b><span class="xp-mark" aria-hidden="true"></span></li>
+</ol>
+<article class="xp-case" id="xp-case-predicted-fit" data-title="Predicted fit: remote" data-tag="accepted" data-tag-label="Remote, accepted">
+<h3>Predicted fit: remote</h3>
+<p class="xp-lede">The remote service is eligible and the predicted round trip fits inside the deadline, so the deadline-aware policy sends the request there.</p>
+<table class="xp-inputs"><caption>Declared inputs (made up for teaching, not measured)</caption><tbody>
+<tr><th scope="row">policy</th><td data-input><code>deadline_aware</code></td></tr>
+<tr><th scope="row">deadline_ms</th><td data-input>300 ms</td></tr>
+<tr><th scope="row">remote model_memory_mb</th><td data-input>8192 MB</td></tr>
+<tr><th scope="row">remote free memory</th><td data-input>16384 MB</td></tr>
+<tr><th scope="row">predicted round trip (EWMA)</th><td data-input>100 ms</td></tr>
+<tr><th scope="row">margin_ms</th><td data-input>20 ms</td></tr>
+<tr><th scope="row">predicted plus margin (by hand)</th><td data-input>120 ms</td></tr>
+<tr><th scope="row">remote answer arrives at</th><td data-input>130 ms</td></tr>
+</tbody></table>
+<ol class="xp-steps">
+<li class="xp-step" data-stage="request" data-outcome="info">
+<h4>A request arrives with a deadline <span class="xp-out">info</span></h4>
+<p>The request has a 300 ms budget, counted from capture.</p>
+<pre>deadline_ms: 300</pre>
+</li>
+<li class="xp-step" data-stage="eligibility" data-outcome="pass">
+<h4>The remote service is eligible <span class="xp-out">passed</span></h4>
+<p>16384 MB are free and the model needs 8192 MB, so the remote can take it, as far as the policy knows.</p>
+<pre>remote: 16384 MB free, needs 8192 MB</pre>
+</li>
+<li class="xp-step" data-stage="policy" data-outcome="pass">
+<h4>The prediction fits the budget <span class="xp-out">passed</span></h4>
+<p>Predicted round trip 100 ms plus a 20 ms margin is 120 ms, which is within 300 ms. The route is remote, reason predicted_fit.</p>
+<pre>route: remote (predicted_fit)</pre>
+</li>
+<li class="xp-step" data-stage="advisor" data-outcome="na">
+<h4>Optional advisory model: not run <span class="xp-out">N/A (not run)</span></h4>
+<p>It is not part of the simulator. Advice could not make an ineligible remote eligible.</p>
+</li>
+<li class="xp-step" data-stage="sink" data-outcome="pass">
+<h4>The sink accepts the first answer <span class="xp-out">passed</span></h4>
+<p>The answer arrives at 130 ms, before the deadline, and nobody has answered yet. The sink records would_apply with actuated: false.</p>
+<pre>decision: would_apply
+actuated: false</pre>
+</li>
+</ol>
+<p class="xp-verdict" data-kind="accepted"><strong>Outcome: accepted</strong> Remote placement accepted by plain code. No action was applied to anything: the sink only records would_apply.</p>
+</article>
+<article class="xp-case" id="xp-case-predicted-miss" data-title="Predicted miss: local" data-tag="accepted" data-tag-label="Local, accepted">
+<h3>Predicted miss: local</h3>
+<p class="xp-lede">Earlier timeouts raised the round-trip estimate. It no longer fits the deadline, and no probe is due, so the policy keeps the request on the robot.</p>
+<table class="xp-inputs"><caption>Declared inputs (made up for teaching, not measured)</caption><tbody>
+<tr><th scope="row">policy</th><td data-input><code>deadline_aware</code></td></tr>
+<tr><th scope="row">deadline_ms</th><td data-input>300 ms</td></tr>
+<tr><th scope="row">remote</th><td data-input>eligible</td></tr>
+<tr><th scope="row">predicted round trip (EWMA)</th><td data-input>320 ms (raised by earlier timeouts)</td></tr>
+<tr><th scope="row">margin_ms</th><td data-input>20 ms</td></tr>
+<tr><th scope="row">predicted plus margin (by hand)</th><td data-input>340 ms</td></tr>
+<tr><th scope="row">time since last remote send</th><td data-input>400 ms</td></tr>
+<tr><th scope="row">probe_interval_ms</th><td data-input>1000 ms</td></tr>
+<tr><th scope="row">local compute</th><td data-input>150 ms</td></tr>
+</tbody></table>
+<ol class="xp-steps">
+<li class="xp-step" data-stage="request" data-outcome="info">
+<h4>A request arrives with a deadline <span class="xp-out">info</span></h4>
+<p>The budget is 300 ms.</p>
+<pre>deadline_ms: 300</pre>
+</li>
+<li class="xp-step" data-stage="eligibility" data-outcome="pass">
+<h4>The remote is eligible <span class="xp-out">passed</span></h4>
+<p>Eligibility alone does not send the request there.</p>
+</li>
+<li class="xp-step" data-stage="policy" data-outcome="reject">
+<h4>The remote does not fit, so it is rejected <span class="xp-out">rejected</span></h4>
+<p>Predicted 320 ms plus a 20 ms margin is 340 ms, above 300 ms. The last remote send was 400 ms ago, so the 1000 ms probe interval has not passed and no probe is sent. The route is local, reason predicted_miss.</p>
+<pre>route: local (predicted_miss)</pre>
+</li>
+<li class="xp-step" data-stage="advisor" data-outcome="na">
+<h4>Optional advisory model: not run <span class="xp-out">N/A (not run)</span></h4>
+<p>The policy decided without it.</p>
+</li>
+<li class="xp-step" data-stage="sink" data-outcome="pass">
+<h4>The sink accepts the local answer <span class="xp-out">passed</span></h4>
+<p>Local compute takes 150 ms, inside the deadline. Decision: would_apply.</p>
+<pre>decision: would_apply</pre>
+</li>
+</ol>
+<p class="xp-verdict" data-kind="accepted"><strong>Outcome: accepted</strong> Local placement accepted. The estimate can recover later because a probe is allowed once the probe interval has passed.</p>
+</article>
+<article class="xp-case" id="xp-case-remote-reject" data-title="Remote says no: explicit reject" data-tag="rejected" data-tag-label="Remote rejected">
+<h3>Remote says no: explicit reject</h3>
+<p class="xp-lede">The policy&#x27;s view of the remote is out of date. The remote refuses because it has too little memory, and the hedged policy falls back to the robot.</p>
+<table class="xp-inputs"><caption>Declared inputs (made up for teaching, not measured)</caption><tbody>
+<tr><th scope="row">policy</th><td data-input><code>hedged_fallback</code></td></tr>
+<tr><th scope="row">deadline_ms</th><td data-input>300 ms</td></tr>
+<tr><th scope="row">remote model_memory_mb</th><td data-input>8192 MB</td></tr>
+<tr><th scope="row">remote free memory before the drop</th><td data-input>16384 MB</td></tr>
+<tr><th scope="row">remote free memory now</th><td data-input>4096 MB</td></tr>
+<tr><th scope="row">memory dropped</th><td data-input>300 ms ago</td></tr>
+<tr><th scope="row">advert_lag_ms</th><td data-input>500 ms</td></tr>
+<tr><th scope="row">remote reject arrives at</th><td data-input>70 ms</td></tr>
+<tr><th scope="row">local answer arrives at</th><td data-input>230 ms</td></tr>
+</tbody></table>
+<ol class="xp-steps">
+<li class="xp-step" data-stage="request" data-outcome="info">
+<h4>A request arrives with a deadline <span class="xp-out">info</span></h4>
+<p>The budget is 300 ms.</p>
+<pre>deadline_ms: 300</pre>
+</li>
+<li class="xp-step" data-stage="eligibility" data-outcome="reject">
+<h4>The remote refuses: not enough memory <span class="xp-out">rejected</span></h4>
+<p>Memory dropped 300 ms ago, but the capability advertisement lags by 500 ms, so the policy still saw 16384 MB. The remote has 4096 MB and needs 8192 MB, so it rejects at 70 ms with ineligible_memory.</p>
+<pre>remote reply: reject
+reason: ineligible_memory</pre>
+</li>
+<li class="xp-step" data-stage="policy" data-outcome="pass">
+<h4>The hedged policy launches the local fallback <span class="xp-out">passed</span></h4>
+<p>After the explicit reject the policy starts the local copy at once and holds the remote back for the probe interval.</p>
+<pre>route: local (fallback)</pre>
+</li>
+<li class="xp-step" data-stage="advisor" data-outcome="na">
+<h4>Optional advisory model: not run <span class="xp-out">N/A (not run)</span></h4>
+<p>It cannot add free memory to the remote.</p>
+</li>
+<li class="xp-step" data-stage="sink" data-outcome="pass">
+<h4>The sink accepts the fallback answer <span class="xp-out">passed</span></h4>
+<p>The local answer arrives at 230 ms, before the 300 ms deadline. Decision: would_apply, marked as a fallback.</p>
+<pre>decision: would_apply
+fallback: true</pre>
+</li>
+</ol>
+<p class="xp-verdict" data-kind="rejected"><strong>Outcome: rejected</strong> The remote placement was rejected for memory. The request still met its deadline through the local fallback.</p>
+</article>
+<article class="xp-case" id="xp-case-duplicate-answer" data-title="Duplicate answer: second one rejected" data-tag="rejected" data-tag-label="Late copy rejected">
+<h3>Duplicate answer: second one rejected</h3>
+<p class="xp-lede">Both the remote and the local fallback answer. The first accepted answer wins, and the second is refused even though it arrived before the deadline.</p>
+<table class="xp-inputs"><caption>Declared inputs (made up for teaching, not measured)</caption><tbody>
+<tr><th scope="row">policy</th><td data-input><code>hedged_fallback</code></td></tr>
+<tr><th scope="row">deadline_ms</th><td data-input>300 ms</td></tr>
+<tr><th scope="row">hedge timer fires at</th><td data-input>110 ms</td></tr>
+<tr><th scope="row">local answer arrives at</th><td data-input>270 ms</td></tr>
+<tr><th scope="row">remote answer arrives at</th><td data-input>285 ms</td></tr>
+</tbody></table>
+<ol class="xp-steps">
+<li class="xp-step" data-stage="request" data-outcome="info">
+<h4>A request arrives with a deadline <span class="xp-out">info</span></h4>
+<p>The budget is 300 ms.</p>
+<pre>deadline_ms: 300</pre>
+</li>
+<li class="xp-step" data-stage="policy" data-outcome="pass">
+<h4>The remote is tried, and a hedge is armed <span class="xp-out">passed</span></h4>
+<p>The remote has not answered when the hedge timer fires at 110 ms, so the local fallback starts in parallel.</p>
+<pre>hedge: local fallback at 110 ms</pre>
+</li>
+<li class="xp-step" data-stage="advisor" data-outcome="na">
+<h4>Optional advisory model: not run <span class="xp-out">N/A (not run)</span></h4>
+<p>The timer, not a model, decides when to hedge.</p>
+</li>
+<li class="xp-step" data-stage="sink" data-outcome="pass">
+<h4>The local answer is accepted first <span class="xp-out">passed</span></h4>
+<p>It arrives at 270 ms, within the deadline. Decision: would_apply.</p>
+<pre>decision: would_apply</pre>
+</li>
+<li class="xp-step" data-stage="sink" data-outcome="reject">
+<h4>The remote answer is rejected as a duplicate <span class="xp-out">rejected</span></h4>
+<p>It arrives at 285 ms, also within the deadline, but this request is already applied. The sink checks for duplicates before lateness.</p>
+<pre>decision: rejected
+reason: duplicate_response_id</pre>
+</li>
+</ol>
+<p class="xp-verdict" data-kind="rejected"><strong>Outcome: rejected</strong> One action is applied per request. The slower copy is rejected with duplicate_response_id.</p>
+</article>
+<article class="xp-case" id="xp-case-local-only" data-title="Local-only request: remote answer rejected" data-tag="rejected" data-tag-label="Source not allowed">
+<h3>Local-only request: remote answer rejected</h3>
+<p class="xp-lede">The request must stay on the robot. The remote is never asked, and an unexpected remote answer is rejected by the sink.</p>
+<table class="xp-inputs"><caption>Declared inputs (made up for teaching, not measured)</caption><tbody>
+<tr><th scope="row">request local_only</th><td data-input>true</td></tr>
+<tr><th scope="row">deadline_ms</th><td data-input>300 ms</td></tr>
+<tr><th scope="row">local compute</th><td data-input>150 ms</td></tr>
+<tr><th scope="row">unexpected remote answer arrives at</th><td data-input>100 ms</td></tr>
+</tbody></table>
+<ol class="xp-steps">
+<li class="xp-step" data-stage="request" data-outcome="info">
+<h4>A request that must stay local arrives <span class="xp-out">info</span></h4>
+<p>The local_only flag is set. The deadline is 300 ms.</p>
+<pre>local_only: true</pre>
+</li>
+<li class="xp-step" data-stage="eligibility" data-outcome="reject">
+<h4>The remote is ruled out up front <span class="xp-out">rejected</span></h4>
+<p>A local_only request never considers the remote. No remote request is sent.</p>
+<pre>remote: not considered</pre>
+</li>
+<li class="xp-step" data-stage="policy" data-outcome="pass">
+<h4>The route is local <span class="xp-out">passed</span></h4>
+<p>Reason: local_only.</p>
+<pre>route: local (local_only)</pre>
+</li>
+<li class="xp-step" data-stage="advisor" data-outcome="na">
+<h4>Optional advisory model: not run <span class="xp-out">N/A (not run)</span></h4>
+<p>Advice cannot override local_only.</p>
+</li>
+<li class="xp-step" data-stage="sink" data-outcome="reject">
+<h4>A stray remote answer is rejected <span class="xp-out">rejected</span></h4>
+<p>An unexpected answer from the remote arrives at 100 ms. The sink rejects it with ineligible_source before the local answer arrives.</p>
+<pre>decision: rejected
+reason: ineligible_source</pre>
+</li>
+<li class="xp-step" data-stage="sink" data-outcome="pass">
+<h4>The local answer is accepted <span class="xp-out">passed</span></h4>
+<p>Local compute takes 150 ms, within the 300 ms deadline. Decision: would_apply.</p>
+<pre>decision: would_apply</pre>
+</li>
+</ol>
+<p class="xp-verdict" data-kind="rejected"><strong>Outcome: rejected</strong> The remote source was rejected for a local_only request. The local answer was accepted.</p>
+</article>
+</div>
+<div class="xp-grid">
+<section class="xp-card xp-card--wide" aria-labelledby="xp-rej"><h3 id="xp-rej">What gets rejected, and why</h3>
+<p>Each row is a negative case in the storyboard above. Reason names are proposals for this study, not an implemented interface, unless the simulator source below defines them.</p>
+<div class="xp-tablewrap"><table class="xp-table"><caption>Rejections in the storyboard</caption><thead><tr><th scope="col">Case</th><th scope="col">Stopped at</th><th scope="col">Reason</th><th scope="col">What it guards against</th></tr></thead><tbody>
+<tr><th scope="row"><a href="#xp-case-predicted-miss" data-xp-pick="xp-case-predicted-miss">Predicted miss: local</a></th><td>Placement policy</td><td>predicted_miss: the remote does not fit the deadline.</td><td>A remote answer that would probably be late.</td></tr>
+<tr><th scope="row"><a href="#xp-case-remote-reject" data-xp-pick="xp-case-remote-reject">Remote says no: explicit reject</a></th><td>Eligibility</td><td>ineligible_memory: reported by the remote.</td><td>A remote with too little memory for the model.</td></tr>
+<tr><th scope="row"><a href="#xp-case-duplicate-answer" data-xp-pick="xp-case-duplicate-answer">Duplicate answer: second one rejected</a></th><td>Sink</td><td>duplicate_response_id</td><td>A second answer for an already-applied request.</td></tr>
+<tr><th scope="row"><a href="#xp-case-local-only" data-xp-pick="xp-case-local-only">Local-only request: remote answer rejected</a></th><td>Eligibility and sink</td><td>local_only, then ineligible_source</td><td>Any remote involvement in a request that must stay local.</td></tr>
+</tbody></table></div></section>
+<section class="xp-card" aria-labelledby="xp-protocol"><h3 id="xp-protocol">Experimental protocol</h3><ol>
+<li>Fix the request stream, the deadlines and the network profile in a config file before running anything. Every parameter there is declared, not measured.</li>
+<li>Run all policies on the same seeded request stream, so differences come from the policy.</li>
+<li>Compare always_local, always_remote, deadline_aware and hedged_fallback on deadline misses and on the cause of each miss.</li>
+<li>Treat every number the simulator prints as SIMULATED. Real-network or real-robot evidence needs a separate, reviewed run.</li>
+</ol><p class="xp-note">The simulator never actuates anything: its sink only records would_apply or rejected. There are two sites only, the robot and one remote service, and no hold action: a request with no accepted answer is a deadline miss. Do not assume the remote wins. Under the simulator&#x27;s placeholder parameters, running locally is not worse than always going remote, and other parameters could change that ordering. The registry primary metric (sensor-to-valid-action p95) has no measured value. See also the <a href="#experiment">experiment blueprint</a> on this page.</p></section>
+<section class="xp-card" aria-labelledby="xp-metrics"><h3 id="xp-metrics">Measured values</h3>
+<div class="xp-tablewrap"><table class="xp-table"><caption>Every value is N/A until a reviewed run exists</caption><thead><tr><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Why</th></tr></thead><tbody>
+<tr><th scope="row">Sensor-to-valid-action p95 (registry primary metric)</th><td><span class="xp-na">N/A</span></td><td>No live measurement. Simulated values are not results.</td></tr>
+<tr><th scope="row">Deadline-miss rate on a real network</th><td><span class="xp-na">N/A</span></td><td>Not run.</td></tr>
+<tr><th scope="row">Local versus remote energy</th><td><span class="xp-na">N/A</span></td><td>Not measured.</td></tr>
+</tbody></table></div><p class="xp-note">See the <a href="./results.html">evidence registry</a>. Nothing on this page is a benchmark.</p></section>
+<section class="xp-card xp-card--wide" aria-labelledby="xp-sources"><h3 id="xp-sources">Where the real code and tests live</h3>
+<p>Paths are relative to the repository root and the links open the <code>main</code> branch on GitHub. A link resolves once the change that adds the path has been merged.</p>
+<ul class="xp-src">
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/experiments/edge-cloud-placement/placement_sim.py"><code>experiments/edge-cloud-placement/placement_sim.py</code></a><br>The deterministic simulator: policies, eligibility, non-actuating sink and its rejection reasons.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/experiments/edge-cloud-placement/configs/default.json"><code>experiments/edge-cloud-placement/configs/default.json</code></a><br>Declared SIMULATION parameters. Not measurements.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/experiments/edge-cloud-placement/tests/test_placement_sim.py"><code>experiments/edge-cloud-placement/tests/test_placement_sim.py</code></a><br>Unit tests, including negative cases.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/experiments/edge-cloud-placement/README.md"><code>experiments/edge-cloud-placement/README.md</code></a><br>How to run the simulator, with the config and report field tables.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/experiments/edge-cloud-placement/reports/default.summary.json"><code>experiments/edge-cloud-placement/reports/default.summary.json</code></a><br>A committed SIMULATION report for the placeholder config. Not a measurement.</li>
+<li>Live action-freshness benchmark: not run. It depends on a verified simulator link and network (issue #85). <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/85">Issue #85</a></li>
+</ul></section>
+</div>
+<p class="xp-note">Illustration only. The steps are fixed text written by hand. This page runs no model, sends no network request, publishes no ROS 2 message and moves no robot. Use the Pause decorative motion button near the top of the page to stop all motion; the player never starts by itself.</p>
+</div></section>
+<!-- xp:end -->
 <section class="sc-section sc-section--shade" id="interactive-trace"><div class="sc-shell">
 <span class="sc-overline">02 / Interactive walkthrough</span><h2>Follow an illustrative decision trace.</h2>
 <p class="sc-intro">Select a fabricated case and trace where conventional code, an optional Jev judgment, and human review belong. This animation is preauthored educational content: <strong>it performs no inference, no API call, and no robot action.</strong></p>
@@ -157,17 +423,17 @@
 <section class="sc-section sc-section--shade" id="results"><div class="sc-shell">
 <span class="sc-overline">04 / Evidence not marketing</span><h2>Current results: not measured.</h2>
 <div class="sc-detail-grid"><div class="sc-callout"><h3>No verified experiment results yet</h3><p>No Jev-vs-baseline accuracy, latency, energy, fairness or simulator task-success result is available for this scenario. The website does not fabricate graphs or sample performance numbers. Future evidence must include raw data and replay instructions.</p><a class="sc-link-button" href="./results.html">Open results registry ↗</a></div>
-<div class="sc-panel"><h3>Dependencies and research honesty</h3><p>Follow existing research work <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/62">#62</a> and the broader <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">scenario epic #83</a>. The legacy Vagrant/Foxy manifests and current Jazzy image-local test do not establish multi-worker DDS or physical robot integration.</p><p><strong>Safety:</strong> no actuator commands, unrestricted cluster operations, or vendor data collection from this static demonstration.</p></div></div>
+<div class="sc-panel"><h3>Dependencies and research honesty</h3><p>Follow existing research work <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/62">#62</a> and the broader <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/83">scenario epic #83</a>. The legacy Vagrant/Foxy manifests and current Jazzy image-local test do not establish multi-worker DDS or physical robot integration.</p><p><strong>Safety:</strong> no actuator commands, unrestricted cluster operations, or vendor data collection from this static demonstration.</p></div></div>
 </div></section>
 <section class="sc-section" id="contribute"><div class="sc-shell">
 <span class="sc-overline">05 / Open research collaboration</span><h2>Help turn the blueprint into evidence.</h2>
 <div class="sc-detail-grid">
-<div class="sc-callout"><h3>Join scenario 02</h3><p>Contributors can own a small, reviewable task: casebook, synthetic dataset, offline baseline, simulator test, reproducibility review or teaching guide. The issue includes a detailed Claude Code/Codex prompt, acceptance criteria and dependencies.</p><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/85">Contribute on GitHub issue #85 ↗</a></div>
+<div class="sc-callout"><h3>Join scenario 02</h3><p>Contributors can own a small, reviewable task: casebook, synthetic dataset, offline baseline, simulator test, reproducibility review or teaching guide. The issue includes a detailed Claude Code/Codex prompt, acceptance criteria and dependencies.</p><a class="sc-link-button" href="https://github.com/MSKazemi/robo-resilience-lab/issues/85">Contribute on GitHub issue #85 ↗</a></div>
 <div class="sc-panel"><h3>Technical references</h3><ul><li><a href="https://huggingface.co/docs/lerobot/main/remote_inference">LeRobot remote inference</a></li>
 <li><a href="https://docs.typesafe.ai/introduction">Jev primitives</a></li>
-<li><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/62">Research prerequisite #62</a></li></ul><p>Review <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/73">Jev research umbrella #73</a>, <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">scenario epic #83</a> and the <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/AGENTS.md">repository agent instructions</a>. No vendor endorsement or measured success is implied.</p></div></div>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/issues/62">Research prerequisite #62</a></li></ul><p>Review <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/73">Jev research umbrella #73</a>, <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/83">scenario epic #83</a> and the <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/AGENTS.md">repository agent instructions</a>. No vendor endorsement or measured success is implied.</p></div></div>
 <h2 id="more" style="margin-top:70px">Continue exploring</h2><div class="sc-grid sc-grid--3"><a class="sc-card sc-card--link" href="./ros2-fault-triage.html"><span class="sc-card-index">SCENARIO 01</span><h3>Fault triage</h3><p>A listener stops receiving messages. Is the cause DDS discovery, QoS, networking or resource pressure? Build a transparent diagnostic comparison without touching a robot.</p><span class="sc-card-cta">Explore Fault triage</span></a>
 <a class="sc-card sc-card--link" href="./robot-agent-safety.html"><span class="sc-card-index">SCENARIO 03</span><h3>Agent skill screening</h3><p>An LLM proposes a robot skill. Can a structured decision model provide useful extra review without bypassing deterministic permissions and simulator safety checks?</p><span class="sc-card-cta">Explore Agent skill screening</span></a>
 <a class="sc-card sc-card--link" href="./multi-robot-scheduling.html"><span class="sc-card-index">SCENARIO 04</span><h3>Multi-robot scheduling</h3><p>Three simulated robots have different capabilities, reservations and energy budgets. Who should get the next task—and how can we measure fairness?</p><span class="sc-card-cta">Explore Multi-robot scheduling</span></a></div>
 </div></section>
-</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Illustrative diagrams, synthetic examples; no physical robot or safety-critical control</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/SAFETY.md">Safety and limitations ↗</a></div></footer></body></html>
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Illustrative diagrams, synthetic examples; no physical robot or safety-critical control</span><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/SAFETY.md">Safety and limitations ↗</a></div></footer></body></html>

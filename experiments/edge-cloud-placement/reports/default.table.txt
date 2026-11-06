@@ -1,0 +1,8 @@
+SIMULATION: all values are SIMULATED model outputs computed from the config and seed. They are not measurements of any robot, network or cloud service. Nothing is actuated.
+seed=20261106 config_sha256=cb925c242ed3
+
+policy               on_time_rate  on_time_applied    deadline_miss   stale_rejected   fallback_count    routed_remote
+always_local               0.9167              275               25               25                0                0
+always_remote              0.7000              210               90                9                0              300
+deadline_aware             0.8567              257               43               16                0              200
+hedged_fallback            0.9367              281               19               19               29              200

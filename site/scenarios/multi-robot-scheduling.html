@@ -9,7 +9,7 @@
 <meta name="description" content="Proposal, not benchmarked: fair ROS 2 multi-robot task assignment on synthetic fleets, with deterministic capability constraints and optional Jev rankings.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Mohsen Seyedkazemi Ardebili">
-<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/scenarios/multi-robot-scheduling.html">
+<link rel="canonical" href="https://mskazemi.com/robo-resilience-lab/scenarios/multi-robot-scheduling.html">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,30 +20,32 @@
 <link rel="stylesheet" href="../assets/anim/s4-fleet-dispatch.css">
 <script defer src="../assets/lab-anim.js"></script>
 <script defer src="../assets/scenarios.js"></script>
+<link rel="stylesheet" href="assets/explain/explain.css">
+<script defer src="assets/explain/explain.js"></script>
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="ROS 2 Kubernetes Lab">
 <meta property="og:title" content="Multi-Robot Scheduling Lab | Fair Jev Task Assignment">
 <meta property="og:description" content="Proposal, not benchmarked: fair ROS 2 multi-robot task assignment on synthetic fleets, with deterministic capability constraints and optional Jev rankings.">
-<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/scenarios/multi-robot-scheduling.html">
-<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:url" content="https://mskazemi.com/robo-resilience-lab/scenarios/multi-robot-scheduling.html">
+<meta property="og:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png">
 <meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Multi-Robot Scheduling Lab | Fair Jev Task Assignment">
 <meta name="twitter:description" content="Proposal, not benchmarked: fair ROS 2 multi-robot task assignment on synthetic fleets, with deterministic capability constraints and optional Jev rankings.">
-<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Multi-Robot Scheduling Lab | Fair Jev Task Assignment","headline":"Multi-Robot Scheduling Lab | Fair Jev Task Assignment","description":"Research fair ROS 2 multi-robot task assignment with synthetic fleets, deterministic capability constraints, Jev advisory rankings and reproducible scheduling metrics.","url":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/multi-robot-scheduling.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/"},{"@type":"ListItem","position":3,"name":"Multi-robot scheduling","item":"https://mskazemi.com/ros2-kubernetes-lab/scenarios/multi-robot-scheduling.html"}]}]}</script>
+<meta name="twitter:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Multi-Robot Scheduling Lab | Fair Jev Task Assignment","headline":"Multi-Robot Scheduling Lab | Fair Jev Task Assignment","description":"Research fair ROS 2 multi-robot task assignment with synthetic fleets, deterministic capability constraints, Jev advisory rankings and reproducible scheduling metrics.","url":"https://mskazemi.com/robo-resilience-lab/scenarios/multi-robot-scheduling.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Cloud robotics"},{"@type":"Thing","name":"Jev structured decision models"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/robo-resilience-lab/"},{"@type":"ListItem","position":2,"name":"Research scenarios","item":"https://mskazemi.com/robo-resilience-lab/scenarios/"},{"@type":"ListItem","position":3,"name":"Multi-robot scheduling","item":"https://mskazemi.com/robo-resilience-lab/scenarios/multi-robot-scheduling.html"}]}]}</script>
 </head><body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="docs-nav"><div class="sc-shell docs-nav-inner">
 <a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
-<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Research scenarios</a><a href="./results.html">Results</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/robo-resilience-lab/issues/83">Collaborate on GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
 <section class="sc-hero"><div class="sc-shell sc-hero-inner">
 <div><nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Scenarios</a><span>/</span>Multi-robot scheduling</nav>
 <span class="sc-kicker">SCENARIO 04 · P2 / SIMULATOR RESEARCH</span>
 <h1>Fair Multi-Robot Task Assignment with Jev Advisory Ranking</h1>
 <p class="sc-lead">Three simulated robots have different capabilities, reservations and energy budgets. Who should get the next task—and how can we measure fairness?</p>
 <div class="sc-hero-meta"><span class="sc-pill sc-pill--amber">Proposal · not benchmarked</span><span class="sc-pill">MSc → PhD</span><span class="sc-pill">CPU-only fixtures first</span></div>
-<div class="sc-actions"><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/87">Collaborate on issue #87 ↗</a><a class="sc-link-button sc-link-button--ghost" href="./results.html">View evidence registry</a></div>
+<div class="sc-actions"><a class="sc-link-button" href="https://github.com/MSKazemi/robo-resilience-lab/issues/87">Collaborate on issue #87 ↗</a><a class="sc-link-button sc-link-button--ghost" href="./results.html">View evidence registry</a></div>
 </div><div class="sc-visual">
 <div class="sc-visual-header"><span>CONCEPTUAL WORKFLOW / NOT LIVE</span><b>ROBOTICS · CLOUD · AI</b></div>
 <svg class="sc-motif" viewBox="0 0 500 240" aria-hidden="true" focusable="false">
@@ -122,6 +124,249 @@
 <div class="sc-panel"><h3>Audience & learning targets</h3><p><strong>Multi-agent systems · OR · robotics researchers</strong> · MSc → PhD · CPU-only fixtures first</p><ul class="sc-mini-list"><li>Model robotic capabilities and authorization as hard constraints.</li><li>Compare round-robin, greedy and cost-aware scheduling baselines.</li><li>Use seeded task arrivals and congestion to measure fairness.</li><li>Record invalid suggestions and no-eligible-robot outcomes.</li></ul></div>
 </div>
 </div></section>
+<!-- xp:begin (generated from storyboards.py; edit that, or edit this block by hand) -->
+<section class="sc-section" id="explain" aria-labelledby="xp-title"><div class="sc-shell">
+<span class="sc-overline">Interactive explanation</span>
+<h2 id="xp-title">Step through one shared queue under three policies</h2>
+<p class="sc-intro">Several robots send model requests to the same worker. One robot sends a burst. Step through what first-in-first-out, earliest-deadline-first and deficit round robin do with the same arrivals, then see two inputs the simulator refuses. This follows the serving-queue simulator in experiments/model-serving-fairness. The capability filter shown in the walkthrough further down is a separate step that simulator does not model.</p>
+<div class="xp" data-xp id="xp-player" role="group" aria-labelledby="xp-title" data-scenario="s4">
+<ul class="xp-badges" aria-label="Status of this explanation">
+<li class="xp-badge xp-badge--status">Status: simulated</li>
+<li class="xp-badge xp-badge--sim">Storyboard: illustrative, hand-authored</li>
+<li class="xp-badge xp-badge--na">Measured results: N/A (not run)</li>
+<li class="xp-badge">Registry status: planned, nothing measured</li>
+</ul>
+<ol class="xp-flow" aria-label="Pipeline stages, left to right">
+<li data-stage="config" data-kind="code"><span class="xp-kind">plain code</span><b>Config check</b><span class="xp-mark" aria-hidden="true"></span></li>
+<li data-stage="admit" data-kind="code"><span class="xp-kind">plain code</span><b>Admission</b><span class="xp-mark" aria-hidden="true"></span></li>
+<li data-stage="queue" data-kind="code"><span class="xp-kind">plain code</span><b>Queue policy</b><span class="xp-mark" aria-hidden="true"></span></li>
+<li data-stage="worker" data-kind="code"><span class="xp-kind">plain code</span><b>Worker</b><span class="xp-mark" aria-hidden="true"></span></li>
+<li data-stage="report" data-kind="code"><span class="xp-kind">plain code</span><b>Report</b><span class="xp-mark" aria-hidden="true"></span></li>
+</ol>
+<article class="xp-case" id="xp-case-fifo" data-title="FIFO baseline" data-tag="baseline" data-tag-label="Deadline missed">
+<h3>FIFO baseline</h3>
+<p class="xp-lede">With first-in-first-out, the quiet robot waits behind the whole burst and misses its deadline.</p>
+<table class="xp-inputs"><caption>Declared inputs (made up for teaching, not measured)</caption><tbody>
+<tr><th scope="row">workers</th><td data-input>1</td></tr>
+<tr><th scope="row">service time per request</th><td data-input>0.1 s</td></tr>
+<tr><th scope="row">noisy-f burst</th><td data-input>6 requests, from 0 s to 0.005 s</td></tr>
+<tr><th scope="row">robot-a request</th><td data-input>1 request, at 0.01 s</td></tr>
+<tr><th scope="row">noisy-f deadline</th><td data-input>0.8 s</td></tr>
+<tr><th scope="row">robot-a deadline</th><td data-input>0.6 s</td></tr>
+<tr><th scope="row">policy</th><td data-input><code>fifo</code></td></tr>
+<tr><th scope="row">robot-a finishes at (by hand)</th><td data-input>0.7 s</td></tr>
+<tr><th scope="row">robot-a absolute deadline</th><td data-input>0.61 s</td></tr>
+</tbody></table>
+<ol class="xp-steps">
+<li class="xp-step" data-stage="config" data-outcome="pass">
+<h4>The config is valid <span class="xp-out">passed</span></h4>
+<p>fifo is one of the three schedulers: fifo, edf, drr.</p>
+<pre>scheduler: fifo</pre>
+</li>
+<li class="xp-step" data-stage="admit" data-outcome="pass">
+<h4>Every request is admitted <span class="xp-out">passed</span></h4>
+<p>No queue_capacity is set, so nothing is rejected on arrival.</p>
+</li>
+<li class="xp-step" data-stage="queue" data-outcome="info">
+<h4>FIFO orders by arrival <span class="xp-out">info</span></h4>
+<p>Robot-a arrived at 0.01 s, after the six burst requests, so it goes last.</p>
+<pre>order: noisy-f x6, then robot-a</pre>
+</li>
+<li class="xp-step" data-stage="worker" data-outcome="miss">
+<h4>Robot-a misses its deadline <span class="xp-out">deadline missed</span></h4>
+<p>The worker takes 0.1 s per request, so robot-a finishes at 0.7 s. Its deadline was 0.61 s (0.01 s plus 0.6 s).</p>
+<pre>robot-a: finish 0.7 s &gt; deadline 0.61 s</pre>
+</li>
+<li class="xp-step" data-stage="report" data-outcome="na">
+<h4>Fairness and miss-rate: N/A <span class="xp-out">N/A (not run)</span></h4>
+<p>This toy is arithmetic on declared inputs. Real metrics come from running the simulator on a full scenario, and are SIMULATED.</p>
+</li>
+</ol>
+<p class="xp-verdict" data-kind="baseline"><strong>Outcome: baseline</strong> FIFO lets a burst delay a quiet robot past its deadline. That is the problem the other policies are tested against.</p>
+</article>
+<article class="xp-case" id="xp-case-edf" data-title="EDF: tight deadline first" data-tag="accepted" data-tag-label="On time">
+<h3>EDF: tight deadline first</h3>
+<p class="xp-lede">Earliest-deadline-first lets the request with the nearest deadline overtake the burst.</p>
+<table class="xp-inputs"><caption>Declared inputs (made up for teaching, not measured)</caption><tbody>
+<tr><th scope="row">workers</th><td data-input>1</td></tr>
+<tr><th scope="row">service time per request</th><td data-input>0.1 s</td></tr>
+<tr><th scope="row">noisy-f burst</th><td data-input>6 requests, from 0 s to 0.005 s</td></tr>
+<tr><th scope="row">robot-a request</th><td data-input>1 request, at 0.01 s</td></tr>
+<tr><th scope="row">noisy-f deadline</th><td data-input>0.8 s</td></tr>
+<tr><th scope="row">robot-a deadline</th><td data-input>0.6 s</td></tr>
+<tr><th scope="row">policy</th><td data-input><code>edf</code></td></tr>
+<tr><th scope="row">robot-a starts at (by hand)</th><td data-input>0.1 s</td></tr>
+<tr><th scope="row">robot-a finishes at (by hand)</th><td data-input>0.2 s</td></tr>
+</tbody></table>
+<ol class="xp-steps">
+<li class="xp-step" data-stage="config" data-outcome="pass">
+<h4>The config is valid <span class="xp-out">passed</span></h4>
+<p>edf is an allowed scheduler.</p>
+<pre>scheduler: edf</pre>
+</li>
+<li class="xp-step" data-stage="admit" data-outcome="pass">
+<h4>Every request is admitted <span class="xp-out">passed</span></h4>
+<p>No queue_capacity is set.</p>
+</li>
+<li class="xp-step" data-stage="queue" data-outcome="info">
+<h4>EDF orders by absolute deadline <span class="xp-out">info</span></h4>
+<p>The first burst request starts at 0 s, before robot-a arrives. At 0.1 s robot-a&#x27;s deadline is the earliest, so it is next.</p>
+<pre>next: robot-a (earliest deadline)</pre>
+</li>
+<li class="xp-step" data-stage="worker" data-outcome="pass">
+<h4>Robot-a finishes on time <span class="xp-out">passed</span></h4>
+<p>It runs from 0.1 s to 0.2 s, well before its 0.6 s deadline. The burst follows and still finishes inside its 0.8 s deadline.</p>
+<pre>robot-a: finish 0.2 s</pre>
+</li>
+<li class="xp-step" data-stage="report" data-outcome="na">
+<h4>Fairness and miss-rate: N/A <span class="xp-out">N/A (not run)</span></h4>
+<p>A question for the experiment: could a flood of tight-deadline requests push others back the same way? Not measured.</p>
+</li>
+</ol>
+<p class="xp-verdict" data-kind="accepted"><strong>Outcome: accepted</strong> EDF helped robot-a in this toy because its deadline was tighter. Whether it is fair in general is a question, not a finding.</p>
+</article>
+<article class="xp-case" id="xp-case-drr" data-title="DRR: take turns" data-tag="accepted" data-tag-label="On time">
+<h3>DRR: take turns</h3>
+<p class="xp-lede">Deficit round robin gives each backlogged robot a turn, so the burst cannot hold the worker for long.</p>
+<table class="xp-inputs"><caption>Declared inputs (made up for teaching, not measured)</caption><tbody>
+<tr><th scope="row">workers</th><td data-input>1</td></tr>
+<tr><th scope="row">service time per request</th><td data-input>0.1 s</td></tr>
+<tr><th scope="row">noisy-f burst</th><td data-input>6 requests, from 0 s to 0.005 s</td></tr>
+<tr><th scope="row">robot-a request</th><td data-input>1 request, at 0.01 s</td></tr>
+<tr><th scope="row">noisy-f deadline</th><td data-input>0.8 s</td></tr>
+<tr><th scope="row">robot-a deadline</th><td data-input>0.6 s</td></tr>
+<tr><th scope="row">policy</th><td data-input><code>drr</code></td></tr>
+<tr><th scope="row">drr_quantum</th><td data-input>0.1 s</td></tr>
+<tr><th scope="row">client weight</th><td data-input>1 each</td></tr>
+<tr><th scope="row">robot-a starts at (by hand)</th><td data-input>0.2 s</td></tr>
+<tr><th scope="row">robot-a finishes at (by hand)</th><td data-input>0.3 s</td></tr>
+</tbody></table>
+<ol class="xp-steps">
+<li class="xp-step" data-stage="config" data-outcome="pass">
+<h4>The config is valid <span class="xp-out">passed</span></h4>
+<p>drr is an allowed scheduler and drr_quantum is 0.1 s.</p>
+<pre>scheduler: drr
+drr_quantum: 0.1</pre>
+</li>
+<li class="xp-step" data-stage="admit" data-outcome="pass">
+<h4>Every request is admitted <span class="xp-out">passed</span></h4>
+<p>No queue_capacity is set.</p>
+</li>
+<li class="xp-step" data-stage="queue" data-outcome="info">
+<h4>DRR serves each backlogged robot in turn <span class="xp-out">info</span></h4>
+<p>Each turn adds the quantum, 0.1 s, to a robot&#x27;s deficit. A request costs its service time, 0.1 s, so each turn serves one request.</p>
+<pre>ring: noisy-f, robot-a</pre>
+</li>
+<li class="xp-step" data-stage="worker" data-outcome="pass">
+<h4>Robot-a is served after one burst request <span class="xp-out">passed</span></h4>
+<p>At 0.1 s noisy-f takes one turn. At 0.2 s it is robot-a&#x27;s turn, so robot-a runs 0.2 s to 0.3 s and meets its deadline.</p>
+<pre>robot-a: finish 0.3 s</pre>
+</li>
+<li class="xp-step" data-stage="report" data-outcome="na">
+<h4>Fairness and miss-rate: N/A <span class="xp-out">N/A (not run)</span></h4>
+<p>Jain fairness is computed over each robot&#x27;s on-time ratio. When DRR delays the noisy robot, the index can go down even though the quiet robot now meets its deadline, so a higher index is not simply fairer. Read it next to the quiet-robot miss rate. Both would be SIMULATED values from a full run, and none are shown.</p>
+</li>
+</ol>
+<p class="xp-verdict" data-kind="accepted"><strong>Outcome: accepted</strong> DRR bounded the quiet robot&#x27;s wait without looking at deadlines. Its cost, such as longer delays and tail latency for the noisy robot, is exactly what a full run would have to measure.</p>
+</article>
+<article class="xp-case" id="xp-case-bad-config" data-title="Misspelled config" data-tag="config-error" data-tag-label="Rejected config">
+<h3>Misspelled config</h3>
+<p class="xp-lede">A config with an unknown scheduler name or an unknown key is refused as a whole. No partial run happens.</p>
+<table class="xp-inputs"><caption>Declared inputs (made up for teaching, not measured)</caption><tbody>
+<tr><th scope="row">scheduler value</th><td data-input><code>round_robin</code></td></tr>
+<tr><th scope="row">extra key</th><td data-input><code>drr_quantun</code></td></tr>
+<tr><th scope="row">allowed schedulers</th><td data-input><code>fifo</code>, <code>edf</code>, <code>drr</code></td></tr>
+</tbody></table>
+<ol class="xp-steps">
+<li class="xp-step" data-stage="config" data-outcome="reject">
+<h4>Unknown scheduler and unknown key <span class="xp-out">rejected</span></h4>
+<p>round_robin is not one of fifo, edf, drr, and drr_quantun is not a known key. Typos fail loudly instead of falling back to a default.</p>
+<pre>ConfigError: scheduler must be one of (&#x27;fifo&#x27;, &#x27;edf&#x27;, &#x27;drr&#x27;)</pre>
+</li>
+<li class="xp-step" data-stage="report" data-outcome="na">
+<h4>No report is produced <span class="xp-out">N/A (not run)</span></h4>
+<p>Admission, queueing and the worker never start, so there is nothing to report.</p>
+</li>
+</ol>
+<p class="xp-verdict" data-kind="config-error"><strong>Outcome: config rejected</strong> Rejected before anything ran. The runner documents a distinct exit status for invalid input.</p>
+</article>
+<article class="xp-case" id="xp-case-queue-full" data-title="Queue full: shared limit" data-tag="rejected" data-tag-label="Requests rejected">
+<h3>Queue full: shared limit</h3>
+<p class="xp-lede">A single shared queue limit rejects arrivals when it is full, and the quiet robot can be rejected because of someone else&#x27;s burst.</p>
+<table class="xp-inputs"><caption>Declared inputs (made up for teaching, not measured)</caption><tbody>
+<tr><th scope="row">workers</th><td data-input>1</td></tr>
+<tr><th scope="row">service time per request</th><td data-input>0.1 s</td></tr>
+<tr><th scope="row">noisy-f burst</th><td data-input>6 requests, from 0 s to 0.005 s</td></tr>
+<tr><th scope="row">robot-a request</th><td data-input>1 request, at 0.01 s</td></tr>
+<tr><th scope="row">noisy-f deadline</th><td data-input>0.8 s</td></tr>
+<tr><th scope="row">robot-a deadline</th><td data-input>0.6 s</td></tr>
+<tr><th scope="row">policy</th><td data-input><code>fifo</code></td></tr>
+<tr><th scope="row">queue_capacity</th><td data-input>4</td></tr>
+</tbody></table>
+<ol class="xp-steps">
+<li class="xp-step" data-stage="config" data-outcome="pass">
+<h4>The config is valid <span class="xp-out">passed</span></h4>
+<p>queue_capacity of 4 is a valid whole number of at least 1.</p>
+<pre>queue_capacity: 4</pre>
+</li>
+<li class="xp-step" data-stage="admit" data-outcome="reject">
+<h4>The sixth burst request and robot-a are rejected <span class="xp-out">rejected</span></h4>
+<p>The first burst request starts at once. The next four fill the queue to 4. The sixth burst request is rejected, and so is robot-a&#x27;s request at 0.01 s, because the limit is shared by all robots.</p>
+<pre>rejected: noisy-f #6, robot-a #1</pre>
+</li>
+<li class="xp-step" data-stage="queue" data-outcome="info">
+<h4>Four queued requests remain <span class="xp-out">info</span></h4>
+<p>FIFO serves the first burst requests that were admitted.</p>
+</li>
+<li class="xp-step" data-stage="worker" data-outcome="info">
+<h4>Rejected requests never run <span class="xp-out">info</span></h4>
+<p>A rejected request has no queue wait and no completion.</p>
+</li>
+<li class="xp-step" data-stage="report" data-outcome="na">
+<h4>Goodput: N/A <span class="xp-out">N/A (not run)</span></h4>
+<p>The metrics definitions count rejected requests against goodput. No value is computed here.</p>
+</li>
+</ol>
+<p class="xp-verdict" data-kind="rejected"><strong>Outcome: rejected</strong> Admission control protected the queue but not the quiet robot. Per-robot limits are not part of this simulator.</p>
+</article>
+</div>
+<div class="xp-grid">
+<section class="xp-card xp-card--wide" aria-labelledby="xp-rej"><h3 id="xp-rej">What gets rejected, and why</h3>
+<p>Each row is a negative case in the storyboard above. Reason names are proposals for this study, not an implemented interface, unless the simulator source below defines them.</p>
+<div class="xp-tablewrap"><table class="xp-table"><caption>Rejections in the storyboard</caption><thead><tr><th scope="col">Case</th><th scope="col">Stopped at</th><th scope="col">Reason</th><th scope="col">What it guards against</th></tr></thead><tbody>
+<tr><th scope="row"><a href="#xp-case-fifo" data-xp-pick="xp-case-fifo">FIFO baseline</a></th><td>Worker (deadline)</td><td>Not a rejection: robot-a finished late.</td><td>Nothing is rejected, which is part of the point.</td></tr>
+<tr><th scope="row"><a href="#xp-case-bad-config" data-xp-pick="xp-case-bad-config">Misspelled config</a></th><td>Config check</td><td>ConfigError: unknown scheduler and unknown key</td><td>Typos that would silently change the experiment.</td></tr>
+<tr><th scope="row"><a href="#xp-case-queue-full" data-xp-pick="xp-case-queue-full">Queue full: shared limit</a></th><td>Admission</td><td>Queue at queue_capacity</td><td>Arrivals while the shared queue is full, including a quiet robot&#x27;s.</td></tr>
+</tbody></table></div></section>
+<section class="xp-card" aria-labelledby="xp-protocol"><h3 id="xp-protocol">Experimental protocol</h3><ol>
+<li>Write the scenario as a config: robots as clients, their arrival patterns, deadlines and the models they use. Every number is an assumption, not a measurement.</li>
+<li>Run fifo, edf and drr on the same seeds, with first_idle and cache_aware worker placement. Use the default fleet for queue disciplines and the cache-pressure scenario for placement.</li>
+<li>Read deadline-miss rate, nearest-rank latency percentiles, starved requests, cache hit rate and Jain fairness together, never one alone.</li>
+<li>Inject a worker-down window to test recovery, and report only what a recorded run produced.</li>
+</ol><p class="xp-note">Everything the simulator prints is labelled SIMULATED, from assumed parameters. Jain fairness is computed over per-robot on-time ratios, so it can fall when a fair scheduler pushes the noisy robot late. Read it together with the quiet-robot miss rate and the goodput rate. Worker placement (first_idle or cache_aware) only matters when models compete for cache space, which is what the cache-pressure scenario is for. See also the <a href="#experiment">experiment blueprint</a> on this page.</p></section>
+<section class="xp-card" aria-labelledby="xp-metrics"><h3 id="xp-metrics">Measured values</h3>
+<div class="xp-tablewrap"><table class="xp-table"><caption>Every value is N/A until a reviewed run exists</caption><thead><tr><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Why</th></tr></thead><tbody>
+<tr><th scope="row">Simulated task completion and fairness (registry primary metric)</th><td><span class="xp-na">N/A</span></td><td>No published run.</td></tr>
+<tr><th scope="row">Quiet-robot deadline-miss rate</th><td><span class="xp-na">N/A</span></td><td>Not run.</td></tr>
+<tr><th scope="row">Overall deadline-miss rate</th><td><span class="xp-na">N/A</span></td><td>Not run.</td></tr>
+<tr><th scope="row">Jain fairness index</th><td><span class="xp-na">N/A</span></td><td>Not run. Not a simple higher-is-better score.</td></tr>
+<tr><th scope="row">Starved requests</th><td><span class="xp-na">N/A</span></td><td>Not run.</td></tr>
+</tbody></table></div><p class="xp-note">See the <a href="./results.html">evidence registry</a>. Nothing on this page is a benchmark.</p></section>
+<section class="xp-card xp-card--wide" aria-labelledby="xp-sources"><h3 id="xp-sources">Where the real code and tests live</h3>
+<p>Paths are relative to the repository root and the links open the <code>main</code> branch on GitHub. A link resolves once the change that adds the path has been merged.</p>
+<ul class="xp-src">
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/experiments/model-serving-fairness/servesim/schedulers.py"><code>experiments/model-serving-fairness/servesim/schedulers.py</code></a><br>FIFO, EDF and deficit round robin queue disciplines.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/experiments/model-serving-fairness/run_simulation.py"><code>experiments/model-serving-fairness/run_simulation.py</code></a><br>Command-line runner for the simulation.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/experiments/model-serving-fairness/README.md"><code>experiments/model-serving-fairness/README.md</code></a><br>How to run the simulation, and every output field.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/experiments/model-serving-fairness/data/default_fleet.json"><code>experiments/model-serving-fairness/data/default_fleet.json</code></a><br>Assumed-parameter fleet with a noisy client.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/experiments/model-serving-fairness/data/cache_pressure.json"><code>experiments/model-serving-fairness/data/cache_pressure.json</code></a><br>Assumed-parameter scenario where worker placement can matter.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/tree/main/experiments/model-serving-fairness/tests/"><code>experiments/model-serving-fairness/tests/</code></a><br>Unit tests with small hand-computed scenarios.</li>
+<li>Capability-aware task assignment (the filter in the walkthrough below) and any physical-robot evidence: not created. Tracked in issue #87. <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/87">Issue #87</a></li>
+</ul></section>
+</div>
+<p class="xp-note">Illustration only. The steps are fixed text written by hand. This page runs no model, sends no network request, publishes no ROS 2 message and moves no robot. Use the Pause decorative motion button near the top of the page to stop all motion; the player never starts by itself.</p>
+</div></section>
+<!-- xp:end -->
 <section class="sc-section sc-section--shade" id="interactive-trace"><div class="sc-shell">
 <span class="sc-overline">02 / Interactive walkthrough</span><h2>Follow an illustrative decision trace.</h2>
 <p class="sc-intro">Select a fabricated case and trace where conventional code, an optional Jev judgment, and human review belong. This animation is preauthored educational content: <strong>it performs no inference, no API call, and no robot action.</strong></p>
@@ -154,17 +399,17 @@
 <section class="sc-section sc-section--shade" id="results"><div class="sc-shell">
 <span class="sc-overline">04 / Evidence not marketing</span><h2>Current results: not measured.</h2>
 <div class="sc-detail-grid"><div class="sc-callout"><h3>No verified experiment results yet</h3><p>No Jev-vs-baseline accuracy, latency, energy, fairness or simulator task-success result is available for this scenario. The website does not fabricate graphs or sample performance numbers. Future evidence must include raw data and replay instructions.</p><a class="sc-link-button" href="./results.html">Open results registry ↗</a></div>
-<div class="sc-panel"><h3>Dependencies and research honesty</h3><p>Follow existing research work <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/69">#69</a> and the broader <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">scenario epic #83</a>. The legacy Vagrant/Foxy manifests and current Jazzy image-local test do not establish multi-worker DDS or physical robot integration.</p><p><strong>Safety:</strong> no actuator commands, unrestricted cluster operations, or vendor data collection from this static demonstration.</p></div></div>
+<div class="sc-panel"><h3>Dependencies and research honesty</h3><p>Follow existing research work <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/69">#69</a> and the broader <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/83">scenario epic #83</a>. The legacy Vagrant/Foxy manifests and current Jazzy image-local test do not establish multi-worker DDS or physical robot integration.</p><p><strong>Safety:</strong> no actuator commands, unrestricted cluster operations, or vendor data collection from this static demonstration.</p></div></div>
 </div></section>
 <section class="sc-section" id="contribute"><div class="sc-shell">
 <span class="sc-overline">05 / Open research collaboration</span><h2>Help turn the blueprint into evidence.</h2>
 <div class="sc-detail-grid">
-<div class="sc-callout"><h3>Join scenario 04</h3><p>Contributors can own a small, reviewable task: casebook, synthetic dataset, offline baseline, simulator test, reproducibility review or teaching guide. The issue includes a detailed Claude Code/Codex prompt, acceptance criteria and dependencies.</p><a class="sc-link-button" href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/87">Contribute on GitHub issue #87 ↗</a></div>
+<div class="sc-callout"><h3>Join scenario 04</h3><p>Contributors can own a small, reviewable task: casebook, synthetic dataset, offline baseline, simulator test, reproducibility review or teaching guide. The issue includes a detailed Claude Code/Codex prompt, acceptance criteria and dependencies.</p><a class="sc-link-button" href="https://github.com/MSKazemi/robo-resilience-lab/issues/87">Contribute on GitHub issue #87 ↗</a></div>
 <div class="sc-panel"><h3>Technical references</h3><ul><li><a href="https://docs.ros.org/en/jazzy/Concepts/Basic/About-Topics.html">ROS 2 concepts</a></li>
 <li><a href="https://docs.typesafe.ai/introduction">Jev Choice</a></li>
-<li><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/69">Multi-robot research issue #69</a></li></ul><p>Review <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/73">Jev research umbrella #73</a>, <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/83">scenario epic #83</a> and the <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/AGENTS.md">repository agent instructions</a>. No vendor endorsement or measured success is implied.</p></div></div>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/issues/69">Multi-robot research issue #69</a></li></ul><p>Review <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/73">Jev research umbrella #73</a>, <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/83">scenario epic #83</a> and the <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/AGENTS.md">repository agent instructions</a>. No vendor endorsement or measured success is implied.</p></div></div>
 <h2 id="more" style="margin-top:70px">Continue exploring</h2><div class="sc-grid sc-grid--3"><a class="sc-card sc-card--link" href="./ros2-fault-triage.html"><span class="sc-card-index">SCENARIO 01</span><h3>Fault triage</h3><p>A listener stops receiving messages. Is the cause DDS discovery, QoS, networking or resource pressure? Build a transparent diagnostic comparison without touching a robot.</p><span class="sc-card-cta">Explore Fault triage</span></a>
 <a class="sc-card sc-card--link" href="./edge-cloud-inference.html"><span class="sc-card-index">SCENARIO 02</span><h3>Edge/cloud placement</h3><p>Which AI workload belongs on a robot, at a nearby edge service, or in Kubernetes? Compare feasibility filters with Jev&#39;s structured advice under unreliable networks.</p><span class="sc-card-cta">Explore Edge/cloud placement</span></a>
 <a class="sc-card sc-card--link" href="./robot-agent-safety.html"><span class="sc-card-index">SCENARIO 03</span><h3>Agent skill screening</h3><p>An LLM proposes a robot skill. Can a structured decision model provide useful extra review without bypassing deterministic permissions and simulator safety checks?</p><span class="sc-card-cta">Explore Agent skill screening</span></a></div>
 </div></section>
-</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Illustrative diagrams, synthetic examples; no physical robot or safety-critical control</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/SAFETY.md">Safety and limitations ↗</a></div></footer></body></html>
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Illustrative diagrams, synthetic examples; no physical robot or safety-critical control</span><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/SAFETY.md">Safety and limitations ↗</a></div></footer></body></html>

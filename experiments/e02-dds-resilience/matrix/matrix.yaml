@@ -1,0 +1,161 @@
+# e02 DDS resilience: scenario matrix (reliability x impairment).
+#
+# STATUS: design only. Nothing in this file has been executed against a cluster,
+# a container or a network. The "live_recipe" blocks are documentation: they are
+# NOT RUN, and this harness never executes them.
+#
+# Hypotheses are statements to be tested by a future live run. They are not results.
+# "synthetic_model" parameters drive ONLY the deterministic SYNTHETIC fixture
+# generator (ddsres/synth.py); they are modelling assumptions, not measurements.
+schema: rrl.matrix/1
+experiment: e02-dds-resilience
+issues: ["#48", "#18"]
+status: "design only; live runs NOT RUN"
+
+axes:
+  reliability: [reliable, best_effort]
+  impairment: [none, delay, jitter, loss, restart, partition]
+  # Live-run dimension for issue #48 (DDS vs Zenoh). The analysis harness is
+  # RMW-agnostic; repeat every cell once per RMW. Synthetic fixtures carry no RMW.
+  rmw_for_live_runs: [rmw_fastrtps_cpp, rmw_cyclonedds_cpp, rmw_zenoh_cpp]
+
+workload:
+  # Same for every cell so cells are comparable.
+  publish_period_ms: 100
+  message_count: 200
+  payload: "sequence number + send timestamp only (see examples/ros2-sequence-probe)"
+  qos_history: {kind: keep_last, depth: 10}
+  qos_durability: volatile
+
+impairments:
+  none: {}
+  delay: {delay_ms: 100}
+  jitter: {delay_ms: 100, jitter_ms: 90, distribution: uniform}
+  loss: {loss_pct: 10}
+  restart: {target: subscriber, at_s: 6.0, down_s: 3.0}
+  partition: {at_s: 6.0, duration_s: 4.0}
+
+# ASSUMPTIONS used only to generate SYNTHETIC fixtures. Not claims about any middleware.
+synthetic_model:
+  base_latency_ns: 2000000
+  base_noise_ns: 500000
+  reliable:
+    retransmit_rto_ms: 40
+    max_attempts: 10
+    duplicate_prob_on_retransmit: 0.25
+    in_order_delivery: true
+    rediscovery_ms: 800
+    partition_buffer_depth: 10
+  best_effort:
+    in_order_delivery: false
+    rediscovery_ms: 300
+
+# Documented, NOT executed. Applies to every cell of the matching impairment.
+live_recipe_common:
+  status: "NOT RUN"
+  requires: >-
+    explicit safe local context: a throwaway kind cluster created only for this
+    experiment, pods with NET_ADMIN granted deliberately, never the host network
+    namespace, never a shared or remote cluster
+  steps:
+    - "Deploy publisher and subscriber of examples/ros2-sequence-probe in separate pods on different workers; record pod-to-node mapping, ROS distro, RMW, discovery mode."
+    - "Set the QoS reliability for the cell via the probe's QoS option (flag name defined by the probe, see its README)."
+    - "Warm up until the subscriber has received at least one message; start the probe log on both sides."
+    - "Apply the impairment inside the subscriber pod's network namespace only (commands below); log a fault marker immediately before and after."
+    - "Stop after message_count messages; ALWAYS remove the impairment, then collect the JSONL logs."
+    - "Feed the logs to `python3 experiments/e02-dds-resilience/run.py analyze-seqprobe <logs> [--markers FILE]` and keep raw logs next to the report."
+  cleanup: "tc qdisc del dev eth0 root   # inside the pod; deleting the throwaway pod/cluster also removes it"
+
+live_recipe:
+  none:
+    commands: []
+  delay:
+    commands: ["tc qdisc add dev eth0 root netem delay 100ms"]
+  jitter:
+    commands: ["tc qdisc add dev eth0 root netem delay 100ms 90ms distribution uniform"]
+  loss:
+    commands: ["tc qdisc add dev eth0 root netem loss 10%"]
+  restart:
+    commands: ["kubectl delete pod <subscriber-pod>   # controller recreates it; marker restart_begin at delete, restart_end when the new pod logs ready"]
+  partition:
+    commands:
+      - "tc qdisc add dev eth0 root netem loss 100%"
+      - "sleep 4"
+      - "tc qdisc del dev eth0 root"
+
+# Per-cell hypotheses (to be tested live) and pipeline sanity checks on the
+# SYNTHETIC fixture. The checks only prove that the analysis code reads a
+# fixture as the generator intended; they say nothing about real behaviour.
+cells:
+  - id: reliable__none
+    reliability: reliable
+    impairment: none
+    seed: 1101
+    hypothesis: "Baseline: reliable QoS delivers every message once and in order with low latency."
+    synthetic_checks: {delivery_completeness: {eq: 1.0}, duplicate_copies: {eq: 0}, reorder_count: {eq: 0}}
+  - id: reliable__delay
+    reliability: reliable
+    impairment: delay
+    seed: 1102
+    hypothesis: "Added delay shifts the latency distribution by roughly the configured amount without changing completeness."
+    synthetic_checks: {delivery_completeness: {eq: 1.0}, reorder_count: {eq: 0}, latency_p50_ms: {ge: 100.0}}
+  - id: reliable__jitter
+    reliability: reliable
+    impairment: jitter
+    seed: 1103
+    hypothesis: "Jitter widens p95/p99 relative to p50; reliable ordering is preserved, possibly by head-of-line waiting."
+    synthetic_checks: {delivery_completeness: {eq: 1.0}, reorder_count: {eq: 0}}
+  - id: reliable__loss
+    reliability: reliable
+    impairment: loss
+    seed: 1104
+    hypothesis: "Retransmission recovers dropped samples (completeness near 1) at the price of a heavier latency tail; duplicates may appear."
+    synthetic_checks: {delivery_completeness: {ge: 0.95}, reorder_count: {eq: 0}, duplicate_copies: {gt: 0}, latency_p99_ms: {gt: 40.0}}
+  - id: reliable__restart
+    reliability: reliable
+    impairment: restart
+    seed: 1105
+    hypothesis: "Samples sent while the subscriber is down are lost under volatile durability; delivery resumes after rediscovery, so recovery time is dominated by discovery."
+    synthetic_checks: {delivery_completeness: {lt: 1.0}, restart_recovered: {eq: true}}
+  - id: reliable__partition
+    reliability: reliable
+    impairment: partition
+    seed: 1106
+    hypothesis: "With keep_last history, only the most recent samples are delivered after the partition heals, as a burst; older samples are lost."
+    synthetic_checks: {delivery_completeness: {lt: 1.0}, partition_recovered: {eq: true}}
+  - id: best_effort__none
+    reliability: best_effort
+    impairment: none
+    seed: 1201
+    hypothesis: "Baseline: best-effort on a clean path delivers (almost) everything."
+    synthetic_checks: {delivery_completeness: {eq: 1.0}, duplicate_copies: {eq: 0}}
+  - id: best_effort__delay
+    reliability: best_effort
+    impairment: delay
+    seed: 1202
+    hypothesis: "Delay shifts latency; completeness is unchanged."
+    synthetic_checks: {delivery_completeness: {eq: 1.0}, latency_p50_ms: {ge: 100.0}}
+  - id: best_effort__jitter
+    reliability: best_effort
+    impairment: jitter
+    seed: 1203
+    hypothesis: "Jitter spanning more than the publish period (here 180 ms of spread vs 100 ms) may reorder samples because best-effort does not hold later ones back."
+    synthetic_checks: {delivery_completeness: {eq: 1.0}, reorder_count: {gt: 0}}
+  - id: best_effort__loss
+    reliability: best_effort
+    impairment: loss
+    seed: 1204
+    hypothesis: "Completeness falls roughly with the configured loss rate; no retransmission, no duplicates."
+    synthetic_checks: {delivery_completeness: {lt: 1.0}, duplicate_copies: {eq: 0}}
+  - id: best_effort__restart
+    reliability: best_effort
+    impairment: restart
+    seed: 1205
+    hypothesis: "Samples sent while the subscriber is down are lost; delivery resumes after rediscovery."
+    synthetic_checks: {delivery_completeness: {lt: 1.0}, restart_recovered: {eq: true}}
+  - id: best_effort__partition
+    reliability: best_effort
+    impairment: partition
+    seed: 1206
+    hypothesis: "Everything sent during the partition is lost; no catch-up burst afterwards."
+    synthetic_checks: {delivery_completeness: {lt: 1.0}, partition_recovered: {eq: true}}

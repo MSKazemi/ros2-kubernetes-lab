@@ -1,0 +1,178 @@
+{
+  "schema_version": "synthetic-episodes-meta/v1",
+  "synthetic": true,
+  "license": "CC0-1.0",
+  "dataset_name": "synthetic-arm-sine-10fps",
+  "generator": {
+    "name": "fixture_gen.py",
+    "deterministic": true,
+    "note": "closed-form sine waves; no randomness"
+  },
+  "fps": 10,
+  "timestamp_tolerance_s": 0.001,
+  "robot_type": "synthetic_6dof_arm",
+  "source_contract": "ros2-obs-action/v1",
+  "features": {
+    "observation.state": {
+      "dtype": "float32",
+      "shape": [6],
+      "names": ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper"],
+      "units": ["rad", "rad", "rad", "rad", "rad", "mm"]
+    },
+    "action": {
+      "dtype": "float32",
+      "shape": [6],
+      "names": ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper"],
+      "units": ["rad", "rad", "rad", "rad", "rad", "m"]
+    },
+    "observation.images.front": {
+      "dtype": "video",
+      "shape": [48, 64, 3],
+      "names": ["height", "width", "channels"],
+      "camera": {
+        "width": 64,
+        "height": 48,
+        "encoding": "rgb8",
+        "fps": 10,
+        "source": "SYNTHETIC: no pixel payload is stored in this metadata"
+      }
+    },
+    "observation.images.wrist": {
+      "dtype": "video",
+      "shape": [32, 32, 3],
+      "names": ["height", "width", "channels"],
+      "camera": {
+        "width": 32,
+        "height": 32,
+        "encoding": "rgb8",
+        "fps": 10,
+        "source": "SYNTHETIC: no pixel payload is stored in this metadata"
+      }
+    }
+  },
+  "tasks": [
+    {
+      "task_index": 0,
+      "task": "SYNTHETIC: move the six-joint arm along a smooth sine trajectory"
+    }
+  ],
+  "episodes": [
+    {
+      "episode_index": 0,
+      "task_index": 0,
+      "length": 6,
+      "dataset_from_index": 0,
+      "dataset_to_index": 6,
+      "frames": [
+        {
+          "frame_index": 0,
+          "timestamp": 0.0,
+          "observation.state": [0.0, 0.326009, 0.5722, 0.718196, 1.14266, 0.049576],
+          "action": [0.371363, 0.487802, 0.65522, 0.70117, 0.937083, 0.04536]
+        },
+        {
+          "frame_index": 1,
+          "timestamp": 0.1,
+          "observation.state": [0.371363, 0.487802, 0.65522, 0.70117, 0.937083, 0.04536],
+          "action": [0.709552, 0.606021, 0.67971, 0.621511, 0.6478, 0.040665]
+        },
+        {
+          "frame_index": 2,
+          "timestamp": 0.2,
+          "observation.state": [0.709552, 0.606021, 0.67971, 0.621511, 0.6478, 0.040665],
+          "action": [0.98436, 0.670106, 0.643484, 0.486333, 0.30065, 0.035911]
+        },
+        {
+          "frame_index": 3,
+          "timestamp": 0.3,
+          "observation.state": [0.98436, 0.670106, 0.643484, 0.486333, 0.30065, 0.035911],
+          "action": [1.171238, 0.674332, 0.549778, 0.307714, -0.073355, 0.031523]
+        },
+        {
+          "frame_index": 4,
+          "timestamp": 0.4,
+          "observation.state": [1.171238, 0.674332, 0.549778, 0.307714, -0.073355, 0.031523],
+          "action": [1.253492, 0.618322, 0.406961, 0.101606, -0.440808, 0.027891]
+        },
+        {
+          "frame_index": 5,
+          "timestamp": 0.5,
+          "observation.state": [1.253492, 0.618322, 0.406961, 0.101606, -0.440808, 0.027891],
+          "action": [1.223776, 0.50708, 0.227792, -0.113577, -0.768885, 0.025341]
+        }
+      ]
+    },
+    {
+      "episode_index": 1,
+      "task_index": 0,
+      "length": 5,
+      "dataset_from_index": 6,
+      "dataset_to_index": 11,
+      "frames": [
+        {
+          "frame_index": 0,
+          "timestamp": 0.0,
+          "observation.state": [0.249656, 0.438068, 0.633787, 0.713999, 1.015989, 0.046838],
+          "action": [0.602465, 0.5722, 0.678297, 0.654694, 0.752064, 0.042258]
+        },
+        {
+          "frame_index": 1,
+          "timestamp": 0.1,
+          "observation.state": [0.602465, 0.5722, 0.678297, 0.654694, 0.752064, 0.042258],
+          "action": [0.901458, 0.65522, 0.662216, 0.536908, 0.42096, 0.037476]
+        },
+        {
+          "frame_index": 2,
+          "timestamp": 0.2,
+          "observation.state": [0.901458, 0.65522, 0.662216, 0.536908, 0.42096, 0.037476],
+          "action": [1.119927, 0.67971, 0.586982, 0.371161, 0.052252, 0.03292]
+        },
+        {
+          "frame_index": 3,
+          "timestamp": 0.3,
+          "observation.state": [1.119927, 0.67971, 0.586982, 0.371161, 0.052252, 0.03292],
+          "action": [1.238356, 0.643484, 0.459315, 0.17226, -0.321123, 0.028996]
+        },
+        {
+          "frame_index": 4,
+          "timestamp": 0.4,
+          "observation.state": [1.238356, 0.643484, 0.459315, 0.17226, -0.321123, 0.028996],
+          "action": [1.246166, 0.549778, 0.290618, -0.042029, -0.665813, 0.026055]
+        }
+      ]
+    },
+    {
+      "episode_index": 2,
+      "task_index": 0,
+      "length": 4,
+      "dataset_from_index": 11,
+      "dataset_to_index": 15,
+      "frames": [
+        {
+          "frame_index": 0,
+          "timestamp": 0.0,
+          "observation.state": [0.489359, 0.532662, 0.670106, 0.681336, 0.848814, 0.043828],
+          "action": [0.80955, 0.633787, 0.674332, 0.582117, 0.537063, 0.039066]
+        },
+        {
+          "frame_index": 1,
+          "timestamp": 0.1,
+          "observation.state": [0.80955, 0.633787, 0.674332, 0.582117, 0.537063, 0.039066],
+          "action": [1.057426, 0.678297, 0.618322, 0.4309, 0.177337, 0.034387]
+        },
+        {
+          "frame_index": 2,
+          "timestamp": 0.2,
+          "observation.state": [1.057426, 0.678297, 0.618322, 0.4309, 0.177337, 0.034387],
+          "action": [1.210846, 0.662216, 0.50708, 0.241191, -0.19823, 0.03021]
+        },
+        {
+          "frame_index": 3,
+          "timestamp": 0.3,
+          "observation.state": [1.210846, 0.662216, 0.50708, 0.241191, -0.19823, 0.03021],
+          "action": [1.256104, 0.586982, 0.350541, 0.029938, -0.556089, 0.026908]
+        }
+      ]
+    }
+  ]
+}

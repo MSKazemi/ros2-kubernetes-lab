@@ -1,0 +1,55 @@
+{
+  "files": {
+    "best_effort__delay.synthetic.jsonl": {
+      "lines": 402,
+      "sha256": "3f4bef9accfe405484dd3ac142cca6f8c6b51ca08297669fde587f628f8b0073"
+    },
+    "best_effort__jitter.synthetic.jsonl": {
+      "lines": 402,
+      "sha256": "0dd0d5d6449952eb886b58e09347d868484191ce500e7ac10bb39f9dcead4cba"
+    },
+    "best_effort__loss.synthetic.jsonl": {
+      "lines": 379,
+      "sha256": "ca40742ce39fcd03e92fc61e46c7282b279472d538193037b2bf31a115d23cac"
+    },
+    "best_effort__none.synthetic.jsonl": {
+      "lines": 402,
+      "sha256": "53d20f3094ef0cfe0f74085b37401a3c2ea7766ef58de5f5df4a93a882d5869e"
+    },
+    "best_effort__partition.synthetic.jsonl": {
+      "lines": 364,
+      "sha256": "10d2501d9db8891a666eaa3a53fb2ad5ac279fe26334969ec84c9684cdf397d5"
+    },
+    "best_effort__restart.synthetic.jsonl": {
+      "lines": 371,
+      "sha256": "4cf844204691b64c21500987a3da471f5c66c54741044c6f1f2fbfab2c2de644"
+    },
+    "reliable__delay.synthetic.jsonl": {
+      "lines": 402,
+      "sha256": "b54eea6be4a192614f736cfb7ba74fc8c75fc971f86c20d50352dc71c24cbc0d"
+    },
+    "reliable__jitter.synthetic.jsonl": {
+      "lines": 402,
+      "sha256": "19f41d2421c14a137b7b60991412854195220bc2cd3c848be6e7a06504b2de22"
+    },
+    "reliable__loss.synthetic.jsonl": {
+      "lines": 406,
+      "sha256": "5e9f78bcda43934c481e96ee7b933b0a1abf305d8e608d3592fff18ffff97fe2"
+    },
+    "reliable__none.synthetic.jsonl": {
+      "lines": 402,
+      "sha256": "7bd384abb147f2ae5c7d28612575e4faef2b215afff4fffc099511e9763c49d4"
+    },
+    "reliable__partition.synthetic.jsonl": {
+      "lines": 374,
+      "sha256": "ba02c93c1b0ef3b7bd7e2ab64aba1ad2ada00cfee84f688e92cbec5ca04b25fe"
+    },
+    "reliable__restart.synthetic.jsonl": {
+      "lines": 366,
+      "sha256": "98e74bdce7cbe631e8233a25bb5190ff27b21048a0d1b9b41bec33eead168719"
+    }
+  },
+  "generator": "ddsres.synth/1",
+  "label": "SYNTHETIC: deterministic fixture produced by ddsres.synth from fixed seeds and documented assumptions; NOT a measurement of any middleware, network or cluster.",
+  "synthetic": true
+}

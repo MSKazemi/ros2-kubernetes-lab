@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "description": "ILLUSTRATIVE parameters for a SIMULATION. These are not measurements of any robot, network or cloud service.",
+  "seed": 20261106,
+  "stream": {
+    "num_requests": 300,
+    "interval_ms": 250,
+    "deadline_ms": {
+      "min": 150,
+      "max": 400
+    },
+    "local_only_probability": 0.0
+  },
+  "local": {
+    "memory_mb": 4096,
+    "model_memory_mb": 2048,
+    "compute_base_ms": 150,
+    "compute_jitter_ms": 40
+  },
+  "remote": {
+    "model_memory_mb": 8192,
+    "memory_schedule": [
+      {
+        "from_ms": 0,
+        "memory_mb": 16384
+      },
+      {
+        "from_ms": 50000,
+        "memory_mb": 4096
+      },
+      {
+        "from_ms": 58000,
+        "memory_mb": 16384
+      }
+    ],
+    "compute_base_ms": 25,
+    "compute_jitter_ms": 10,
+    "reject_probability": 0.03,
+    "advert_lag_ms": 500
+  },
+  "network": {
+    "one_way_base_ms": 30,
+    "one_way_jitter_ms": 25,
+    "loss_probability": 0.02,
+    "duplicate_probability": 0.03,
+    "duplicate_extra_delay_max_ms": 60,
+    "spurious_response_probability": 0.02,
+    "outages": [
+      {
+        "start_ms": 25000,
+        "end_ms": 32000
+      }
+    ],
+    "recovery_ms": 3000,
+    "recovery_delay_factor": 4.0
+  },
+  "predictor": {
+    "prior_rtt_ms": 100,
+    "alpha": 0.3,
+    "margin_ms": 20,
+    "probe_interval_ms": 1000
+  },
+  "hedge": {
+    "delay_ms": null
+  },
+  "policies": [
+    "always_local",
+    "always_remote",
+    "deadline_aware",
+    "hedged_fallback"
+  ]
+}

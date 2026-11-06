@@ -26,6 +26,8 @@ concurrency:
 jobs:
   validate:
     name: Validate static website
+    # Run only in public repositories; a private repository (or private copy) executes nothing.
+    if: github.event.repository.private == false
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -42,7 +44,8 @@ jobs:
 
   deploy:
     name: Publish website
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    # Run only in public repositories; a private repository (or private copy) executes nothing.
+    if: github.event.repository.private == false && (github.event_name != 'pull_request' && github.ref == 'refs/heads/main')
     needs: validate
     runs-on: ubuntu-24.04
     timeout-minutes: 15

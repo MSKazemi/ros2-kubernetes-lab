@@ -11,34 +11,34 @@
 
 ## Start here
 
-- [Home](https://mskazemi.com/ros2-kubernetes-lab/): what the lab is, the two ways to start, the architecture and the roadmap.
-- [Docs hub](https://mskazemi.com/ros2-kubernetes-lab/docs/): field guide index.
-- [Getting started](https://mskazemi.com/ros2-kubernetes-lab/docs/getting-started.html): the tested Jazzy container path and the historical Vagrant path.
-- [Architecture](https://mskazemi.com/ros2-kubernetes-lab/docs/architecture.html): the layers from VMs to DDS to monitoring.
-- [Learning paths](https://mskazemi.com/ros2-kubernetes-lab/docs/lab-paths.html): routes for students, engineers and researchers.
-- [Contribute](https://mskazemi.com/ros2-kubernetes-lab/docs/contribute.html): how to pick an issue and open a pull request.
+- [Home](https://mskazemi.com/robo-resilience-lab/): what the lab is, the two ways to start, the architecture and the roadmap.
+- [Docs hub](https://mskazemi.com/robo-resilience-lab/docs/): field guide index.
+- [Getting started](https://mskazemi.com/robo-resilience-lab/docs/getting-started.html): the tested Jazzy container path and the historical Vagrant path.
+- [Architecture](https://mskazemi.com/robo-resilience-lab/docs/architecture.html): the layers from VMs to DDS to monitoring.
+- [Learning paths](https://mskazemi.com/robo-resilience-lab/docs/lab-paths.html): routes for students, engineers and researchers.
+- [Contribute](https://mskazemi.com/robo-resilience-lab/docs/contribute.html): how to pick an issue and open a pull request.
 
 ## Roadmap (a 90-day proposal, not a promise)
 
-- [Roadmap hub](https://mskazemi.com/ros2-kubernetes-lab/plans/): four phases and one gate, with the issues behind each.
-- [Days 1-14: define the reference path](https://mskazemi.com/ros2-kubernetes-lab/plans/define-reference-path.html)
-- [Days 15-30: make it runnable and safe](https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html)
-- [Days 31-60: package and document](https://mskazemi.com/ros2-kubernetes-lab/plans/package-and-document.html)
-- [Days 61-90: grow with evidence](https://mskazemi.com/ros2-kubernetes-lab/plans/grow-with-evidence.html)
-- [Release gates: the definition of done](https://mskazemi.com/ros2-kubernetes-lab/plans/release-gates.html)
+- [Roadmap hub](https://mskazemi.com/robo-resilience-lab/plans/): four phases and one gate, with the issues behind each.
+- [Days 1-14: define the reference path](https://mskazemi.com/robo-resilience-lab/plans/define-reference-path.html)
+- [Days 15-30: make it runnable and safe](https://mskazemi.com/robo-resilience-lab/plans/runnable-and-safe.html)
+- [Days 31-60: package and document](https://mskazemi.com/robo-resilience-lab/plans/package-and-document.html)
+- [Days 61-90: grow with evidence](https://mskazemi.com/robo-resilience-lab/plans/grow-with-evidence.html)
+- [Release gates: the definition of done](https://mskazemi.com/robo-resilience-lab/plans/release-gates.html)
 
 ## Research scenarios (proposals with synthetic, animated explanations)
 
-- [Scenario hub](https://mskazemi.com/ros2-kubernetes-lab/scenarios/)
-- [ROS 2 DDS and QoS fault triage](https://mskazemi.com/ros2-kubernetes-lab/scenarios/ros2-fault-triage.html)
-- [Edge and cloud inference placement](https://mskazemi.com/ros2-kubernetes-lab/scenarios/edge-cloud-inference.html)
-- [LLM agent skill screening in a simulator](https://mskazemi.com/ros2-kubernetes-lab/scenarios/robot-agent-safety.html)
-- [Fair multi-robot task dispatch](https://mskazemi.com/ros2-kubernetes-lab/scenarios/multi-robot-scheduling.html)
-- [Results registry](https://mskazemi.com/ros2-kubernetes-lab/scenarios/results.html): every primary outcome is empty until human-reviewed raw evidence exists.
+- [Scenario hub](https://mskazemi.com/robo-resilience-lab/scenarios/)
+- [ROS 2 DDS and QoS fault triage](https://mskazemi.com/robo-resilience-lab/scenarios/ros2-fault-triage.html)
+- [Edge and cloud inference placement](https://mskazemi.com/robo-resilience-lab/scenarios/edge-cloud-inference.html)
+- [LLM agent skill screening in a simulator](https://mskazemi.com/robo-resilience-lab/scenarios/robot-agent-safety.html)
+- [Fair multi-robot task dispatch](https://mskazemi.com/robo-resilience-lab/scenarios/multi-robot-scheduling.html)
+- [Results registry](https://mskazemi.com/robo-resilience-lab/scenarios/results.html): every primary outcome is empty until human-reviewed raw evidence exists.
 
 ## Source and identity
 
-- Repository: https://github.com/MSKazemi/ros2-kubernetes-lab
+- Repository: https://github.com/MSKazemi/robo-resilience-lab
 - Author: Mohsen Seyedkazemi Ardebili (https://github.com/MSKazemi, https://mskazemi.github.io)
 - License: Apache-2.0
 - This file is a navigation aid. It does not claim special indexing or ranking treatment.

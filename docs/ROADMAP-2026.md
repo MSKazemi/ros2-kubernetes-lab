@@ -2,11 +2,11 @@
 
 > **Proposed expansion, not implementation (27 October 2026):** A separate [Cloud Robotics + AI/LLM Lab research program](cloud-robotics/README.md) introduces Hugging Face LeRobot, typed simulated policy integration, LLM/RAG experiments, ethics and 18 teaching/research scenarios. Its [12-month research roadmap](cloud-robotics/ROADMAP-2026-2027.md) explicitly depends on the P0 ROS/Kubernetes verification and safe-default work in this document. No AI robot execution or new cluster benchmark is claimed.
 
-> **Historical 90-day modernization proposal** (11 October 2026). This document remains useful as a dated baseline, but the **current cross-project coordination plan** is [the 2026–2027 integrated roadmap](PROGRAM-ROADMAP-2026-2027.md) and [documentation index](README.md). The newer document does not mean that a model integration, current Kubernetes profile or cross-worker DDS workload is verified.
+> **Historical 90-day modernization proposal** (11 October 2026). This document remains useful as a dated baseline, but the **current cross-project coordination plan** is [the 2026–2027 integrated roadmap](PROGRAM-ROADMAP-2026-2027.md) and [documentation index](README.md). For what is pinned and what has been run, see the [version matrix](VERSION-MATRIX.md) and the [experiment status registry](EXPERIMENT-STATUS.md); the [status snapshot](#2a-status-snapshot-2026-11-06) below maps this roadmap's items to files in the repository. The newer document does not mean that a model integration, current Kubernetes profile or cross-worker DDS workload is verified.
 >
-> Display name: **ROS 2 Kubernetes Lab** · current GitHub repository slug: `ros2-kubernetes-lab`. Any broader research umbrella name remains a separate, unapproved working-name RFC in issue #22.
+> Display name: **ROS 2 Kubernetes Lab** · current GitHub repository slug: `robo-resilience-lab`. The slug comparison in section 6 was written under the earlier name `ros2-kubernetes-lab` and is kept as a dated record. Any broader research umbrella name remains a separate, unapproved working-name RFC in issue #22.
 > Original tagline: **Deploy, scale, monitor, and benchmark distributed ROS 2 applications on Kubernetes.**
-> Tracking: [GitHub issues](https://github.com/MSKazemi/ros2-kubernetes-lab/issues).
+> Tracking: [GitHub issues](https://github.com/MSKazemi/robo-resilience-lab/issues).
 
 ## 1. North star and intended audience
 
@@ -29,24 +29,39 @@ Growth target: improve usage and visibility; 600 stars would equal 100x the six-
 
 This audit inspected repository contents and workflow history; **it did not execute a fresh multi-VM installation**. The table rows above were reconciled with the repository at commit `7b9cb44` on 2026-10-27 (static inspection; no Vagrant cluster was executed). Preserve historical results, but do not present old results as modern-profile benchmarks.
 
+## 2a. Status snapshot (2026-11-06)
+
+This table maps the P0/P1 items in section 3 to what files in the repository record or contain. It was assembled by reading files, not by running clusters; "recorded" means a repository document states a result, not that it was re-run for this snapshot. Exact pins and file references are in the [version matrix](VERSION-MATRIX.md); per-experiment status is in the [experiment status registry](EXPERIMENT-STATUS.md).
+
+| Item | Recorded in the repository | What is **not** established |
+|---|---|---|
+| #14 cross-worker talker/listener | Kind profile only: [`docs/KIND-DEMO.md`](KIND-DEMO.md) ("Measured on this host") records `make demo`, `make verify` and `make verify-negative` exiting 0 on one host (2026-10-27, commit `862b026`) | The Vagrant/Weave Net cluster; other CNIs; a real multi-machine cluster. KIND-DEMO.md says its CI workflow had not been executed when it was written |
+| #7 ROS 2 Jazzy baseline | `ROS2/Dockerfile:5` pins a Jazzy / Ubuntu 24.04 base image by digest; `scripts/test-ros2-image.sh:12,19` checks the distro and OS inside one container | Lyrical (`ROS2/jazzy/README.md` marks it "Deferred; no claim of support"); arm64; hermetic rebuilds (transitive apt packages are not locked) |
+| #15 maintained CNI and discovery | KIND-DEMO.md ("DDS discovery findings"): default multicast discovery delivered nothing on the kind CNI (kindnetd), across workers and on one worker; a Fast DDS Discovery Server worked. The [DDS guide](ROS2-KUBERNETES-DDS-GUIDE.md) records cross-worker delivery as not achieved on Vagrant/kubeadm/Weave Net | A maintained CNI on a real cluster; restart behaviour in Kubernetes |
+| #16 lightweight kind profile | `Makefile` targets `demo`, `verify`, `verify-negative`, `clean`; KIND-DEMO.md records a warm `make demo` of 82 s on one 12-CPU, 31 GB host | Whether it fits an 8 to 12 GB machine (KIND-DEMO.md: "not tested") |
+| #6 CI and safe defaults | Workflows in `.github/workflows/` (links, shell syntax, site, manifest schemas for Kubernetes 1.29, image smoke test, offline checks, kind demo). `MonitoringSystem/admin-user.yaml:25` still binds `cluster-admin`; `MonitoringSystem/monitoring.sh:53,55` still uses `chmod -R 777` | A cluster-backed integration check proven green; least-privilege defaults for the monitoring stack |
+| #4 replace archived Dashboard | Not done: `MonitoringSystem/monitoring.sh:12` still applies the Kubernetes Dashboard `v2.7.0` manifest | Headlamp migration |
+| #18 reproducible benchmarks | Offline harnesses labelled SYNTHETIC or SIMULATION exist (see the registry). Historical data under `DataAnalysis/dataset/` is unchanged | Any measured Jazzy/Kubernetes benchmark |
+| #19 versioned docs | [Version matrix](VERSION-MATRIX.md), [registry](EXPERIMENT-STATUS.md) and the local link check `scripts/check-markdown-links.py` | A built or published versioned docs site |
+
 ## 3. Workstreams and ownership
 
-Issue reference table; all numbers below are in the [current repository](https://github.com/MSKazemi/ros2-kubernetes-lab).
+Issue reference table; all numbers below are in the [current repository](https://github.com/MSKazemi/robo-resilience-lab).
 
 | Priority | Workstream / required outcome | Issue | Completion gate |
 |---|---|---|---|
-| P0 | Automatic, independently tested cross-worker ROS talker/listener | [#14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14) | Repeatable command shows DDS messages across nodes without `kubectl exec` |
-| P0 | ROS 2 Jazzy baseline; evaluate Lyrical on its **own** compatible platform | [#7](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7) | Pinned image, verified distro and sample nodes; legacy Foxy marked EOL |
-| P0 | Maintained CNI + explicit ROS DDS discovery and cross-node tests | [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15) | Cross-worker discovery, restart and debugging behavior verified |
-| P0 | Lightweight kind/k3d profile with `make demo`, `make verify`, `make clean` | [#16](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16) | Fresh test host meets documented resource/time requirements |
-| P0 | Test CI, pinned dependencies, least-privilege security defaults | [#6](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/6) | PR checks + ROS integration proof, safe storage/RBAC/secrets |
-| P0 | Replace archived Dashboard with maintained Headlamp and safer access | [#4](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/4) | UI smoke test, read-only default access, no exposed standing tokens |
-| P1 | Visual README and accurate quickstart | [#17](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/17) | Every featured command and diagram matches checked-in/tested code |
-| P1 | Reproducible DDS/HPA/monitoring benchmarks | [#18](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/18) | Runnable protocol, raw data, regenerated plots and limitations |
-| P1 | Searchable versioned tutorials and troubleshooting | [#19](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/19) | Built/published docs site, verified links, honest support matrix |
-| P1 | First verified release and contributor-friendly workflow | [#20](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/20) | Versioned release with integration proof and contribution guides |
-| P1 | Decide brand, perform safe rename **only after confirmation** | [#22](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/22) | Old/new links, citations, badges, docs, packages audited |
-| P2 | Educational demo, articles, community and conference outreach | [#21](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/21) | Useful technical content and documented engagement metrics |
+| P0 | Automatic, independently tested cross-worker ROS talker/listener | [#14](https://github.com/MSKazemi/robo-resilience-lab/issues/14) | Repeatable command shows DDS messages across nodes without `kubectl exec` |
+| P0 | ROS 2 Jazzy baseline; evaluate Lyrical on its **own** compatible platform | [#7](https://github.com/MSKazemi/robo-resilience-lab/issues/7) | Pinned image, verified distro and sample nodes; legacy Foxy marked EOL |
+| P0 | Maintained CNI + explicit ROS DDS discovery and cross-node tests | [#15](https://github.com/MSKazemi/robo-resilience-lab/issues/15) | Cross-worker discovery, restart and debugging behavior verified |
+| P0 | Lightweight kind/k3d profile with `make demo`, `make verify`, `make clean` | [#16](https://github.com/MSKazemi/robo-resilience-lab/issues/16) | Fresh test host meets documented resource/time requirements |
+| P0 | Test CI, pinned dependencies, least-privilege security defaults | [#6](https://github.com/MSKazemi/robo-resilience-lab/issues/6) | PR checks + ROS integration proof, safe storage/RBAC/secrets |
+| P0 | Replace archived Dashboard with maintained Headlamp and safer access | [#4](https://github.com/MSKazemi/robo-resilience-lab/issues/4) | UI smoke test, read-only default access, no exposed standing tokens |
+| P1 | Visual README and accurate quickstart | [#17](https://github.com/MSKazemi/robo-resilience-lab/issues/17) | Every featured command and diagram matches checked-in/tested code |
+| P1 | Reproducible DDS/HPA/monitoring benchmarks | [#18](https://github.com/MSKazemi/robo-resilience-lab/issues/18) | Runnable protocol, raw data, regenerated plots and limitations |
+| P1 | Searchable versioned tutorials and troubleshooting | [#19](https://github.com/MSKazemi/robo-resilience-lab/issues/19) | Built/published docs site, verified links, honest support matrix |
+| P1 | First verified release and contributor-friendly workflow | [#20](https://github.com/MSKazemi/robo-resilience-lab/issues/20) | Versioned release with integration proof and contribution guides |
+| P1 | Decide brand, perform safe rename **only after confirmation** | [#22](https://github.com/MSKazemi/robo-resilience-lab/issues/22) | Old/new links, citations, badges, docs, packages audited |
+| P2 | Educational demo, articles, community and conference outreach | [#21](https://github.com/MSKazemi/robo-resilience-lab/issues/21) | Useful technical content and documented engagement metrics |
 
 ## 4. Execution phases and dependency order
 
@@ -113,7 +128,7 @@ Preliminary exact-name GitHub repository searches found no exact existing match 
 
 This text describes the *target* scope; avoid promising kind/multi-node runtime compatibility in live metadata until tests pass.
 
-Rename checklist in [#22](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/22). Maintain repo history, issues, stars and citation continuity. Keep `CITATION.cff` and Apache-2.0 unless separate ownership/licensing review requires changes.
+Rename checklist in [#22](https://github.com/MSKazemi/robo-resilience-lab/issues/22). Maintain repo history, issues, stars and citation continuity. Keep `CITATION.cff` and Apache-2.0 unless separate ownership/licensing review requires changes.
 
 ## 7. Measurement dashboard and goals
 

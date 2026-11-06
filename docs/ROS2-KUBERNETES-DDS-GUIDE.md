@@ -20,7 +20,7 @@ Read the upstream [Fast DDS ROS 2 Discovery Server tutorial](https://fast-dds.do
 | ROS image (modern, container only) | [`ROS2/Dockerfile`](../ROS2/Dockerfile) | Builds from the ROS 2 Jazzy / Ubuntu 24.04 base with `demo_nodes_cpp` and `stress-ng`; checked only by an in-image local talker/listener test ([`scripts/test-ros2-image.sh`](../scripts/test-ros2-image.sh)). It is **not** referenced by the legacy `ROS2/ros_dep_*.yaml` manifests |
 | ROS image (legacy) | [`ROS2/legacy/foxy/Dockerfile`](../ROS2/legacy/foxy/Dockerfile) | Preserved recipe for ROS 2 Foxy (end of life June 2023) with `stress-ng`; the original manifests still pull a Foxy-based image (`kazemi/ros-foxy-with-stress-ng`) |
 | Kubernetes workload | [`ROS2/ros_dep_1.yaml`](../ROS2/ros_dep_1.yaml) | Starts a CPU stress workload with an HPA, **not** talker/listener |
-| Manual example | [`ROS2/README.md`](../ROS2/README.md) | Describes launching `demo_nodes_cpp` talker/listener from interactive shells; review corrections in [#24](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/24) |
+| Manual example | [`ROS2/README.md`](../ROS2/README.md) | Describes launching `demo_nodes_cpp` talker/listener from interactive shells; review corrections in [#24](https://github.com/MSKazemi/robo-resilience-lab/issues/24) |
 
 ## Support states and evidence
 
@@ -30,7 +30,7 @@ Three explicit states are used across the repository documentation. `cross-worke
 |---|---|---|---|
 | `legacy` | Historical, unverified in this review, and built on end-of-life or archived components | Vagrant VMs (Ubuntu 22.04), kubeadm Kubernetes 1.29, Weave Net 2.8.1, ROS 2 Foxy images and `ROS2/ros_dep_*.yaml` / `ROS2/VPA.yaml` / `ROS2/ros_one.yaml` manifests | None executed in this review; static file inspection only |
 | `container tested` | The Jazzy image builds and passes a local talker/listener check **inside one container** | `ROS2/Dockerfile` (ROS 2 Jazzy, Ubuntu 24.04, linux/amd64) | [`.github/workflows/ros2-image-ci.yml`](../.github/workflows/ros2-image-ci.yml) runs [`scripts/test-ros2-image.sh`](../scripts/test-ros2-image.sh) in the container; this checks the Jazzy distro, Ubuntu 24.04, `demo_nodes_cpp`, `stress-ng` and one listener receiving one talker message locally |
-| `cross-worker verified` | A talker and listener scheduled on different Kubernetes workers exchange messages, with a repeatable scripted check | **Only the kind profile on this CNI (kindnetd):** [`kind/ros2k8s-demo.yaml`](../kind/ros2k8s-demo.yaml) + [`ROS2/jazzy/talker-listener.yaml`](../ROS2/jazzy/talker-listener.yaml), 1 control plane + 2 workers, Fast DDS Discovery Server. **Not** the Vagrant/kubeadm profile, other CNIs or other hosts. Remaining work: [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15) | Commit `862b026`, 2026-10-27, one host: `make demo` (exit 0), `make verify` (exit 0, talker on `ros2k8s-demo-worker`, listener on `ros2k8s-demo-worker2`, listener logged `I heard` for talker messages) and `make verify-negative` (broken delivery detected, exit 1, then recovered). Details and the failed default-multicast attempt: [`docs/KIND-DEMO.md`](./KIND-DEMO.md). The GitHub Actions workflow for it has **not been run yet** |
+| `cross-worker verified` | A talker and listener scheduled on different Kubernetes workers exchange messages, with a repeatable scripted check | **Only the kind profile on this CNI (kindnetd):** [`kind/ros2k8s-demo.yaml`](../kind/ros2k8s-demo.yaml) + [`ROS2/jazzy/talker-listener.yaml`](../ROS2/jazzy/talker-listener.yaml), 1 control plane + 2 workers, Fast DDS Discovery Server. **Not** the Vagrant/kubeadm profile, other CNIs or other hosts. Remaining work: [#15](https://github.com/MSKazemi/robo-resilience-lab/issues/15) | Commit `862b026`, 2026-10-27, one host: `make demo` (exit 0), `make verify` (exit 0, talker on `ros2k8s-demo-worker`, listener on `ros2k8s-demo-worker2`, listener logged `I heard` for talker messages) and `make verify-negative` (broken delivery detected, exit 1, then recovered). Details and the failed default-multicast attempt: [`docs/KIND-DEMO.md`](./KIND-DEMO.md). The GitHub Actions workflow for it has **not been run yet** |
 
 Compatibility status (review date **2026-10-27**, repository base commit `7b9cb44`):
 
@@ -87,14 +87,54 @@ To make a **cross-worker** DDS claim, the talker and listener must be visibly sc
 
 Do not expose authentication tokens, cluster-admin kubeconfigs, private addresses, or credentials in pasted logs.
 
+## Verification and troubleshooting commands (copied from the repository scripts)
+
+Each command comes from a file in the repository. Listing a command here is not evidence that it passed anywhere unless the evidence is stated.
+
+**Kind profile (needs Docker, kind and kubectl; heavyweight, not part of the static checks).** Source: `Makefile`, `scripts/verify-ros2.sh` and [`docs/KIND-DEMO.md`](./KIND-DEMO.md).
+
+```bash
+make help              # prerequisites and targets
+make demo              # build the image, create cluster ros2k8s-demo, deploy discovery server + talker + listener
+make verify            # exit 0 only if pods are Ready, on different workers, and the listener hears the talker
+make verify-negative   # breaks delivery on purpose, expects verify to fail, restores, expects verify to pass
+make clean             # delete the cluster and the image built by `make demo`
+```
+
+`scripts/verify-ros2.sh` reads three optional environment variables: `KUBE_CONTEXT` (default `kind-ros2k8s-demo`), `ROS_NAMESPACE` (default `ros`) and `VERIFY_TIMEOUT` (seconds per waiting stage, default `120`). Exit codes: `0` verified, `1` verification failed (diagnostics are printed to stderr), `2` usage error or missing prerequisite. Its four stages are: Deployments rolled out, pods Ready, talker and listener on different nodes, and a listener counter that keeps advancing whose latest value appears in the talker pod's own log. Manual checks in the same namespace use the `app` labels the script itself uses:
+
+```bash
+kubectl --context kind-ros2k8s-demo -n ros get pods -o wide        # compare the NODE column
+kubectl --context kind-ros2k8s-demo -n ros logs -l app=listener --tail=15
+kubectl --context kind-ros2k8s-demo -n ros logs -l app=discovery-server --tail=15
+```
+
+**Jazzy image, single container (no cluster).** Source: `ROS2/jazzy/README.md` and `scripts/test-ros2-image.sh`.
+
+```bash
+docker build --platform linux/amd64 --file ROS2/Dockerfile --tag ros-jazzy-lab:local .
+docker run --rm -i --platform linux/amd64 ros-jazzy-lab:local bash -s < scripts/test-ros2-image.sh
+```
+
+**Static checks (no Docker or cluster).** Source: `AGENTS.md` and `scripts/`.
+
+```bash
+python3 scripts/check-markdown-links.py   # local Markdown links and #anchors
+bash scripts/check-shell.sh               # bash -n on tracked *.sh
+python3 scripts/doctor.py                 # host preflight, read-only
+ruby -c Vagrantfile                       # only if Ruby is installed
+```
+
+These static checks do **not** test DDS or Kubernetes. The kind profile's own findings (default multicast failed on kindnetd; a Discovery Server worked; `ROS_DOMAIN_ID` did not isolate two nodes that shared one Discovery Server) are recorded in [`docs/KIND-DEMO.md`](./KIND-DEMO.md).
+
 ## Why not use this as a production robotics reference?
 
 The Vagrant and Kubernetes manifest part of the current checkout depends on ROS 2 Foxy (end of life June 2023), Kubernetes 1.29 (end of support), and an archived Weave Net version; the separate Jazzy container image is `container tested` only (see [Support states](#support-states-and-evidence)). It lacks verified deterministic cross-node DDS integration tests and is sized for a powerful local workstation. Use it as **historical learning material** and follow the work to add a maintained lab:
 
-- [Modern ROS image baseline #7](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7)
-- [Maintained DDS networking #15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15)
-- [Verified talker/listener across different workers #14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14)
-- [Lightweight kind/k3d profile #16](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16)
+- [Modern ROS image baseline #7](https://github.com/MSKazemi/robo-resilience-lab/issues/7)
+- [Maintained DDS networking #15](https://github.com/MSKazemi/robo-resilience-lab/issues/15)
+- [Verified talker/listener across different workers #14](https://github.com/MSKazemi/robo-resilience-lab/issues/14)
+- [Lightweight kind/k3d profile #16](https://github.com/MSKazemi/robo-resilience-lab/issues/16)
 
 ## Further reading
 

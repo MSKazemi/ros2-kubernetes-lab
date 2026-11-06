@@ -4,19 +4,19 @@
 
 You do **not** need to be an AI expert, use both tools, or pay for an agent to contribute. You can also follow [CONTRIBUTING.md](../CONTRIBUTING.md) with your normal editor. Claude Code and Codex are **coding agents**: they can inspect checked-out repository files, suggest edits, write patches, run permitted commands, and help you prepare a pull request. They can make mistakes. **You own the result and must review it.**
 
-Both tools use our shared [AGENTS.md](../AGENTS.md) instructions: Codex reads it directly, while [CLAUDE.md](../CLAUDE.md) imports it for Claude Code. The guide below provides the human workflow; the short rules stay separate so each agent session has only the context it needs.
+Both tools use our shared [AGENTS.md](../AGENTS.md) instructions: Codex reads it directly, while Claude Code reads a `CLAUDE.md` file: create one yourself in your checkout containing the single line `@AGENTS.md` so Claude Code imports the shared rules (keep it local; do not commit it). The guide below provides the human workflow; the short rules stay separate so each agent session has only the context it needs.
 
 ## Choose a small, open issue
 
-Start with one of the current [good first issues](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue) or [help-wanted tasks](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/help%20wanted). Read the actual issue and its acceptance criteria. Comment politely that you would like to work on it, and check for other active PRs before spending time.
+Start with one of the current [good first issues](https://github.com/MSKazemi/robo-resilience-lab/labels/good%20first%20issue) or [help-wanted tasks](https://github.com/MSKazemi/robo-resilience-lab/labels/help%20wanted). Read the actual issue and its acceptance criteria. Comment politely that you would like to work on it, and check for other active PRs before spending time.
 
 Suggested starting points (only if still open):
 
 | Issue | Task | What you need |
 |---|---|---|
-| [#89](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/89) | Student scenario usability, accessibility and search audit | A browser, basic HTML/accessibility knowledge |
-| [#77](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/77) | Offline CI checks for Jev JSON fixtures and Markdown links | Python or GitHub Actions; wait until draft PR [#76](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/76) has landed |
-| [#55](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/55) | CPU-only simulated ROS 2 observation/action contract and mock policy | Beginner coding; check the issue for the tools it needs. A first simulated version exists, see [the contract guide](OBSERVATION-ACTION-CONTRACT.md); extend it rather than duplicating |
+| [#89](https://github.com/MSKazemi/robo-resilience-lab/issues/89) | Student scenario usability, accessibility and search audit | A browser, basic HTML/accessibility knowledge |
+| [#77](https://github.com/MSKazemi/robo-resilience-lab/issues/77) | Offline CI checks for Jev JSON fixtures and Markdown links | Python or GitHub Actions; wait until draft PR [#76](https://github.com/MSKazemi/robo-resilience-lab/pull/76) has landed |
+| [#55](https://github.com/MSKazemi/robo-resilience-lab/issues/55) | CPU-only simulated ROS 2 observation/action contract and mock policy | Beginner coding; check the issue for the tools it needs. A first simulated version exists, see [the contract guide](OBSERVATION-ACTION-CONTRACT.md); extend it rather than duplicating |
 
 Issues change quickly. Before you start, read the live issue and check its linked pull requests, so you do not duplicate work that is already open or merged. The lab's first community contributions (the glossary, the quickstart cleanup and the monitoring screenshots) are listed in [CONTRIBUTORS.md](../CONTRIBUTORS.md).
 
@@ -24,16 +24,16 @@ A documentation-only contribution does not require launching Vagrant. The histor
 
 ## Step 1 — Fork, clone, and make a branch
 
-On GitHub click **Fork** on the [project repository](https://github.com/MSKazemi/ros2-kubernetes-lab). Clone **your fork**, not the original repository (replace `YOUR_GITHUB_USERNAME`):
+On GitHub click **Fork** on the [project repository](https://github.com/MSKazemi/robo-resilience-lab). Clone **your fork**, not the original repository (replace `YOUR_GITHUB_USERNAME`):
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/ros2-kubernetes-lab.git
-cd ros2-kubernetes-lab
+git clone https://github.com/YOUR_GITHUB_USERNAME/robo-resilience-lab.git
+cd robo-resilience-lab
 git switch -c docs/issue-NNN-short-description
 git status --short
 ```
 
-Choose a branch name that matches **your** issue. The repository is named `robo-resilience-lab`; older links and clones may still use previous names (`ros2-kubernetes-lab`, `Vagrant-Kubernetes-ROS2-Deployment`).
+Choose a branch name that matches **your** issue. The repository is named `robo-resilience-lab`; older links and clones may still use previous names (`robo-resilience-lab`, `Vagrant-Kubernetes-ROS2-Deployment`).
 
 If you have write access to the original repository or use a connected cloud agent, you can work in its own feature branch instead of forking. In either case, **never make your contribution directly on `main`**.
 
@@ -49,7 +49,7 @@ claude --version
 claude
 ```
 
-Follow the sign-in prompts and permission requests. The official [Claude Code quickstart](https://code.claude.com/docs/en/quickstart) recommends native installation for many platforms; use its instructions if you do not want the npm option. Claude Code reads [CLAUDE.md](../CLAUDE.md), which explicitly imports [AGENTS.md](../AGENTS.md).
+Follow the sign-in prompts and permission requests. The official [Claude Code quickstart](https://code.claude.com/docs/en/quickstart) recommends native installation for many platforms; use its instructions if you do not want the npm option. Claude Code reads a local, uncommitted `CLAUDE.md` that imports [AGENTS.md](../AGENTS.md) (see the note at the top of this guide).
 
 ### Option B: OpenAI Codex
 
@@ -163,7 +163,7 @@ A human maintainer will review the result. Do not ask your coding agent to merge
 | Agent wants to run `vagrant up` on a small laptop | Decline; use static checks and document the missing integration test |
 | Agent cannot push your branch | Push manually with Git, or authenticate `gh` only if you decide to use it |
 | Agent opens many PRs or edits `main` | Stop; create a dedicated branch, review the diff and isolate one issue |
-| Agent instructions seem missing | From the repo root, ask it to summarize `AGENTS.md`; for Claude Code, check `/context` and `CLAUDE.md` |
+| Agent instructions seem missing | From the repo root, ask it to summarize `AGENTS.md`; for Claude Code, check `/context` and that your local `CLAUDE.md` contains `@AGENTS.md` |
 
 ## Ground rules for AI contributions
 

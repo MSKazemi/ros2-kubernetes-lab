@@ -1,18 +1,101 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#080d18">
-<title>Getting started | ROS 2 Kubernetes Lab</title><meta name="description" content="Build the ROS 2 Jazzy image and run its image-local, single-container test, or inspect the historical three-VM Vagrant lab. Includes verification limits."><meta name="robots" content="index, follow"><link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/docs/getting-started.html"><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<title>Getting started | ROS 2 Kubernetes Lab</title><meta name="description" content="Start with a Docker-only ROS 2 Jazzy test, try the lightweight kind profile, or inspect the historical Vagrant lab. Each path states what it does not prove."><meta name="robots" content="index, follow"><link rel="canonical" href="https://mskazemi.com/robo-resilience-lab/docs/getting-started.html"><link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="../assets/docs.css">
-<meta property="og:type" content="article"><meta property="og:title" content="Getting started"><meta property="og:description" content="Build the ROS 2 Jazzy image and run its image-local, single-container test, or inspect the historical three-VM Vagrant lab. Includes verification limits."><meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/docs/getting-started.html"><meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="640"><meta property="og:image:alt" content="ROS 2 Kubernetes Lab: educational lab banner, one control plane and two workers"><meta property="og:site_name" content="ROS 2 Kubernetes Lab"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png"><meta name="twitter:image:alt" content="ROS 2 Kubernetes Lab: educational lab banner, one control plane and two workers"><meta name="twitter:title" content="Getting started | ROS 2 Kubernetes Lab"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Docs","item":"https://mskazemi.com/ros2-kubernetes-lab/docs/"},{"@type":"ListItem","position":3,"name":"Getting started","item":"https://mskazemi.com/ros2-kubernetes-lab/docs/getting-started.html"}]}</script></head>
+<meta property="og:type" content="article"><meta property="og:title" content="Getting started"><meta property="og:description" content="Start with a Docker-only ROS 2 Jazzy test, try the lightweight kind profile, or inspect the historical Vagrant lab. Each path states what it does not prove."><meta property="og:url" content="https://mskazemi.com/robo-resilience-lab/docs/getting-started.html"><meta property="og:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1280"><meta property="og:image:height" content="640"><meta property="og:image:alt" content="ROS 2 Kubernetes Lab: educational lab banner, one control plane and two workers"><meta property="og:site_name" content="ROS 2 Kubernetes Lab"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png"><meta name="twitter:image:alt" content="ROS 2 Kubernetes Lab: educational lab banner, one control plane and two workers"><meta name="twitter:title" content="Getting started | ROS 2 Kubernetes Lab"><meta name="twitter:description" content="Start with a Docker-only ROS 2 Jazzy test, try the lightweight kind profile, or inspect the historical Vagrant lab. Each path states what it does not prove."><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/robo-resilience-lab/"},{"@type":"ListItem","position":2,"name":"Docs","item":"https://mskazemi.com/robo-resilience-lab/docs/"},{"@type":"ListItem","position":3,"name":"Getting started","item":"https://mskazemi.com/robo-resilience-lab/docs/getting-started.html"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Getting started","description":"Start with a Docker-only ROS 2 Jazzy test, try the lightweight kind profile, or inspect the historical Vagrant lab. Each path states what it does not prove.","url":"https://mskazemi.com/robo-resilience-lab/docs/getting-started.html","mainEntityOfPage":"https://mskazemi.com/robo-resilience-lab/docs/getting-started.html","inLanguage":"en","isAccessibleForFree":true,"author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"isPartOf":{"@type":"WebSite","name":"ROS 2 Kubernetes Lab","url":"https://mskazemi.com/robo-resilience-lab/"}}</script>
+<style>
+/* docs-ux (issue #89): page-level usability layer, additive to assets/docs.css. Move into docs.css when the owner of that file agrees. */
+main:focus,[tabindex="-1"]:focus{outline:none}
+summary:focus-visible,[tabindex="0"]:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.skip-link{left:12px;top:0;border-radius:0 0 8px 8px;font-weight:700;font-size:14px;transform:translateY(-150%)}
+.skip-link:focus{transform:none;outline:3px solid #fff;outline-offset:2px}
+.doc-content :target{scroll-margin-top:100px}
+.doc-callout p,.doc-step p,.doc-intro-card p{font-size:14px;line-height:1.7}
+.doc-table{font-size:13px}
+.aside-note{font-size:12px}
+.doc-aside nav a,.docs-nav-links a{font-size:13px}
+.doc-badge{font-size:11px}
+.doc-crumbs{font-size:12px}
+.doc-crumbs a,.doc-next a,.docs-footer a{display:inline-flex;align-items:center;min-height:24px}
+.doc-crumbs a{padding-inline:2px}
+.doc-sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.doc-pre{display:flex;flex-direction:column;margin:20px 0 26px}
+.doc-pre pre{margin:0;border-top-left-radius:0;border-top-right-radius:0}
+.doc-copy{order:-1;align-self:flex-end;min-height:32px;padding:5px 14px;border:1px solid #30435c;border-bottom:0;border-radius:8px 8px 0 0;background:#14233a;color:#c9d9ec;font:600 12px var(--body);cursor:pointer}
+.doc-copy:hover{color:var(--cyan)}
+.doc-copy:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.entry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:22px 0 8px}
+.entry-card{min-width:0;display:flex;flex-direction:column;gap:8px;border:1px solid #32465b;border-radius:11px;background:#111f32;padding:20px}
+.entry-card h3{margin:0;font-size:18px;line-height:1.3}
+.entry-card .eyebrow{color:var(--cyan);font:600 11px var(--mono);letter-spacing:1px}
+.entry-card p{margin:0;font-size:14px;line-height:1.65}
+.entry-card ul{margin:4px 0 0;padding-left:20px}
+.entry-card li{margin:0 0 4px;font-size:14px}
+.arch-fig{display:grid;gap:28px;grid-template-columns:minmax(0,500px) minmax(0,1fr);align-items:start;margin:26px 0 12px}
+.arch-svg{display:block;width:100%;height:auto;max-width:520px;background:#0a1322;border:1px solid #2b3a53;border-radius:12px}
+.arch-row{fill:#101b2e;stroke-width:1.6}
+.arch-row-cur{stroke:#66ebda}
+.arch-row-hist{stroke:#ffa66e;stroke-dasharray:6 4}
+.arch-row-ne{stroke:#a193ff;stroke-width:2.2;stroke-dasharray:1.5 5;stroke-linecap:round}
+.arch-title{fill:#f1f5fc;font:600 16px var(--body)}
+.arch-sub{fill:#b9c8dc;font:15px var(--body)}
+.arch-head{font:700 14.5px var(--mono);letter-spacing:1.2px}
+.arch-head-cur{fill:#66ebda}.arch-head-hist{fill:#ffa66e}.arch-head-ne{fill:#b8adff}
+.lay{transition:opacity .2s}
+.arch-figure[data-show="current"] .lay-hist,.arch-figure[data-show="current"] .lay-ne,
+.arch-figure[data-show="hist"] .lay-cur,.arch-figure[data-show="hist"] .lay-ne,
+.arch-figure[data-show="ne"] .lay-cur,.arch-figure[data-show="ne"] .lay-hist{opacity:.3}
+.arch-side h3{margin-top:0}
+.arch-legend{list-style:none;padding:0;margin:0 0 18px}
+.arch-legend li{display:flex;align-items:flex-start;gap:12px;padding:0;margin:0 0 12px;font-size:14px;line-height:1.55}
+.arch-legend .sw{flex:none;width:34px;height:16px;margin-top:4px;border-radius:4px;border:2px solid #66ebda}
+.arch-legend .sw-hist{border-style:dashed;border-color:#ffa66e}
+.arch-legend .sw-ne{border-style:dotted;border-color:#a193ff}
+.arch-filter[hidden]{display:none}
+.arch-filter{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.arch-filter button{min-height:44px;padding:8px 14px;border:1px solid #43647a;border-radius:999px;background:transparent;color:#d7e4f5;font:600 13px var(--body);cursor:pointer}
+.arch-filter button:hover{border-color:var(--cyan)}
+.arch-filter button[aria-pressed="true"]{background:#66ebda;border-color:#66ebda;color:#071c24}
+.arch-filter button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+@media(max-width:900px){.arch-fig{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:720px){
+.entry-grid{grid-template-columns:1fr}
+.doc-aside nav a,.docs-nav-links a{min-height:44px;display:inline-flex;align-items:center}
+.doc-aside nav a{padding:7px 12px}
+.docs-nav-links{gap:0 16px}
+.doc-content p,.doc-content li,.doc-table td{overflow-wrap:break-word}
+}
+@media(prefers-contrast:more){
+.doc-content p,.doc-content li,.doc-table td,.aside-note,.doc-aside nav a{color:#dbe6f4}
+.doc-callout,.doc-step,.doc-table-wrap,.entry-card,.doc-aside{border-color:#9bb0cc}
+.doc-content a{text-decoration:underline;text-underline-offset:3px}
+}
+@media(forced-colors:active){
+.arch-row{fill:Canvas;stroke:CanvasText}.arch-title,.arch-sub,.arch-head{fill:CanvasText}
+.arch-svg{border-color:CanvasText;background:Canvas}
+.arch-filter button,.doc-copy{border:1px solid ButtonText}
+.arch-filter button[aria-pressed="true"]{background:Highlight;color:HighlightText}
+.skip-link{background:Canvas;color:LinkText;border:1px solid LinkText}
+}
+@media(prefers-reduced-motion:reduce){.lay{transition:none}.doc-tile:hover{transform:none}}
+</style>
+<script defer src="../script.js"></script></head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="docs-nav"><div class="docs-container docs-nav-inner"><a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a><nav class="docs-nav-links" aria-label="Documentation navigation"><a href="../">Website</a><a href="./" aria-current="false">Docs</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab">Source on GitHub ↗</a></nav></div></header>
+<header class="docs-nav"><div class="docs-container docs-nav-inner"><a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a><nav class="docs-nav-links" aria-label="Documentation navigation"><a href="../">Website</a><a href="./">Docs</a><a href="../plans/">Roadmap</a><a class="github-link" href="https://github.com/MSKazemi/robo-resilience-lab">Source on GitHub ↗</a></nav></div></header>
 <div class="docs-container docs-main"><aside class="doc-aside" aria-label="Documentation sections"><span class="aside-title">FIELD GUIDE / INDEX</span><nav aria-label="Documentation pages"><a href="./">Documentation</a>
 <a href="./getting-started.html" aria-current="page">Getting started</a>
 <a href="./architecture.html">Architecture</a>
 <a href="./lab-paths.html">Learning paths</a>
 <a href="./contribute.html">Contribute</a></nav><div class="aside-divider"></div><p class="aside-note">Educational &amp; research lab. Historical Vagrant profile and Jazzy container verification have different support boundaries.</p></aside>
 <main class="doc-content" id="main" tabindex="-1"><div class="doc-crumbs"><a href="../">Lab</a><span>/</span><a href="./">Docs</a><span>/</span>Getting started</div><div class="doc-kicker" style="margin-top:29px">GETTING STARTED</div><h1>Getting started</h1><p class="lead">Begin with a clearly scoped experiment. The modern Jazzy image can be tested without starting a Kubernetes cluster; the historical Vagrant setup is a separate, higher-resource path.</p>
-<div class="doc-badges"><span class="doc-badge">IMAGE-LOCAL ROS 2 TEST</span><span class="doc-badge legacy">VAGRANT / HISTORICAL PROFILE</span></div>
+<div class="doc-badges"><span class="doc-badge">IMAGE-LOCAL ROS 2 TEST</span><span class="doc-badge">KIND PROFILE / ONE RECORDED RUN</span><span class="doc-badge legacy">VAGRANT / HISTORICAL PROFILE</span></div>
+<h2 id="choose">Choose your starting point</h2>
+<div class="entry-grid">
+<section class="entry-card" aria-labelledby="entry-student"><span class="eyebrow">STUDENT</span><h3 id="entry-student">New to ROS 2 or Kubernetes</h3><p>You only need Docker. Run one container test, then see where each piece sits.</p><ul><li><a href="#jazzy">Path A: Jazzy container test</a></li><li><a href="./architecture.html#layers">Architecture layers</a></li><li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/GLOSSARY.md">Glossary ↗</a></li><li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/WINDOWS-AND-MAC.md">Windows and macOS notes ↗</a></li></ul></section>
+<section class="entry-card" aria-labelledby="entry-researcher"><span class="eyebrow">RESEARCHER</span><h3 id="entry-researcher">DDS, placement, resilience</h3><p>Reproduce the cross-worker check yourself, read what failed on the way, then pick an open question.</p><ul><li><a href="#kind">Path B: kind cluster</a></li><li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/ROS2-KUBERNETES-DDS-GUIDE.md">DDS troubleshooting guide ↗</a></li><li><a href="./architecture.html#verification">Evidence needed for support claims</a></li><li><a href="../scenarios/">Scenario lab (research proposals)</a></li></ul></section>
+<section class="entry-card" aria-labelledby="entry-contributor"><span class="eyebrow">CONTRIBUTOR</span><h3 id="entry-contributor">Improve the lab</h3><p>Pick a focused issue. Every claim in a pull request needs a command you ran and its output.</p><ul><li><a href="./contribute.html">Contributing guide</a></li><li><a href="./lab-paths.html">Learning paths</a></li><li><a href="https://github.com/MSKazemi/robo-resilience-lab/issues">Open issues ↗</a></li></ul></section>
+</div>
 <h2 id="jazzy">Path A — ROS 2 Jazzy container test</h2>
 <p><strong>Requirements:</strong> Docker Engine/Desktop, a host able to run a Linux AMD64 container, sufficient disk capacity and access to the required image repositories. The CI image test checks the ROS 2 demo executables and the delivery of a local talker/listener message.</p>
 <div class="doc-steps">
@@ -20,14 +103,21 @@
 <div class="doc-step"><h3>Build the Jazzy image</h3><p>The Dockerfile uses a digest-pinned ROS 2 Jazzy / Ubuntu 24.04 base.</p></div>
 <div class="doc-step"><h3>Run the image-local smoke test</h3><p>The script fails when the listener receives no message within its timeout.</p></div>
 </div>
-<pre><code>git clone https://github.com/MSKazemi/ros2-kubernetes-lab.git
-cd ros2-kubernetes-lab
+<pre><code>git clone https://github.com/MSKazemi/robo-resilience-lab.git
+cd robo-resilience-lab
 
 docker build --platform linux/amd64 --file ROS2/Dockerfile --tag ros-jazzy-lab:local .
 docker run --rm -i --platform linux/amd64 ros-jazzy-lab:local bash -s &lt; scripts/test-ros2-image.sh</code></pre>
-<div class="doc-callout"><h3>What passing means</h3><p>The test demonstrates talker/listener communication inside the tested container image. It does <strong>not</strong> validate a Kubernetes cluster, DDS discovery between pods on separate workers, arm64 builds, or real-time performance. See the <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/ROS2/jazzy/README.md">full Jazzy guide</a>.</p></div>
-<h2 id="legacy">Path B — historical three-node Vagrant lab</h2>
-<p>This profile is useful for studying the checked-in infrastructure design, but it has old dependencies. The <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/Vagrantfile">Vagrantfile</a> defines three Ubuntu 22.04 VMs with a combined allocation near <strong>30 GB RAM and 18 vCPUs</strong>. You need a host capable of providing those resources, VirtualBox, Vagrant and the appropriate host networking support.</p>
+<div class="doc-callout"><h3>What passing means</h3><p>The test demonstrates talker/listener communication inside the tested container image. It does <strong>not</strong> validate a Kubernetes cluster, DDS discovery between pods on separate workers, arm64 builds, or real-time performance. See the <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/ROS2/jazzy/README.md">full Jazzy guide</a>.</p></div>
+<h2 id="kind">Path B — lightweight kind cluster (three Docker containers)</h2>
+<p><strong>Requirements:</strong> Linux on amd64 (the only platform its write-up reports testing), a Docker daemon you can use without <code>sudo</code>, <code>kind</code> v0.33.0 or newer, <code>kubectl</code>, <code>make</code> and <code>bash</code>. The first run downloads container images, so it needs internet access. This path does not start Vagrant or VirtualBox. Use a checkout of the <code>main</code> branch, which carries the <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/KIND-DEMO.md">kind demo guide</a>.</p>
+<pre><code>make help      # prerequisites and targets
+make demo      # build the image, create the kind cluster, deploy discovery server, talker and listener
+make verify    # exit code 0 only if the listener hears the talker from a different worker
+make clean     # delete the cluster and the image that make demo built</code></pre>
+<div class="doc-callout"><h3>What passing means, and what it does not</h3><p><code>make verify</code> runs <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/scripts/verify-ros2.sh">scripts/verify-ros2.sh</a>. It checks that the pods are Ready, that talker and listener run on different nodes, and that the listener's <code>I heard</code> counter keeps advancing. The guide records <strong>one run on one Linux amd64 host</strong>; it also reports that default multicast discovery did not work on that cluster's network plugin, so the profile uses a Fast DDS Discovery Server. A pass shows delivery on your cluster at that moment. It says nothing about other network plugins, arm64, macOS or Windows, the Vagrant profile, performance or real-time behavior. This page was written from those documents and scripts and did not re-run them.</p></div>
+<h2 id="legacy">Path C — historical three-node Vagrant lab</h2>
+<p>This profile is useful for studying the checked-in infrastructure design, but it has old dependencies. The <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/Vagrantfile">Vagrantfile</a> defines three Ubuntu 22.04 VMs with a combined allocation near <strong>30 GB RAM and 18 vCPUs</strong>. You need a host capable of providing those resources, VirtualBox, Vagrant and the appropriate host networking support.</p>
 <pre><code># Run on your host, in the repository directory
 vagrant up
 vagrant ssh controlplane
@@ -37,11 +127,11 @@ kubectl get nodes -o wide
 kubectl get pods -A</code></pre>
 <div class="doc-callout warning"><h3>This is not a modern verified quickstart</h3><p>Historical Kubernetes 1.29, ROS 2 Foxy and Weave Net may require repair. No ROS talker/listener pair starts just because <code>vagrant up</code> completes; the original workload YAML starts <code>stress-ng</code>. Never post VM logs, service tokens or kubeconfig contents publicly.</p></div>
 <h2 id="troubleshooting">Troubleshooting and evidence</h2>
-<ul><li><strong>Docker build failed?</strong> Check host architecture, free disk space, networking and the complete build log. Report error context without credentials.</li><li><strong>Legacy VM cannot start?</strong> Check virtualization support, available memory, VirtualBox/Vagrant compatibility and conflicting host hypervisors.</li><li><strong>Nodes not ready?</strong> Inspect Kubernetes events and historical CNI status. Avoid assuming multicast passes through all Kubernetes networking stacks.</li><li><strong>No messages across workers?</strong> That is a research/test gap, not a documented successful feature; follow <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14">issue #14</a>.</li></ul>
+<ul><li><strong>Docker build failed?</strong> Check host architecture, free disk space, networking and the complete build log. Report error context without credentials.</li><li><strong>Legacy VM cannot start?</strong> Check virtualization support, available memory, VirtualBox/Vagrant compatibility and conflicting host hypervisors.</li><li><strong>Nodes not ready?</strong> Inspect Kubernetes events and historical CNI status. Avoid assuming multicast passes through all Kubernetes networking stacks.</li><li><strong>No messages across workers?</strong> That is a research/test gap, not a documented successful feature; follow <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/14">issue #14</a>.</li></ul>
 <h2 id="cleanup">Stopping local VMs</h2><pre><code>vagrant status
 vagrant halt
 # Destructive: deletes the three VM disks and cluster state
 vagrant destroy -f</code></pre><p>Do not use the destructive cleanup command without checking whether data in those VMs is needed.</p>
 
-<nav class="doc-next" aria-label="Documentation footer"><a href="../">← Back to the landing page</a><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues">Suggest a documentation improvement ↗</a></nav></main></div>
-<footer class="docs-footer"><div class="docs-container"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0</span><span>Educational / research use · Not validated for production or safety-critical control</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/DISCLAIMER.md">Responsible use ↗</a></div></footer></body></html>
+<nav class="doc-next" aria-label="Documentation footer"><a href="../">← Back to the landing page</a><a href="https://github.com/MSKazemi/robo-resilience-lab/issues">Suggest a documentation improvement ↗</a></nav></main></div>
+<footer class="docs-footer"><div class="docs-container"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0</span><span>Educational / research use · Not validated for production or safety-critical control</span><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/DISCLAIMER.md">Responsible use ↗</a></div></footer></body></html>

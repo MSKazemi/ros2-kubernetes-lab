@@ -8,7 +8,7 @@ Agents must follow [AGENTS.md](../AGENTS.md) and [CONTRIBUTING.md](../CONTRIBUTI
 
 ```text
 I am contributing to issue #89:
-https://github.com/MSKazemi/ros2-kubernetes-lab/issues/89
+https://github.com/MSKazemi/robo-resilience-lab/issues/89
 
 First read AGENTS.md, the current issue body and its parent epic #83, asking me to paste
 them if you lack GitHub access. Inspect site/scenarios, site/assets and scripts/validate-site.py.

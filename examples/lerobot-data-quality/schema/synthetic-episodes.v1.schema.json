@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MSKazemi/robo-resilience-lab/examples/lerobot-data-quality/schema/synthetic-episodes.v1.schema.json",
+  "title": "Synthetic episode metadata, contract synthetic-episodes-meta/v1",
+  "description": "Structural documentation of the contract. The executable authority is dq_validate.py: it also checks what JSON Schema cannot express (timestamps strictly increasing and consistent with fps within a tolerance, contiguous episode boundaries and indices, per-joint limits, camera shape vs metadata, unit equality per joint). A test keeps the constants below in sync with dq_contract.py. SYNTHETIC data only; this is not a LeRobotDataset schema.",
+  "type": "object",
+  "required": ["schema_version", "synthetic", "license", "dataset_name", "fps", "features", "tasks", "episodes"],
+  "properties": {
+    "schema_version": { "const": "synthetic-episodes-meta/v1" },
+    "synthetic": { "const": true },
+    "license": { "enum": ["CC0-1.0", "Apache-2.0", "MIT", "CC-BY-4.0", "CC-BY-SA-4.0", "BSD-3-Clause"] },
+    "dataset_name": { "type": "string", "minLength": 1 },
+    "fps": { "type": "integer", "minimum": 1, "maximum": 1000 },
+    "timestamp_tolerance_s": { "type": "number", "exclusiveMinimum": 0, "description": "Default 0.001; must also be < 0.5/fps." },
+    "features": {
+      "type": "object",
+      "required": ["observation.state", "action", "observation.images.front", "observation.images.wrist"],
+      "properties": {
+        "observation.state": { "$ref": "#/$defs/vectorFeature" },
+        "action": { "$ref": "#/$defs/vectorFeature" }
+      },
+      "patternProperties": { "^observation\\.images\\.": { "$ref": "#/$defs/cameraFeature" } }
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["task_index", "task"],
+        "properties": { "task_index": { "type": "integer", "minimum": 0 }, "task": { "type": "string", "pattern": "\\S" } }
+      }
+    },
+    "episodes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/episode" } }
+  },
+  "$defs": {
+    "vectorFeature": {
+      "type": "object",
+      "required": ["dtype", "shape", "names", "units"],
+      "properties": {
+        "dtype": { "const": "float32" },
+        "shape": { "type": "array", "items": { "type": "integer" }, "minItems": 1, "maxItems": 1, "prefixItems": [{ "const": 6 }] },
+        "names": { "const": ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper"] },
+        "units": { "const": ["rad", "rad", "rad", "rad", "rad", "m"] }
+      }
+    },
+    "cameraFeature": {
+      "type": "object",
+      "required": ["dtype", "shape", "names", "camera"],
+      "properties": {
+        "dtype": { "enum": ["video", "image"] },
+        "shape": { "type": "array", "items": { "type": "integer", "minimum": 1 }, "minItems": 3, "maxItems": 3 },
+        "names": { "const": ["height", "width", "channels"] },
+        "camera": {
+          "type": "object",
+          "required": ["width", "height", "encoding", "fps"],
+          "properties": {
+            "width": { "type": "integer", "minimum": 1, "maximum": 1024 },
+            "height": { "type": "integer", "minimum": 1, "maximum": 1024 },
+            "encoding": { "enum": ["rgb8", "mono8"] },
+            "fps": { "type": "integer", "minimum": 1, "maximum": 1000, "description": "Must equal the dataset fps." }
+          }
+        }
+      }
+    },
+    "episode": {
+      "type": "object",
+      "required": ["episode_index", "task_index", "length", "dataset_from_index", "dataset_to_index", "frames"],
+      "properties": {
+        "episode_index": { "type": "integer", "minimum": 0 },
+        "task_index": { "type": "integer", "minimum": 0 },
+        "length": { "type": "integer", "minimum": 1, "description": "Must equal len(frames)." },
+        "dataset_from_index": { "type": "integer", "minimum": 0, "description": "0 for the first episode, else the previous dataset_to_index." },
+        "dataset_to_index": { "type": "integer", "minimum": 1, "description": "dataset_from_index + length (exclusive end)." },
+        "frames": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["frame_index", "timestamp", "observation.state", "action"],
+            "properties": {
+              "frame_index": { "type": "integer", "minimum": 0 },
+              "timestamp": { "type": "number", "description": "Seconds; strictly increasing; |t - frame_index/fps| <= tolerance." },
+              "observation.state": { "type": "array", "items": { "type": "number" }, "minItems": 6, "maxItems": 6 },
+              "action": { "type": "array", "items": { "type": "number" }, "minItems": 6, "maxItems": 6 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

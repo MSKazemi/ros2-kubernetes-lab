@@ -6,10 +6,10 @@ Welcome! Contributions from robotics engineers, Kubernetes users, students, rese
 
 ## Find a first task
 
-- [Good first issues](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/good%20first%20issue) — small, well-scoped tasks suitable for a first PR.
-- [Help wanted](https://github.com/MSKazemi/ros2-kubernetes-lab/labels/help%20wanted) — bounded tasks where outside help is especially valuable.
-- [Project modernization roadmap](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/23) — proposed longer-term goals and dependencies. The roadmap may change before it merges.
-- [All open issues](https://github.com/MSKazemi/ros2-kubernetes-lab/issues).
+- [Good first issues](https://github.com/MSKazemi/robo-resilience-lab/labels/good%20first%20issue) — small, well-scoped tasks suitable for a first PR.
+- [Help wanted](https://github.com/MSKazemi/robo-resilience-lab/labels/help%20wanted) — bounded tasks where outside help is especially valuable.
+- [Project modernization roadmap](https://github.com/MSKazemi/robo-resilience-lab/pull/23) — proposed longer-term goals and dependencies. The roadmap may change before it merges.
+- [All open issues](https://github.com/MSKazemi/robo-resilience-lab/issues).
 
 **Please read the full issue description before starting.** For first contributions, choose one small issue and comment “I'd like to work on this.” Issues are intentionally left unassigned initially so contributors can volunteer; a comment is an invitation to coordinate, not a guarantee of exclusive ownership. If someone else is already working on the task, coordinate in the issue instead of duplicating work. Merged contributors are listed in [CONTRIBUTORS.md](./CONTRIBUTORS.md).
 
@@ -32,14 +32,14 @@ Coding agents are welcome as **assistants**, not substitutes for reviewing and t
 
 **Step-by-step beginner tutorial:** [AI-assisted contributions with Claude Code or Codex](./docs/AI_ASSISTED_CONTRIBUTING.md). **Copyable issue-specific prompts:** [Agent prompts](./docs/AGENT_PROMPTS.md).
 
-The repository uses one concise [AGENTS.md](./AGENTS.md) instruction set for Codex and [CLAUDE.md](./CLAUDE.md) for Claude Code (which imports the shared rules). Neither file authorizes an agent to push to `main`, publish images, use secrets, or merge PRs autonomously.
+The repository uses one concise [AGENTS.md](./AGENTS.md) instruction set for any coding agent. Codex reads it directly; for Claude Code, create a local `CLAUDE.md` containing the single line `@AGENTS.md` (see the [tutorial](./docs/AI_ASSISTED_CONTRIBUTING.md)). `AGENTS.md` does not authorize an agent to push to `main`, publish images, use secrets, or merge PRs autonomously.
 
 ## Make a small pull request
 
 1. Fork this repository (if needed), or clone it:
    ```sh
-   git clone https://github.com/MSKazemi/ros2-kubernetes-lab.git
-   cd ros2-kubernetes-lab
+   git clone https://github.com/MSKazemi/robo-resilience-lab.git
+   cd robo-resilience-lab
    ```
 2. Create a branch for **one** issue, for example:
    ```sh
