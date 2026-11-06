@@ -148,9 +148,9 @@ Values must be positive whole numbers; anything else stops `vagrant up` with a c
 | `NAME=value command` | `$env:NAME = "value"; command` |
 | `cmd < file` | `Get-Content file \| cmd` is **not** byte-safe; use a mount (`-v`) or WSL |
 | `$(pwd)` | `${PWD}` |
-| `python3 script.py`, `python3 -m http.server 8000 --directory site` (website preview) | `py -3 script.py`, `py -3 -m http.server 8000 --directory site`; `python3` is often missing or a Microsoft Store shortcut on Windows |
 | `ls`, `cat`, `rm` | work as aliases, but flags differ; prefer `Get-ChildItem`, `Get-Content`, `Remove-Item` |
 | `sudo ...` | not needed on the host; only used inside the Linux VMs |
+| `python3 script.py`, `python3 -m http.server 8000 --directory site` (website preview) | `py -3 script.py`, `py -3 -m http.server 8000 --directory site`; `python3` is often missing or a Microsoft Store shortcut on Windows |
 
 ## 8. Troubleshooting
 
@@ -173,7 +173,7 @@ Values must be positive whole numbers; anything else stops `vagrant up` with a c
 | Same checkout **with** `.gitattributes` | 0 CRLF lines in scripts, `Vagrantfile`, YAML; the CRLF data CSV is left byte-identical (local, Linux) |
 | `Vagrantfile` sizing variables, validation and Arm stop | Exercised against a stub of the Vagrant API with several environment combinations (local, Linux). Real Vagrant was **not** run |
 | Container smoke test, both invocation forms | Passed on Linux amd64 (Docker 29.9.2) |
-| `scripts/doctor.py`, Markdown-link, shell-syntax, site and `ruby -c Vagrantfile` checks | Pass on Linux **and** on GitHub's `windows-2025` (amd64) and `macos-15` (arm64) runners with `core.autocrlf=true` forced ([PR #119](https://github.com/MSKazemi/robo-resilience-lab/pull/119) run). Scripts stayed LF on Windows; RAM/CPU detection worked on both. These runners have no Vagrant or VirtualBox, so this covers the tooling only |
+| `scripts/doctor.py`, Markdown-link, shell-syntax, site and `ruby -c Vagrantfile` checks | Pass on Linux **and** on GitHub's `windows-2025` (amd64) and `macos-15` (arm64) runners with `core.autocrlf=true` forced ([PR #119](https://github.com/MSKazemi/robo-resilience-lab/pull/119) run, as recorded on public `main`). Scripts stayed LF on Windows; RAM/CPU detection worked on both. These runners have no Vagrant or VirtualBox, so this covers the tooling only |
 | `vagrant up` on Windows, Intel Mac or Apple Silicon | **Not run** |
 | PowerShell command, Docker Desktop, VirtualBox on Windows/macOS | **Not run** |
 | Native arm64 image | **Not tested** |

@@ -8,7 +8,13 @@ This directory describes the **new ROS 2 Jazzy container baseline** from [`ROS2/
 - `stress-ng` for CPU/memory workloads;
 - `ros-jazzy-ros2-pulse` and `pulse-export` for the [optional ros2_pulse telemetry pilot](#optional-ros2_pulse-telemetry-pilot-issue-52). Both are inert unless a workload opts in.
 
-This is a **container baseline only**, not a claim that the historical Kubernetes 1.29 / Weave Net / Vagrant cluster is updated or that talker and listener communicate between **different Kubernetes workers**.
+This is a **container baseline only**, not a claim that the historical Kubernetes 1.29 / Weave Net / Vagrant cluster is updated. The image check below is not a cross-worker test; the one cross-worker case recorded for this image is the separate kind profile in [`docs/KIND-DEMO.md`](../../docs/KIND-DEMO.md) (one host, one CNI, with a Fast DDS Discovery Server).
+
+| File in this directory | What it is | Status |
+|---|---|---|
+| [`stress-deployment.yaml`](./stress-deployment.yaml) | Optional `stress-ng` workload using `ros-jazzy-lab:local` | Not applied to any cluster in the reviews that produced these docs |
+| [`talker-listener.yaml`](./talker-listener.yaml) | Self-starting discovery server, talker and listener for the kind profile (`make demo`) | Cross-worker delivery recorded once on kind; see KIND-DEMO.md |
+| [`pulse-talker-listener.yaml`](./pulse-talker-listener.yaml) | Opt-in `ros2_pulse` telemetry pilot | Contributor-reported kind run, not reproduced (details below) |
 
 ## Build and verify locally
 
@@ -73,7 +79,7 @@ kubectl -n ros get pods -l app=ros-jazzy-stress -o wide
 kubectl -n ros delete deployment ros-jazzy-stress
 ```
 
-No working Kubernetes setup is provided by this container-only migration. The first verified lightweight installation is a separate project task [#16](https://github.com/MSKazemi/robo-resilience-lab/issues/16).
+This image does not by itself provide a Kubernetes setup. The lightweight kind profile ([#16](https://github.com/MSKazemi/robo-resilience-lab/issues/16), [`docs/KIND-DEMO.md`](../../docs/KIND-DEMO.md)) is separate; it covers one host and one CNI, and a real multi-machine cluster has not been run.
 
 ## Optional ros2_pulse telemetry pilot (issue #52)
 

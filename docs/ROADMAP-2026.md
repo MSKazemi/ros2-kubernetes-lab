@@ -1,10 +1,10 @@
 # ROS 2 Kubernetes Lab: modernization, adoption and growth roadmap
 
 > **Proposed expansion, not implementation (27 October 2026):** A separate [Cloud Robotics + AI/LLM Lab research program](cloud-robotics/README.md) introduces Hugging Face LeRobot, typed simulated policy integration, LLM/RAG experiments, ethics and 18 teaching/research scenarios. Its [12-month research roadmap](cloud-robotics/ROADMAP-2026-2027.md) explicitly depends on the P0 ROS/Kubernetes verification and safe-default work in this document. No AI robot execution or new cluster benchmark is claimed.
-
-> **Historical 90-day modernization proposal** (11 October 2026). This document remains useful as a dated baseline, but the **current cross-project coordination plan** is [the 2026–2027 integrated roadmap](PROGRAM-ROADMAP-2026-2027.md) and [documentation index](README.md). The newer document does not mean that a model integration, current Kubernetes profile or cross-worker DDS workload is verified.
 >
-> Display name: **ROS 2 Kubernetes Lab** · current GitHub repository slug: `robo-resilience-lab`. Any broader research umbrella name remains a separate, unapproved working-name RFC in issue #22.
+> **Historical 90-day modernization proposal** (11 October 2026). This document remains useful as a dated baseline, but the **current cross-project coordination plan** is [the 2026–2027 integrated roadmap](PROGRAM-ROADMAP-2026-2027.md) and [documentation index](README.md). The newer document does not mean that a model integration, current Kubernetes profile or cross-worker DDS workload is verified. For what is *actually pinned and run today*, see the [version matrix](VERSION-MATRIX.md) and the [experiment status registry](EXPERIMENT-STATUS.md); the [status snapshot](#2a-status-snapshot-2026-11-06) below maps this roadmap's items to recorded evidence.
+>
+> Display name: **ROS 2 Kubernetes Lab** · repository slug: `robo-resilience-lab` (renamed from `robo-resilience-lab` in commit `a88ba5c`; that name had replaced `Vagrant-Kubernetes-ROS2-Deployment` in commit `43d4690`). The audit below was written under the older names. Any broader research umbrella name remains a separate, unapproved working-name RFC in issue #22.
 > Original tagline: **Deploy, scale, monitor, and benchmark distributed ROS 2 applications on Kubernetes.**
 > Tracking: [GitHub issues](https://github.com/MSKazemi/robo-resilience-lab/issues).
 
@@ -19,15 +19,30 @@ Growth target: improve usage and visibility; 600 stars would equal 100x the six-
 | Observation from existing files | Consequence |
 |---|---|
 | `ROS2/ros_dep_1.yaml` launches `stress-ng`, not an automatic talker/listener | README's main demonstration is not a one-command success path |
-| `ROS2/README.md` uses missing `ros_dep.yaml`, and examples omit the `ros` namespace | Fresh users encounter avoidable command errors |
+| At the 2026-10-11 audit `ROS2/README.md` used a missing `ros_dep.yaml` and omitted the `ros` namespace. Corrected in issue #24 (static review only; the manual talker/listener steps were not re-run) | Fresh users encountered avoidable command errors; the manual Foxy steps remain unverified |
 | At the 2026-10-11 audit, `ROS2/Dockerfile` built on ROS 2 Foxy. It now targets Jazzy / Ubuntu 24.04 (the Foxy recipe is preserved in `ROS2/legacy/foxy/Dockerfile`), but the `ROS2/ros_dep_*.yaml` manifests still use a Foxy image, cluster scripts install Kubernetes 1.29 and networking uses Weave Net 2.8.1 | Vagrant/Kubernetes stack remains `legacy`; the Jazzy image is `container tested` only (see the [support states](./ROS2-KUBERNETES-DDS-GUIDE.md#support-states-and-evidence)) |
 | Three-node `Vagrantfile`: 18 vCPUs, ~30 GB VM memory | Blocks access for many laptops |
 | CI builds and tests the Jazzy image ([`ros2-image-ci.yml`](../.github/workflows/ros2-image-ci.yml)) with a local talker/listener check inside one container, but does not test cluster creation or cross-worker DDS | A green image build is `container tested` at most; it does not establish `cross-worker verified` ROS messaging |
-| `MonitoringSystem/monitoring.sh` includes broad `chmod 777` permissions; `admin-user.yaml` binds `cluster-admin` | Unnecessarily broad permissions for a default educational installation |
+| At the 2026-10-11 audit `MonitoringSystem/monitoring.sh` used broad `chmod 777` permissions and `admin-user.yaml` bound `cluster-admin`. Today `monitoring.sh:61` uses `chmod 0775`, and `admin-user.yaml:34` **still** binds `cluster-admin`, with `admin-user-readonly.yaml` (built-in `view` role) added as an alternative | Narrower than at audit, but the default dashboard account is still broad; the Dashboard itself is still the archived `v2.7.0` manifest (`monitoring.sh:16`) |
 | Root README has no central proof-of-function GIF or validated modern install profile | Limited visitor-to-user conversion |
 | Repository has no GitHub release and existing code contains substantial analysis data | Reproducible release and research assets remain untapped |
 
 This audit inspected repository contents and workflow history; **it did not execute a fresh multi-VM installation**. The table rows above were reconciled with the repository at commit `7b9cb44` on 2026-10-27 (static inspection; no Vagrant cluster was executed). Preserve historical results, but do not present old results as modern-profile benchmarks.
+
+## 2a. Status snapshot (2026-11-06)
+
+This table maps the P0/P1 items in section 3 to what the repository files *record*. It was assembled by reading files, not by running clusters; "recorded" means a repository document states a result, not that it was re-run for this snapshot. Pins and file references are in the [version matrix](VERSION-MATRIX.md); per-experiment status is in the [experiment status registry](EXPERIMENT-STATUS.md).
+
+| Item | Recorded status | What is **not** established |
+|---|---|---|
+| #14 cross-worker talker/listener | Kind profile only: [`docs/KIND-DEMO.md`](KIND-DEMO.md) records `make demo` / `make verify` / `make verify-negative` exiting 0 on one host (2026-10-27, commit `862b026`) | The Vagrant/Weave Net cluster; other CNIs; a real multi-machine cluster. Its CI workflow had not been executed when that page was written |
+| #7 ROS 2 Jazzy baseline | Image in `ROS2/Dockerfile` pins Jazzy / Ubuntu 24.04 by base-image digest; smoke test runs inside one container | Lyrical (not evaluated); arm64; hermetic rebuilds (transitive apt packages unlocked) |
+| #15 maintained CNI and discovery | Default multicast discovery failed on kindnetd (both cross-worker and same-worker); a Fast DDS Discovery Server worked. The [DDS guide](ROS2-KUBERNETES-DDS-GUIDE.md) also lists single-host Docker tests of Fast DDS, Cyclone DDS and static peers | A maintained CNI on a real cluster; restart behaviour in Kubernetes; any DDS result beyond the kind profile |
+| #16 lightweight kind profile | `make demo` / `make verify` / `make clean` exist; one warm run took 82 s on a 12-CPU, 31 GB host | Whether it fits an 8 to 12 GB machine (stated as untested in KIND-DEMO.md) |
+| #6 CI and safe defaults | Static workflows (links, shell syntax, site, manifest schemas for Kubernetes 1.29, image smoke test) | A cluster-backed integration check proven green; `admin-user.yaml` still binds `cluster-admin` |
+| #4 replace archived Dashboard | Not done: `monitoring.sh:16` still applies Dashboard `v2.7.0` | Headlamp migration |
+| #18 reproducible benchmarks | Offline, **synthetic or simulated** harnesses are being added (see the registry). Historical Foxy-era data under `DataAnalysis/dataset/` is unchanged | Any measured Jazzy/Kubernetes benchmark |
+| #19 versioned docs | [Version matrix](VERSION-MATRIX.md), registry and local link check (`scripts/check-markdown-links.py`) | Built or published versioned docs site |
 
 ## 3. Workstreams and ownership
 
@@ -105,7 +120,7 @@ A lint-only or successful Docker build is **not** a substitute for end-to-end RO
 | ros2-kube-lab | Compact | Weaker exact technical match | Alternative |
 | robotics-k8s-lab | General robotics focus | ROS 2 search intent diluted | Not preferred |
 
-Preliminary exact-name GitHub repository searches found no exact existing match for `robo-resilience-lab` at audit time. **Not a domain, trademark, social handle, or future-availability guarantee.** No repository rename performed.
+Preliminary exact-name GitHub repository searches found no exact existing match for `robo-resilience-lab` at audit time. **Not a domain, trademark, social handle, or future-availability guarantee.** The rename itself was applied later, in commit `a88ba5c`; the search above predates it and says nothing about availability today.
 
 **Proposed repository description**
 
