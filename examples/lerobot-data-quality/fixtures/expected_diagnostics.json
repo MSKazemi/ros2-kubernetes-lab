@@ -1,0 +1,86 @@
+{
+  "invalid/dim_mismatch_frame_action.json": {
+    "code": "DIM_MISMATCH",
+    "path": "/episodes/1/frames/2/action"
+  },
+  "invalid/dim_mismatch_feature_shape.json": {
+    "code": "DIM_MISMATCH",
+    "path": "/features/action/shape"
+  },
+  "invalid/unit_mismatch.json": {
+    "code": "UNIT_MISMATCH",
+    "path": "/features/observation.state/units/5"
+  },
+  "invalid/timestamp_non_monotonic.json": {
+    "code": "TIMESTAMP_NOT_MONOTONIC",
+    "path": "/episodes/0/frames/3/timestamp"
+  },
+  "invalid/timestamp_fps_drift.json": {
+    "code": "TIMESTAMP_FPS_DRIFT",
+    "path": "/episodes/1/frames/3/timestamp"
+  },
+  "invalid/camera_metadata_missing.json": {
+    "code": "CAMERA_METADATA_MISSING",
+    "path": "/features/observation.images.wrist/camera"
+  },
+  "invalid/camera_feature_missing.json": {
+    "code": "CAMERA_METADATA_MISSING",
+    "path": "/features/observation.images.front"
+  },
+  "invalid/camera_metadata_invalid.json": {
+    "code": "CAMERA_METADATA_INVALID",
+    "path": "/features/observation.images.front/shape"
+  },
+  "invalid/episode_empty.json": {
+    "code": "EPISODE_EMPTY",
+    "path": "/episodes/1"
+  },
+  "invalid/episode_index_duplicate.json": {
+    "code": "EPISODE_INDEX_DUPLICATE",
+    "path": "/episodes/2/episode_index"
+  },
+  "invalid/episode_index_gap.json": {
+    "code": "EPISODE_INDEX_GAP",
+    "path": "/episodes/2/episode_index"
+  },
+  "invalid/episode_boundary_gap.json": {
+    "code": "EPISODE_BOUNDARY_GAP",
+    "path": "/episodes/2/dataset_from_index"
+  },
+  "invalid/episode_length_mismatch.json": {
+    "code": "EPISODE_LENGTH_MISMATCH",
+    "path": "/episodes/0/length"
+  },
+  "invalid/license_missing.json": {
+    "code": "LICENSE_MISSING",
+    "path": "/license"
+  },
+  "invalid/license_not_allowed.json": {
+    "code": "LICENSE_NOT_ALLOWED",
+    "path": "/license"
+  },
+  "invalid/schema_version_unknown.json": {
+    "code": "SCHEMA_VERSION_UNKNOWN",
+    "path": "/schema_version"
+  },
+  "invalid/not_synthetic.json": {
+    "code": "NOT_SYNTHETIC",
+    "path": "/synthetic"
+  },
+  "invalid/task_description_blank.json": {
+    "code": "TASK_MISSING",
+    "path": "/tasks/0/task"
+  },
+  "invalid/value_out_of_limits.json": {
+    "code": "OUT_OF_LIMITS",
+    "path": "/episodes/0/frames/1/observation.state/5"
+  },
+  "invalid/fps_invalid.json": {
+    "code": "FPS_INVALID",
+    "path": "/fps"
+  },
+  "invalid/frame_index_mismatch.json": {
+    "code": "FRAME_INDEX_MISMATCH",
+    "path": "/episodes/0/frames/2/frame_index"
+  }
+}
