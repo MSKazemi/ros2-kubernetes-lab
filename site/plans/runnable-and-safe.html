@@ -9,7 +9,7 @@
 <meta name="description" content="Phase 2 of the plan: a planned make demo, verify and clean flow on a light cluster, plus safer defaults. These commands do not exist yet.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Mohsen Seyedkazemi Ardebili">
-<link rel="canonical" href="https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html">
+<link rel="canonical" href="https://mskazemi.com/robo-resilience-lab/plans/runnable-and-safe.html">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,19 +23,19 @@
 <meta property="og:site_name" content="ROS 2 Kubernetes Lab">
 <meta property="og:title" content="Days 15–30: make ROS 2 on Kubernetes runnable and safe">
 <meta property="og:description" content="A planned three-command flow on a light cluster, safer defaults for the dashboard and storage, and the gate for a public quickstart. All of it is planned.">
-<meta property="og:url" content="https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html">
-<meta property="og:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
+<meta property="og:url" content="https://mskazemi.com/robo-resilience-lab/plans/runnable-and-safe.html">
+<meta property="og:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png">
 <meta property="og:image:alt" content="ROS 2 Kubernetes Lab original illustrated social preview">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Days 15–30: make it runnable and safe">
 <meta name="twitter:description" content="Phase 2 of the ROS 2 Kubernetes Lab plan: a planned demo, verify and clean flow, plus safer defaults. A proposal.">
-<meta name="twitter:image" content="https://mskazemi.com/ros2-kubernetes-lab/assets/social-card.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Days 15 to 30: make it runnable and safe","headline":"Days 15 to 30: make ROS 2 on Kubernetes runnable and safe","description":"Phase 2 of the ROS 2 Kubernetes Lab plan: a planned make demo, make verify and make clean flow on a light cluster, plus safer default permissions. A proposal.","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"isPartOf":{"@type":"WebPage","url":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Role-based access control"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/ros2-kubernetes-lab/"},{"@type":"ListItem","position":2,"name":"Roadmap","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/"},{"@type":"ListItem","position":3,"name":"Days 15 to 30: make it runnable and safe","item":"https://mskazemi.com/ros2-kubernetes-lab/plans/runnable-and-safe.html"}]}]}</script>
+<meta name="twitter:image" content="https://mskazemi.com/robo-resilience-lab/assets/social-card.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","name":"Days 15 to 30: make it runnable and safe","headline":"Days 15 to 30: make ROS 2 on Kubernetes runnable and safe","description":"Phase 2 of the ROS 2 Kubernetes Lab plan: a planned make demo, make verify and make clean flow on a light cluster, plus safer default permissions. A proposal.","url":"https://mskazemi.com/robo-resilience-lab/plans/runnable-and-safe.html","isAccessibleForFree":true,"dateModified":"2026-10-29","author":{"@type":"Person","name":"Mohsen Seyedkazemi Ardebili"},"isPartOf":{"@type":"WebPage","url":"https://mskazemi.com/robo-resilience-lab/plans/"},"about":[{"@type":"Thing","name":"ROS 2"},{"@type":"Thing","name":"Kubernetes"},{"@type":"Thing","name":"Role-based access control"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Lab","item":"https://mskazemi.com/robo-resilience-lab/"},{"@type":"ListItem","position":2,"name":"Roadmap","item":"https://mskazemi.com/robo-resilience-lab/plans/"},{"@type":"ListItem","position":3,"name":"Days 15 to 30: make it runnable and safe","item":"https://mskazemi.com/robo-resilience-lab/plans/runnable-and-safe.html"}]}]}</script>
 </head><body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="docs-nav"><div class="sc-shell docs-nav-inner">
 <a class="docs-brand" href="../"><img src="../assets/logo-mark.svg" alt="" width="31" height="31">ROS 2 <span class="slash">/</span> K8S LAB</a>
-<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Roadmap</a><a href="../scenarios/">Research scenarios</a><a class="github-link" href="https://github.com/MSKazemi/ros2-kubernetes-lab">GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
+<nav class="docs-nav-links" aria-label="Main navigation"><a href="../">Home</a><a href="../docs/">Docs</a><a href="./" aria-current="page">Roadmap</a><a href="../scenarios/">Research scenarios</a><a class="github-link" href="https://github.com/MSKazemi/robo-resilience-lab">GitHub ↗</a></nav></div></header><main class="sc-main" id="main" tabindex="-1">
 
 <section class="sc-hero"><div class="sc-shell">
 <nav class="sc-breadcrumb" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Roadmap</a><span>/</span>Make it runnable and safe</nav>
@@ -109,8 +109,8 @@
 <div class="sc-detail-grid">
 <div class="sc-panel"><h3>What the historical setup does</h3>
 <ul>
-<li><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/MonitoringSystem/admin-user.yaml">admin-user.yaml ↗</a> binds a dashboard service account to <code>cluster-admin</code>.</li>
-<li><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/MonitoringSystem/monitoring.sh">monitoring.sh ↗</a> saves that account's token to a file and applies <code>chmod -R 777</code> to storage folders.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/MonitoringSystem/admin-user.yaml">admin-user.yaml ↗</a> binds a dashboard service account to <code>cluster-admin</code>.</li>
+<li><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/MonitoringSystem/monitoring.sh">monitoring.sh ↗</a> saves that account's token to a file and applies <code>chmod -R 777</code> to storage folders.</li>
 <li>The roadmap calls these unnecessarily broad for a default educational install.</li>
 </ul></div>
 <div class="sc-panel"><h3>What the plan asks for instead</h3>
@@ -131,12 +131,12 @@
 <h2>Issues in this phase</h2>
 <p class="sc-intro">Status labels come from what the repository's files show, not from the state of the issue on GitHub.</p>
 <ul class="phase-issues">
-<li><span class="issue-no">#14</span><div><h3>Verified talker and listener across workers</h3><p>The scripted check behind <code>make verify</code>: correct namespace and manifest names, pod readiness checks, and delivery across nodes. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14">Issue #14 ↗</a></p></div><span class="lab-chip lab-chip--planned">Not yet verified</span></li>
-<li><span class="issue-no">#16</span><div><h3>Lightweight kind or k3d profile</h3><p>A small cluster with <code>make demo</code>, <code>make verify</code> and <code>make clean</code>. No Makefile exists yet. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16">Issue #16 ↗</a></p></div><span class="lab-chip lab-chip--planned">Planned</span></li>
-<li><span class="issue-no">#6</span><div><h3>Test CI, pinned dependencies, least-privilege defaults</h3><p>An image CI workflow exists. Cluster-level tests and the safer permission defaults do not. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/6">Issue #6 ↗</a></p></div><span class="lab-chip lab-chip--planned">Planned</span></li>
-<li><span class="issue-no">#4</span><div><h3>Headlamp instead of the archived Dashboard</h3><p>Today the monitoring setup still installs the Kubernetes Dashboard with a cluster-admin account. <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/issues/4">Issue #4 ↗</a></p></div><span class="lab-chip lab-chip--legacy">Legacy</span></li>
+<li><span class="issue-no">#14</span><div><h3>Verified talker and listener across workers</h3><p>The scripted check behind <code>make verify</code>: correct namespace and manifest names, pod readiness checks, and delivery across nodes. <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/14">Issue #14 ↗</a></p></div><span class="lab-chip lab-chip--planned">Not yet verified</span></li>
+<li><span class="issue-no">#16</span><div><h3>Lightweight kind or k3d profile</h3><p>A small cluster with <code>make demo</code>, <code>make verify</code> and <code>make clean</code>. No Makefile exists yet. <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/16">Issue #16 ↗</a></p></div><span class="lab-chip lab-chip--planned">Planned</span></li>
+<li><span class="issue-no">#6</span><div><h3>Test CI, pinned dependencies, least-privilege defaults</h3><p>An image CI workflow exists. Cluster-level tests and the safer permission defaults do not. <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/6">Issue #6 ↗</a></p></div><span class="lab-chip lab-chip--planned">Planned</span></li>
+<li><span class="issue-no">#4</span><div><h3>Headlamp instead of the archived Dashboard</h3><p>Today the monitoring setup still installs the Kubernetes Dashboard with a cluster-admin account. <a href="https://github.com/MSKazemi/robo-resilience-lab/issues/4">Issue #4 ↗</a></p></div><span class="lab-chip lab-chip--legacy">Legacy</span></li>
 </ul>
-<p class="phase-hub-link">Source of truth: <a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">docs/ROADMAP-2026.md ↗</a>, section 4. Back to the <a href="./">roadmap hub</a>.</p>
+<p class="phase-hub-link">Source of truth: <a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/ROADMAP-2026.md">docs/ROADMAP-2026.md ↗</a>, section 4. Back to the <a href="./">roadmap hub</a>.</p>
 </div></section>
 
 <section class="sc-section sc-section--shade"><div class="sc-shell">
@@ -146,4 +146,4 @@
 </nav>
 </div></section>
 
-</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Plans are proposals; illustrations show sequence, not progress</span><a href="https://github.com/MSKazemi/ros2-kubernetes-lab/blob/main/docs/ROADMAP-2026.md">Full roadmap source ↗</a></div></footer></body></html>
+</main><footer class="sc-footer"><div class="sc-shell sc-footer-inner"><span>© 2026 ROS 2 Kubernetes Lab · Apache-2.0 · Educational research</span><span>Plans are proposals; illustrations show sequence, not progress</span><a href="https://github.com/MSKazemi/robo-resilience-lab/blob/main/docs/ROADMAP-2026.md">Full roadmap source ↗</a></div></footer></body></html>

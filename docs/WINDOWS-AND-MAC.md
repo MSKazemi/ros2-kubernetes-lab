@@ -2,7 +2,7 @@
 
 This lab was built on Linux. This guide explains what works on **Windows**, **Intel Macs** and **Apple Silicon Macs**, which path to pick, and how to avoid the problems that most often break a first attempt.
 
-> **Do not overclaim.** The checks listed under [What has and has not been verified](#what-has-and-has-not-been-verified) were run on Linux. The Windows and macOS steps below follow the vendors' documentation and a simulated Windows checkout; they have not yet been run end to end on real Windows or macOS machines (only the static tooling has run there, on CI runners). If a step fails for you, please [open an issue](https://github.com/MSKazemi/ros2-kubernetes-lab/issues) with the output of `python scripts/doctor.py`.
+> **Do not overclaim.** The checks listed under [What has and has not been verified](#what-has-and-has-not-been-verified) were run on Linux. The Windows and macOS steps below follow the vendors' documentation and a simulated Windows checkout; they have not yet been run end to end on real Windows or macOS machines (only the static tooling has run there, on CI runners). If a step fails for you, please [open an issue](https://github.com/MSKazemi/robo-resilience-lab/issues) with the output of `python scripts/doctor.py`.
 
 ## 1. Pick your path
 
@@ -45,7 +45,7 @@ Look for `[OK] Scripts, Vagrantfile, Dockerfile and YAML use LF line endings`.
 
 **Other Windows tips**
 
-- Clone into a short path outside OneDrive/Dropbox, for example `C:\src\ros2-kubernetes-lab`. Sync clients lock files and long paths cause errors.
+- Clone into a short path outside OneDrive/Dropbox, for example `C:\src\robo-resilience-lab`. Sync clients lock files and long paths cause errors.
 - Use PowerShell or Windows Terminal. In Git Bash, Docker paths such as `/scripts/...` are rewritten by MSYS; prefix the command with `MSYS_NO_PATHCONV=1` if you see a `C:/Program Files/Git/...` path in an error.
 - The PowerShell prompt does not support `< file` input redirection ("The '<' operator is reserved for future use"). Use the bind-mount form shown below instead.
 
@@ -80,8 +80,8 @@ Success ends with `PASS: listener received a ROS 2 talker message inside one con
 Requirements: Windows 10/11 on x86-64, [VirtualBox](https://www.virtualbox.org/wiki/Downloads), [Vagrant](https://developer.hashicorp.com/vagrant/install), Git, and the RAM described in [Sizing](#6-sizing-the-vms-for-your-machine). Run every command in **Windows PowerShell**, not inside WSL.
 
 ```powershell
-git clone https://github.com/MSKazemi/ros2-kubernetes-lab.git C:\src\ros2-kubernetes-lab
-cd C:\src\ros2-kubernetes-lab
+git clone https://github.com/MSKazemi/robo-resilience-lab.git C:\src\robo-resilience-lab
+cd C:\src\robo-resilience-lab
 py -3 scripts/doctor.py
 $env:VAGRANT_DEFAULT_PROVIDER = "virtualbox"
 vagrant up
@@ -98,8 +98,8 @@ Everything you type **after** `vagrant ssh controlplane` is ordinary Linux/bash 
 
 ```bash
 brew install --cask virtualbox vagrant      # or install both from their websites
-git clone https://github.com/MSKazemi/ros2-kubernetes-lab.git
-cd ros2-kubernetes-lab
+git clone https://github.com/MSKazemi/robo-resilience-lab.git
+cd robo-resilience-lab
 python3 scripts/doctor.py
 vagrant up
 vagrant ssh controlplane
@@ -173,7 +173,7 @@ Values must be positive whole numbers; anything else stops `vagrant up` with a c
 | Same checkout **with** `.gitattributes` | 0 CRLF lines in scripts, `Vagrantfile`, YAML; the CRLF data CSV is left byte-identical (local, Linux) |
 | `Vagrantfile` sizing variables, validation and Arm stop | Exercised against a stub of the Vagrant API with several environment combinations (local, Linux). Real Vagrant was **not** run |
 | Container smoke test, both invocation forms | Passed on Linux amd64 (Docker 29.9.2) |
-| `scripts/doctor.py`, Markdown-link, shell-syntax, site and `ruby -c Vagrantfile` checks | Pass on Linux **and** on GitHub's `windows-2025` (amd64) and `macos-15` (arm64) runners with `core.autocrlf=true` forced ([PR #119](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/119) run). Scripts stayed LF on Windows; RAM/CPU detection worked on both. These runners have no Vagrant or VirtualBox, so this covers the tooling only |
+| `scripts/doctor.py`, Markdown-link, shell-syntax, site and `ruby -c Vagrantfile` checks | Pass on Linux **and** on GitHub's `windows-2025` (amd64) and `macos-15` (arm64) runners with `core.autocrlf=true` forced ([PR #119](https://github.com/MSKazemi/robo-resilience-lab/pull/119) run). Scripts stayed LF on Windows; RAM/CPU detection worked on both. These runners have no Vagrant or VirtualBox, so this covers the tooling only |
 | `vagrant up` on Windows, Intel Mac or Apple Silicon | **Not run** |
 | PowerShell command, Docker Desktop, VirtualBox on Windows/macOS | **Not run** |
 | Native arm64 image | **Not tested** |

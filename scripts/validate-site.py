@@ -16,7 +16,7 @@ from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
-BASE_URL = "https://mskazemi.com/ros2-kubernetes-lab/"
+BASE_URL = "https://mskazemi.com/robo-resilience-lab/"
 ERRORS: list[str] = []
 # Error pages are served at any depth and must stay out of search: no canonical, no sitemap entry.
 NOINDEX_PAGES = {"404.html"}

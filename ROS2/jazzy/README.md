@@ -29,7 +29,7 @@ docker run --rm --platform linux/amd64 -v "${PWD}/scripts:/scripts:ro" ros-jazzy
 
 The smoke script checks Ubuntu 24.04, `ROS_DISTRO=jazzy`, the ROS C++ talker/listener executables and `stress-ng`. It launches both ROS 2 example processes **inside one container**, and fails if the listener receives no message in 45 seconds. The complete smoke test is automated on PRs by [`.github/workflows/ros2-image-ci.yml`](../../.github/workflows/ros2-image-ci.yml).
 
-The smoke test is **not** a Kubernetes, multi-pod, cross-worker or DDS-discovery-server test. Those release gates are tracked in [#14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14) and [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15).
+The smoke test is **not** a Kubernetes, multi-pod, cross-worker or DDS-discovery-server test. Those release gates are tracked in [#14](https://github.com/MSKazemi/robo-resilience-lab/issues/14) and [#15](https://github.com/MSKazemi/robo-resilience-lab/issues/15).
 
 To inspect the image without starting Kubernetes:
 
@@ -42,7 +42,7 @@ stress-ng --version
 
 ## First verified published image (12 October 2026)
 
-The [post-merge GitHub Actions run](https://github.com/MSKazemi/ros2-kubernetes-lab/actions/runs/38228962264) passed the amd64 image smoke test **and** Docker Hub publication. The workflow recorded:
+The [post-merge GitHub Actions run](https://github.com/MSKazemi/robo-resilience-lab/actions/runs/38228962264) passed the amd64 image smoke test **and** Docker Hub publication. The workflow recorded:
 
 - Source commit: `475988ae383e361ebbc60c1c6e0614ecd93694d1`.
 - Repository: `<configured-Docker-Hub-namespace>/ros-jazzy-with-stress-ng`.
@@ -73,7 +73,7 @@ kubectl -n ros get pods -l app=ros-jazzy-stress -o wide
 kubectl -n ros delete deployment ros-jazzy-stress
 ```
 
-No working Kubernetes setup is provided by this container-only migration. The first verified lightweight installation is a separate project task [#16](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/16).
+No working Kubernetes setup is provided by this container-only migration. The first verified lightweight installation is a separate project task [#16](https://github.com/MSKazemi/robo-resilience-lab/issues/16).
 
 ## Optional ros2_pulse telemetry pilot (issue #52)
 
@@ -147,7 +147,7 @@ The demo talker publishes once per second, so a working talker pod shows `ros2_p
 
 ### Reported kind run (contributor-reported, not reproduced)
 
-The contributor ran this manifest unchanged on a 3-node kind cluster (kind v0.33.0, Kubernetes v1.37.0, the node layout proposed in [#97](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/97)) in GitHub Actions on their fork, on amd64 and arm64, with an image built from this PR: [run 41160572458](https://github.com/TanayK07/ros2-kubernetes-lab/actions/runs/41160572458). Reported results:
+The contributor ran this manifest unchanged on a 3-node kind cluster (kind v0.33.0, Kubernetes v1.37.0, the node layout proposed in [#97](https://github.com/MSKazemi/robo-resilience-lab/pull/97)) in GitHub Actions on their fork, on amd64 and arm64, with an image built from this PR: [run 41160572458](https://github.com/TanayK07/robo-resilience-lab/actions/runs/41160572458). Reported results:
 
 - Both pods `2/2 Running` with 0 restarts over about 4 minutes, talker and listener on different workers; `kubectl port-forward` to the exporter worked.
 - The talker's `/chatter` publish rate was 1.0 Hz on every scrape.
@@ -174,14 +174,14 @@ Not covered by that run: a real multi-machine cluster, other CNIs, restarts, sca
 | Probe, `pulse-check` and `pulse-export` with talker and listener in one container, as uid 1000 | CI, `scripts/test-ros2-pulse.sh` | Automated |
 | Manifest applies; pods start with these security settings, limits and volume | 3-node kind | Contributor-reported, not reproduced |
 | Talker to listener between two pods on one node | 3-node kind | Contributor-reported: **no delivery** without a discovery server; delivery with one (CI overlay only) |
-| Talker to listener across workers | 3-node kind; real multi-node cluster ([#14](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/14), [#15](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/15)) | kind: contributor-reported, as above; real multi-node cluster **not run** |
+| Talker to listener across workers | 3-node kind; real multi-node cluster ([#14](https://github.com/MSKazemi/robo-resilience-lab/issues/14), [#15](https://github.com/MSKazemi/robo-resilience-lab/issues/15)) | kind: contributor-reported, as above; real multi-node cluster **not run** |
 | `kubectl port-forward` to the `127.0.0.1`-bound exporter | 3-node kind | Contributor-reported, not reproduced |
 | Restarts, scaling, several subscribers | Any cluster | **Not run** |
 | arm64 image | Contributor's fork CI | Builds only with arm64 apt pins passed as build arguments; the repository CI is amd64 only |
 
 ### Validating the counts later with sequence-numbered messages
 
-For the broader benchmark ([#18](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/18), [#48](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/48)), check the probe counts against an independent count:
+For the broader benchmark ([#18](https://github.com/MSKazemi/robo-resilience-lab/issues/18), [#48](https://github.com/MSKazemi/robo-resilience-lab/issues/48)), check the probe counts against an independent count:
 
 1. Publish test messages carrying a sequence number that increases by one per message, plus a send timestamp, at a fixed rate. For a first look, the demo talker's `Hello World: N` already carries a counter.
 2. In the subscriber, record every received sequence number and derive received, missing, duplicate and out-of-order counts.
@@ -197,14 +197,14 @@ Agreement within about one message per window boundary supports using the probe 
 | ROS distribution | Jazzy Jalisco, LTS to May 2029 | Official upstream support documented |
 | Ubuntu | Noble 24.04 | Docker base target; enforced by smoke script |
 | Base image | `docker.io/library/ros:jazzy-ros-base-noble` with fixed `sha256` index in Dockerfile | Digest recorded in source, image pull/build verified by CI when green |
-| Repository-built image | `ros-jazzy-with-stress-ng:sha-475988ae383e361ebbc60c1c6e0614ecd93694d1` | Published and smoke-tested in [run 38228962264](https://github.com/MSKazemi/ros2-kubernetes-lab/actions/runs/38228962264); digest recorded above; public pull access not yet independently checked |
+| Repository-built image | `ros-jazzy-with-stress-ng:sha-475988ae383e361ebbc60c1c6e0614ecd93694d1` | Published and smoke-tested in [run 38228962264](https://github.com/MSKazemi/robo-resilience-lab/actions/runs/38228962264); digest recorded above; public pull access not yet independently checked |
 | Architectures | `linux/amd64` | CI-covered when green; arm64 not validated |
 | Additional apt packages | `ros-jazzy-demo-nodes-cpp=0.33.11-1noble.20260920.235420`, `stress-ng=0.17.06-1build1` | Direct package versions pinned from the successful 2026-10-12 CI installation; **transitive dependency versions are not locked** |
 | ros2_pulse pilot packages | `ros-jazzy-ros2-pulse=0.5.0-1noble.20260914.160740`, `python3-venv=3.12.3-0ubuntu2.1`, PyPI `ros2-pulse-top==0.6.1` (wheel sha256 pinned, `--no-deps`) | Resolved from the package indexes on 2026-10-28; built and tested on amd64 in the PR's CI; **transitive apt versions are not locked** |
 | Full Kubernetes environment | Legacy Kubernetes 1.29 / Weave Net | **Not modernized or tested** in this PR |
 | Lyrical profile | Ubuntu 26.04 platform | Deferred; no claim of support |
 
-**Reproducibility caveat:** The base-image digest is fixed, and a pushed image is referenced by a content digest and a source-commit tag. However, apt repositories can update. A rebuild from the same Git commit may resolve different apt package versions; fully hermetic/reproducible rebuilds require an apt snapshot or version lock and are still future work under [#7](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7) / [#6](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/6). Consume a **published image digest** when an exact artifact matters.
+**Reproducibility caveat:** The base-image digest is fixed, and a pushed image is referenced by a content digest and a source-commit tag. However, apt repositories can update. A rebuild from the same Git commit may resolve different apt package versions; fully hermetic/reproducible rebuilds require an apt snapshot or version lock and are still future work under [#7](https://github.com/MSKazemi/robo-resilience-lab/issues/7) / [#6](https://github.com/MSKazemi/robo-resilience-lab/issues/6). Consume a **published image digest** when an exact artifact matters.
 
 **Original Foxy reference:** [`ROS2/legacy/foxy/Dockerfile`](../legacy/foxy/Dockerfile). The existing root-level Kubernetes YAML files still refer to the old Foxy stress image and **have deliberately not been silently migrated to an untested modern cluster**.
 
