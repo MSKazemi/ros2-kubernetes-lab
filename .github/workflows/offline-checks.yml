@@ -1,0 +1,40 @@
+name: Offline checks
+
+# CPU-only, network-free unit and static checks (scripts/ci/run-offline-checks.sh). No Docker,
+# Kubernetes, secrets or publishing. A green run does not show that DDS messages cross nodes.
+# PyYAML (experiments/e02-dds-resilience, YAML parse step) and pytest (older tests/ suite) are installed.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  offline-checks:
+    name: Offline checks (unittest, YAML, links, site, secret scan)
+    # Run only in the public repository; the private mirror and forks execute nothing.
+    if: github.repository == 'MSKazemi/robo-resilience-lab'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout source
+        # actions/checkout v7.0.1, same pinned commit as pages.yml and kind-demo.yml.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        # actions/setup-python v7.1.0: same pinned commit as the other Python workflows.
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - name: Install PyYAML and pytest (explicit; the runner image does not guarantee them)
+        # Without pytest the run-offline-checks.sh step "pytest:tests" is skipped and the older
+        # pytest files in tests/ would not run in CI at all.
+        shell: bash
+        run: python3 -m pip install "pyyaml>=6.0.3" "pytest>=9.2"
+      - name: Run offline checks
+        shell: bash
+        run: bash scripts/ci/run-offline-checks.sh
