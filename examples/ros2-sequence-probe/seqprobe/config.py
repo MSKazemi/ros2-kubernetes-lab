@@ -7,7 +7,20 @@ from dataclasses import dataclass, asdict
 from .clocks import check_clock_name
 from .errors import ConfigError
 
-RUN_ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,32}$")
+# Anchored with \A..\Z and always used with fullmatch(): a bare "$" also matches before a trailing
+# newline, so "abc\n" would pass.
+RUN_ID_RE = re.compile(r"\A[A-Za-z0-9_-]{1,32}\Z")
+# Node and topic names: printable ASCII only (0x21-0x7e), so no whitespace, control characters
+# (newline, NUL, ...) or non-ASCII characters.
+NAME_RE = re.compile(r"\A[\x21-\x7e]+\Z")
+
+
+def is_valid_run_id(value):
+    return isinstance(value, str) and RUN_ID_RE.fullmatch(value) is not None
+
+
+def is_valid_name(value):
+    return isinstance(value, str) and NAME_RE.fullmatch(value) is not None
 MAX_COUNT = 10**9 - 1  # seq is written with 10 digits
 MAX_RATE_HZ = 100_000.0
 MAX_PAYLOAD_BYTES = 1 << 20
@@ -26,20 +39,20 @@ def _positive_finite(value, name):
 
 
 def check_run_id(run_id):
-    if not isinstance(run_id, str) or not RUN_ID_RE.match(run_id):
+    if not is_valid_run_id(run_id):
         raise ConfigError("run_id must match [A-Za-z0-9_-]{1,32} (got %r)" % (run_id,))
     return run_id
 
 
 def check_topic(topic):
-    if not isinstance(topic, str) or not topic or any(c.isspace() for c in topic):
-        raise ConfigError(f"topic must be a non-empty string without whitespace (got {topic!r})")
+    if not is_valid_name(topic):
+        raise ConfigError(f"topic must be non-empty printable ASCII without whitespace (got {topic!r})")
     return topic
 
 
 def check_node(node):
-    if not isinstance(node, str) or not node or any(c.isspace() for c in node):
-        raise ConfigError(f"node must be a non-empty string without whitespace (got {node!r})")
+    if not is_valid_name(node):
+        raise ConfigError(f"node must be non-empty printable ASCII without whitespace (got {node!r})")
     return node
 
 

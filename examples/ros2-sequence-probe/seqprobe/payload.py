@@ -8,15 +8,19 @@ the publish call; it is not a latency measurement.
 """
 
 import random
+import re
 
 from .clocks import CLOCKS
-from .config import RUN_ID_RE
+from .config import is_valid_run_id
 from .errors import PayloadError, ConfigError
 
 MAGIC = "SQP1"
 SEQ_DIGITS = 10
 TS_DIGITS = 20
 _PAD_ALPHABET = "0123456789abcdef"
+_SEQ_RE = re.compile(r"\A[0-9]{%d}\Z" % SEQ_DIGITS)
+_TS_RE = re.compile(r"\A[0-9]{%d}\Z" % TS_DIGITS)
+_PAD_RE = re.compile(r"\A[0-9a-f]*\Z")
 
 
 def header(run_id, seq, sent_ts_ns, clock):
@@ -36,6 +40,8 @@ def pad_for(seed, seq, length):
 
 
 def build_payload(run_id, seq, sent_ts_ns, clock, payload_bytes, seed):
+    if not is_valid_run_id(run_id):
+        raise ConfigError(f"invalid run_id {run_id!r}")
     if clock not in CLOCKS:
         raise ConfigError(f"unknown clock {clock!r}")
     if seq < 0 or seq >= 10**SEQ_DIGITS:
@@ -101,15 +107,17 @@ def decode_payload(raw):
     parts = text.split(";", 5)
     if len(parts) != 6:
         raise PayloadError("payload has too few fields")
-    magic, run_id, seq_s, ts_s, clock, _pad = parts
+    magic, run_id, seq_s, ts_s, clock, pad = parts
     if magic != MAGIC:
         raise PayloadError(f"bad magic {magic!r}")
-    if not RUN_ID_RE.match(run_id):
+    if not is_valid_run_id(run_id):
         raise PayloadError("bad run_id")
-    if len(seq_s) != SEQ_DIGITS or not seq_s.isdigit():
+    if not _SEQ_RE.fullmatch(seq_s):
         raise PayloadError("bad seq field")
-    if len(ts_s) != TS_DIGITS or not ts_s.isdigit():
+    if not _TS_RE.fullmatch(ts_s):
         raise PayloadError("bad timestamp field")
     if clock not in CLOCKS:
         raise PayloadError(f"bad clock {clock!r}")
+    if not _PAD_RE.fullmatch(pad):
+        raise PayloadError("bad padding")
     return DecodedPayload(run_id, int(seq_s), int(ts_s), clock, len(data))

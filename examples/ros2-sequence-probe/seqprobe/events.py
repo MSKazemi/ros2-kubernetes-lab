@@ -21,7 +21,7 @@ import json
 from dataclasses import dataclass
 
 from .clocks import CLOCKS, require_same_clock
-from .config import RUN_ID_RE
+from .config import is_valid_run_id, is_valid_name
 from .errors import LogFormatError
 
 SCHEMA_VERSION = 1
@@ -98,12 +98,11 @@ def check_fields(obj, line_no=None):
         bad(f"unknown role {obj['role']!r}")
     if obj["event"] not in _ROLE_EVENTS[obj["role"]]:
         bad(f"event {obj['event']!r} is not valid for role {obj['role']!r}")
-    if not isinstance(obj["run_id"], str) or not RUN_ID_RE.match(obj["run_id"]):
+    if not is_valid_run_id(obj["run_id"]):
         bad("run_id must match [A-Za-z0-9_-]{1,32}")
     for key in ("node", "topic"):
-        v = obj[key]
-        if not isinstance(v, str) or not v or any(c.isspace() for c in v):
-            bad(f"{key} must be a non-empty string without whitespace")
+        if not is_valid_name(obj[key]):
+            bad(f"{key} must be non-empty printable ASCII without whitespace")
     if not _is_int(obj["ts_ns"]) or obj["ts_ns"] < 0:
         bad("ts_ns must be an integer >= 0")
     if obj["clock"] not in CLOCKS:
@@ -139,10 +138,19 @@ def validate_fields(obj, line_no=None):
 
 def parse_line(line, line_no=None):
     try:
-        obj = json.loads(line, parse_constant=_reject_constant)
+        obj = json.loads(line, parse_constant=_reject_constant, object_pairs_hook=_no_duplicates)
     except (ValueError, RecursionError) as exc:
         raise LogFormatError(f"invalid JSON ({exc})", line_no) from None
     return validate_fields(obj, line_no)
+
+
+def _no_duplicates(pairs):
+    obj = {}
+    for key, value in pairs:
+        if key in obj:
+            raise ValueError(f"duplicate key {key!r}")
+        obj[key] = value
+    return obj
 
 
 def _reject_constant(name):

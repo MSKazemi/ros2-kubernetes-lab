@@ -26,7 +26,7 @@ maintainers.
 
 ## Log schema (version 1)
 
-JSON Lines: one object per line, keys always in the order below, no unknown keys, no `NaN`.
+JSON Lines: one object per line, keys always in the order below, no unknown keys, no duplicate keys, no `NaN`.
 The parser (`seqprobe/events.py`) is strict and reports the line number of the first bad record.
 
 | Field | Type | Meaning |
@@ -34,9 +34,9 @@ The parser (`seqprobe/events.py`) is strict and reports the line number of the f
 | `schema_version` | int | Always `1` |
 | `event` | string | `start`, `send`, `recv`, `timeout`, `stop` |
 | `role` | string | `publisher` (events `start`, `send`, `stop`) or `subscriber` (`start`, `recv`, `timeout`, `stop`) |
-| `run_id` | string | `[A-Za-z0-9_-]{1,32}`; must match on both sides, other runs are counted and ignored |
-| `node` | string | Node name, no whitespace |
-| `topic` | string | Topic name, no whitespace |
+| `run_id` | string | Exactly `[A-Za-z0-9_-]{1,32}` (full match: a trailing newline, space or non-ASCII lookalike is rejected); must match on both sides, other runs are counted and ignored |
+| `node` | string | Node name: printable ASCII (0x21-0x7e), so no whitespace, control or non-ASCII characters |
+| `topic` | string | Topic name: same character rule as `node` |
 | `seq` | int or null | Sequence ID (>= 0). Non-null exactly for `send` and `recv` |
 | `payload_bytes` | int or null | Payload size in bytes. Non-null exactly for `send` and `recv` |
 | `ts_ns` | int | Time of the event in nanoseconds, **on the clock named in `clock`** |
@@ -52,7 +52,8 @@ Example `recv` line:
 ```
 
 Payload wire format (`std_msgs/String`, or `ByteMultiArray` carrying the same ASCII bytes):
-`SQP1;<run_id>;<seq, 10 digits>;<sent_ts_ns, 20 digits>;<sent_clock>;<padding>`.
+`SQP1;<run_id>;<seq, 10 digits>;<sent_ts_ns, 20 digits>;<sent_clock>;<padding, lowercase hex, may be empty>`.
+Digits are ASCII `0-9` only; every field is matched in full, so any other character is rejected.
 
 ## Clock semantics
 

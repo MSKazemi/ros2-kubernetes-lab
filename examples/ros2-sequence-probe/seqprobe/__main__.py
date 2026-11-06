@@ -5,6 +5,7 @@ Exit codes: 0 ok, 1 verdict not ok, 2 bad input / usage.
 
 import argparse
 import json
+import re
 import sys
 
 from .errors import SeqProbeError
@@ -12,7 +13,10 @@ from .errors import SeqProbeError
 
 def _ints(text):
     try:
-        return [int(x) for x in text.split(",") if x.strip()]
+        items = [x.strip() for x in text.split(",") if x.strip()]
+        if not all(re.fullmatch(r"[0-9]+", x) for x in items):  # ASCII digits only
+            raise ValueError
+        return [int(x) for x in items]
     except ValueError:
         raise argparse.ArgumentTypeError(f"expected comma-separated integers, got {text!r}") from None
 
