@@ -138,6 +138,116 @@ class ApplyTests(unittest.TestCase):
         self.assertTrue(cond.endswith("&& (github.ref == 'refs/heads/main')"))
 
 
+G = "github.repository == 'MSKazemi/robo-resilience-lab'"
+
+
+class IsGuardedTableTests(unittest.TestCase):
+    """The guard must be a top-level AND-conjunct of the WHOLE condition (&& binds tighter than ||)."""
+
+    GUARDED = [
+        G,
+        "${{ " + G + " }}",
+        G + " && (github.ref == 'refs/heads/main')",
+        G + " && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'",
+        "(" + G + ") && github.ref == 'refs/heads/main'",
+        "(" + G + ")",
+        "((" + G + " && github.ref == 'x'))",
+        G + " && (github.ref == 'a' || github.ref == 'b')",
+        "github.ref == 'x' && " + G,
+        "github.ref == 'x' && (" + G + ") && always()",
+        "'MSKazemi/robo-resilience-lab' == github.repository && success()",
+        G + " && github.event.head_commit.message != ' || true && ('",      # operators inside a string literal
+        "github.ref == 'it''s a || b' && " + G,                              # escaped quote inside a literal
+        G + " && contains(github.event.head_commit.message, ') || (')",
+        G + " && !cancelled()",
+    ]
+    UNGUARDED = [
+        "",
+        "true",
+        "github.ref == 'refs/heads/main'",
+        G + " && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'",   # (g && a) || b
+        "github.event_name == 'x' || " + G,
+        G + " || github.event_name == 'x'",
+        G + " || true",
+        "(" + G + " && github.ref == 'x') || github.ref == 'y'",
+        "(" + G + " || github.ref == 'x') && github.ref == 'y' || true",
+        "!(" + G + ") && github.ref == 'x'",
+        "!" + G,
+        "github.repository != 'MSKazemi/robo-resilience-lab'",
+        "github.repository == 'MSKazemi/robo-resilience-lab-private'",
+        "github.repository == 'mskazemi/other'",
+        'github.event.head_commit.message == "' + G + '"',
+        "github.event.head_commit.message == 'github.repository == ''MSKazemi/robo-resilience-lab'''",
+        "github.ref == 'x' && github.event.head_commit.message == '&& github.repository == ''MSKazemi/robo-resilience-lab'''",
+        "always() || " + G + " && success()",
+        "github['repository'] == 'MSKazemi/robo-resilience-lab'",   # a form we do not understand fails closed
+        G + " &&",                                                   # syntax error fails closed
+        G + " && (github.ref == 'x'",
+        "${{ github.repository == 'MSKazemi/robo-resilience-lab' }} && ${{ true }}",
+        None,
+        True,
+        42,
+    ]
+
+    def test_guarded_forms(self):
+        for expr in self.GUARDED:
+            with self.subTest(expr=expr):
+                self.assertTrue(rg.is_guarded(expr, PUBLIC))
+
+    def test_unguarded_forms(self):
+        for expr in self.UNGUARDED:
+            with self.subTest(expr=expr):
+                self.assertFalse(rg.is_guarded(expr, PUBLIC))
+
+    def test_precedence_matches_the_evaluator_for_the_dangerous_case(self):
+        expr = G + " && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'"
+        self.assertFalse(rg.is_guarded(expr, PUBLIC))
+        # it really does run in a different repository on a dispatch event
+        self.assertTrue(evaluate(expr, "workflow_dispatch", "refs/heads/x", PRIVATE))
+
+    def test_is_guarded_agrees_with_the_evaluator_on_generated_conditions(self):
+        """Property check: if is_guarded says yes, the condition is False in every other repository."""
+        atoms = ["github.ref == 'refs/heads/main'", "github.event_name == 'push'", G]
+        seen_guarded = 0
+        for a, b, c in itertools.product(atoms, repeat=3):
+            for o1, o2 in itertools.product([" && ", " || "], repeat=2):
+                for wrap in ("{}", "({})", "!({})"):
+                    expr = wrap.format(a + o1 + b + o2 + c)
+                    guarded = rg.is_guarded(expr, PUBLIC)
+                    seen_guarded += guarded
+                    if guarded:
+                        for event, ref in itertools.product(["push", "pull_request", "workflow_dispatch"],
+                                                            ["refs/heads/main", "refs/heads/x"]):
+                            self.assertFalse(evaluate(expr, event, ref, PRIVATE), expr)
+        self.assertGreater(seen_guarded, 0)
+
+    @unittest.skipIf(yaml is None, "PyYAML not installed")
+    def test_apply_wraps_an_unsafe_existing_condition_so_the_result_is_safe(self):
+        unsafe = G + " && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'"
+        text = "jobs:\n  j:\n    name: J\n    if: " + unsafe + "\n    runs-on: x\n    steps: []\n"
+        new, changed = rg.apply_text(text, PUBLIC)
+        self.assertEqual(changed, 1)
+        cond = yaml.safe_load(new)["jobs"]["j"]["if"]
+        self.assertTrue(rg.is_guarded(cond, PUBLIC))
+        self.assertEqual(rg.original_condition(cond, PUBLIC), unsafe)
+        for event, ref in itertools.product(["push", "workflow_dispatch"], ["refs/heads/main", "refs/heads/x"]):
+            self.assertFalse(evaluate(cond, event, ref, PRIVATE))
+            self.assertEqual(evaluate(cond, event, ref, PUBLIC), evaluate(unsafe, event, ref, PUBLIC))
+        self.assertEqual(rg.apply_text(new, PUBLIC), (new, 0))  # idempotent
+
+    def test_original_condition_only_accepts_shapes_written_by_apply(self):
+        self.assertIsNone(rg.original_condition(G, PUBLIC))
+        self.assertEqual(rg.original_condition(G + " && (a == 'b')", PUBLIC), "a == 'b'")
+        for odd in (G + " && a && b", "(" + G + ") && a", G + " && (a) || (b)"):
+            with self.assertRaises(ValueError, msg=odd):
+                rg.original_condition(odd, PUBLIC)
+
+    def test_tokenizer_keeps_operators_inside_literals_inside_the_literal(self):
+        toks = rg._tokenize("a == '&& || ( ) ! ''x'''")
+        self.assertEqual([k for k, _ in toks], ["name", "op", "str"])
+        self.assertEqual(toks[2][1], "&& || ( ) ! 'x'")
+
+
 @unittest.skipIf(yaml is None, "PyYAML not installed")
 class CheckTests(unittest.TestCase):
     def _write(self, text: str) -> Path:

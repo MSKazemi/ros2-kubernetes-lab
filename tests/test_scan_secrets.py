@@ -212,6 +212,73 @@ class ConfigAndGlobTests(unittest.TestCase):
                 self.assertNotIn(fragment, text, f"{f}: {fragment}")
 
 
+class ChunkedScanTests(unittest.TestCase):
+    """Large text is scanned in overlapping windows; nothing straddling a cut may be missed."""
+
+    def lines_found(self, text: str):
+        return sorted((f.line, f.rule) for f in ss.scan_text("big.txt", text, ss.Config({})))
+
+    def test_token_straddling_the_window_boundary_is_found(self):
+        # one long line (no newline to cut at); the token starts 14 chars before the 64-char cut
+        text = "a " * 25 + GH_TOKEN + " " + "b " * 40
+        cut = 64
+        start = text.index(GH_TOKEN)
+        self.assertLess(start, cut)
+        self.assertGreater(start + len(GH_TOKEN), cut)
+        with mock.patch.object(ss, "CHUNK_CHARS", cut), mock.patch.object(ss, "OVERLAP_CHARS", 48):
+            self.assertEqual(self.lines_found(text), [(1, "github-token")])
+
+    def test_token_straddling_with_default_sizes_on_a_multi_megabyte_line(self):
+        pad = "z " * ((ss.CHUNK_CHARS - 20) // 2)               # token begins 20 chars before the 1 MiB cut
+        text = pad + GH_TOKEN + " " + "z " * 4000
+        self.assertEqual(self.lines_found(text), [(1, "github-token")])
+
+    def test_every_alignment_of_the_token_around_the_cut_is_found(self):
+        with mock.patch.object(ss, "CHUNK_CHARS", 80), mock.patch.object(ss, "OVERLAP_CHARS", 50):
+            for shift in range(0, 60):
+                text = "q " * (shift // 2) + "." * (shift % 2) + " " * 3 + "w " * 15 + GH_TOKEN + " end " + "e " * 80
+                with self.subTest(shift=shift):
+                    self.assertEqual(self.lines_found(text), [(1, "github-token")])
+
+    def test_line_numbers_are_exact_across_windows_and_duplicates_merge(self):
+        body = [("k%03d " % i) * 4 for i in range(300)]
+        body[199] = "tok " + GH_TOKEN
+        body[250] = "api " + HF
+        text = "\n".join(body)
+        with mock.patch.object(ss, "CHUNK_CHARS", 700), mock.patch.object(ss, "OVERLAP_CHARS", 120):
+            self.assertEqual(self.lines_found(text), [(200, "github-token"), (251, "huggingface-token")])
+
+    def test_window_starting_mid_line_does_not_invent_line_start_findings(self):
+        # the secret-assignment rule is anchored at line start; mid-line text must not match it
+        filler = "word " * 30
+        text = filler + " API_KEY=" + NO_GROUP_SECRET + "\n" + "next line\n"
+        self.assertEqual(self.lines_found(text), [])  # sanity: not at line start, whole-text scan finds nothing
+        with mock.patch.object(ss, "CHUNK_CHARS", 90), mock.patch.object(ss, "OVERLAP_CHARS", 40):
+            self.assertEqual(self.lines_found(text), [])
+
+    def test_line_start_findings_still_found_when_lines_are_intact(self):
+        text = "".join(f"line {i}\n" for i in range(200)) + f"API_KEY={NO_GROUP_SECRET}\n" + "tail\n" * 50
+        with mock.patch.object(ss, "CHUNK_CHARS", 300), mock.patch.object(ss, "OVERLAP_CHARS", 60):
+            self.assertEqual(self.lines_found(text), [(201, "secret-assignment")])
+
+    def test_kubeconfig_file_rule_still_sees_the_whole_text(self):
+        text = "apiVersion: v1\nkind: Config\nclusters:\n- name: c\nusers:\n- name: u\n  user:\n    token: short\n"
+        with mock.patch.object(ss, "CHUNK_CHARS", 40), mock.patch.object(ss, "OVERLAP_CHARS", 10):
+            self.assertIn("kubeconfig-file", {f.rule for f in ss.scan_text("kc.yaml", text, ss.Config({}))})
+
+    def test_real_notebooks_are_scanned_not_skipped(self):
+        notebooks = sorted((REPO / "DataAnalysis").glob("*.ipynb")) if (REPO / "DataAnalysis").is_dir() else []
+        if not notebooks:
+            self.skipTest("no notebooks in this tree")
+        big = [n for n in notebooks if n.stat().st_size > 1_000_000]
+        if not big:
+            self.skipTest("no notebook above 1 MB in this tree")
+        for nb in big:
+            found, skip = ss.scan_file(REPO, str(nb.relative_to(REPO)), ss.Config.load(ss.DEFAULT_CONFIG), "public")
+            self.assertIsNone(skip, nb.name)
+            self.assertEqual(found, [], nb.name)  # no false positives either
+
+
 class PrivateDenyFileTests(unittest.TestCase):
     """Private patterns/words come from untracked local files whose location is configured at run time."""
 
@@ -435,10 +502,70 @@ class SelectionAndCliTests(unittest.TestCase):
         self.assertIn(".github/b.txt:1: huggingface-token", out)
         self.assertNotIn(".git-alt", out)
 
-    def test_binary_and_large_files_skipped(self):
+    def test_large_text_file_over_old_1mb_limit_is_scanned(self):
+        """Regression: files above 1 MB (e.g. notebooks) used to be skipped silently."""
+        filler = ("x" * 99 + "\n") * 12000  # about 1.2 MB, several lines
+        self.w("big.ipynb", filler + f"token {GH_TOKEN}\n" + filler)
+        code, out = self.cli("--no-config", "--no-private-markers", str(self.dir))
+        self.assertEqual(code, 1)
+        self.assertIn("big.ipynb:12001: github-token", out)
+        self.assertIn("skipped 0", out)
+        self.assertNotIn(GH_TOKEN, out)
+
+    def test_skipped_files_are_counted_by_category(self):
         self.w("bin.dat", b"\0\1\2" + GH_TOKEN.encode())
-        self.w("big.txt", (GH_TOKEN + "\n").encode() + b"x" * (ss.MAX_BYTES + 10))
-        self.assertEqual(self.cli("--no-config", str(self.dir))[0], 0)
+        self.w("ok.txt", "fine\n")
+        code, out = self.cli("--no-config", "--no-private-markers", str(self.dir))
+        self.assertEqual(code, 0)
+        self.assertIn("scanned 1 file(s), skipped 1 (binary: 1), 0 finding(s)", out)
+        self.assertNotIn(GH_TOKEN, out)
+
+    def test_over_cap_symlink_and_unreadable_are_counted_and_listed(self):
+        self.w("big.txt", "y" * 3000)
+        self.w("ok.txt", "fine\n")
+        os.symlink(self.dir / "ok.txt", self.dir / "link.txt")
+        locked = self.w("locked.txt", "fine\n")
+        os.chmod(locked, 0)
+        self.addCleanup(os.chmod, locked, 0o644)
+        with mock.patch.object(ss, "HARD_CAP_BYTES", 2000):
+            code, out = self.cli("--no-config", "--no-private-markers", "--list-skipped", "--max-mb", "0.0019", str(self.dir))
+        self.assertEqual(code, 0, out)
+        unreadable = os.access(locked, os.R_OK) is False
+        expect = "skipped %d (over-cap: 1, unreadable: 1, symlink: 1)" % 3 if unreadable else "skipped 2 (over-cap: 1, symlink: 1)"
+        self.assertIn(expect, out)
+        self.assertIn("not scanned (over-cap): big.txt", out)
+        self.assertIn("not scanned (symlink): link.txt", out)
+
+    def test_missing_tracked_file_is_counted_not_silent(self):
+        found, skip = ss.scan_file(self.dir, "gone.txt", ss.Config({}), "public")
+        self.assertEqual((found, skip), ([], "missing"))
+
+    def test_fail_on_skipped_default_off_and_flag_on(self):
+        self.w("bin.dat", b"\0\1\2")
+        self.w("ok.txt", "fine\n")
+        base = ["--no-config", "--no-private-markers", str(self.dir)]
+        self.assertEqual(self.cli(*base)[0], 0)
+        code, out = self.cli("--fail-on-skipped", *base)
+        self.assertEqual(code, 1)
+        self.assertIn("skipped 1 (binary: 1)", out)
+        self.assertIn("--fail-on-skipped", out)
+
+    def test_fail_on_skipped_category_list(self):
+        self.w("bin.dat", b"\0\1\2")
+        self.w("ok.txt", "fine\n")
+        tail = ["--no-config", "--no-private-markers", str(self.dir)]
+        self.assertEqual(self.cli("--fail-on-skipped=over-cap,unreadable", *tail)[0], 0)   # only binary skipped
+        self.assertEqual(self.cli("--fail-on-skipped=binary", *tail)[0], 1)
+        self.assertEqual(self.cli("--fail-on-skipped=bogus", *tail)[0], 2)
+
+    def test_over_cap_with_fail_flag_and_json_counts(self):
+        self.w("big.txt", "y" * 3000)
+        with mock.patch.object(ss, "HARD_CAP_BYTES", 2000):
+            code, out = self.cli("--no-config", "--no-private-markers", "--fail-on-skipped", "--max-mb", "0.0019", str(self.dir))
+            self.assertEqual(code, 1)
+            code, out = self.cli("--no-config", "--no-private-markers", "--json", "--max-mb", "0.0019", str(self.dir))
+        self.assertEqual(json.loads(out)["skipped"], {"over-cap": 1})
+        self.assertEqual(code, 0)
 
     def test_missing_path_and_missing_config_exit_two(self):
         self.assertEqual(self.cli("--no-config", str(self.dir / "nope"))[0], 2)

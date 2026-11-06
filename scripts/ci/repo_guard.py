@@ -58,25 +58,189 @@ def compose(repo: str, existing: str | None) -> str:
     return f"{guard} && ({unwrap(existing)})"
 
 
+class ExprError(ValueError):
+    """The condition is not in the GitHub expression subset this tool understands."""
+
+
+_TOKEN_RE = re.compile(
+    r"""\s*(?:
+        (?P<str>'(?:[^']|'')*')
+      | (?P<op>&&|\|\||==|!=|<=|>=|<|>|!|\(|\)|\[|\]|\.|,|\*)
+      | (?P<num>-?\d+(?:\.\d+)?)
+      | (?P<name>[A-Za-z_][A-Za-z0-9_-]*)
+    )""",
+    re.VERBOSE,
+)
+
+
+def _tokenize(text: str) -> list[tuple[str, str]]:
+    tokens: list[tuple[str, str]] = []
+    pos = 0
+    text = text.rstrip()
+    while pos < len(text):
+        m = _TOKEN_RE.match(text, pos)
+        if not m or m.end() == pos:
+            raise ExprError(f"cannot tokenize at offset {pos}")
+        kind = m.lastgroup or ""
+        value = m.group(kind)
+        tokens.append((kind, value[1:-1].replace("''", "'") if kind == "str" else value))
+        pos = m.end()
+    return tokens
+
+
+class _Parser:
+    """Recursive descent over: or > and > comparison > unary(!) > primary. Returns tuple ASTs."""
+
+    def __init__(self, tokens: list[tuple[str, str]]) -> None:
+        self.t, self.i = tokens, 0
+
+    def peek(self) -> tuple[str, str] | None:
+        return self.t[self.i] if self.i < len(self.t) else None
+
+    def take(self, kind: str | None = None, value: str | None = None) -> tuple[str, str]:
+        tok = self.peek()
+        if tok is None or (kind and tok[0] != kind) or (value and tok[1] != value):
+            raise ExprError("unexpected token")
+        self.i += 1
+        return tok
+
+    def at_op(self, *ops: str) -> bool:
+        tok = self.peek()
+        return tok is not None and tok[0] == "op" and tok[1] in ops
+
+    def parse(self):
+        node = self.or_()
+        if self.peek() is not None:
+            raise ExprError("trailing tokens")
+        return node
+
+    def or_(self):
+        parts = [self.and_()]
+        while self.at_op("||"):
+            self.take()
+            parts.append(self.and_())
+        return parts[0] if len(parts) == 1 else ("or", tuple(parts))
+
+    def and_(self):
+        parts = [self.cmp_()]
+        while self.at_op("&&"):
+            self.take()
+            parts.append(self.cmp_())
+        return parts[0] if len(parts) == 1 else ("and", tuple(parts))
+
+    def cmp_(self):
+        node = self.unary()
+        while self.at_op("==", "!=", "<", "<=", ">", ">="):
+            op = self.take()[1]
+            node = ("cmp", op, node, self.unary())
+        return node
+
+    def unary(self):
+        if self.at_op("!"):
+            self.take()
+            return ("not", self.unary())
+        return self.primary()
+
+    def primary(self):
+        tok = self.peek()
+        if tok is None:
+            raise ExprError("unexpected end")
+        kind, value = tok
+        if kind == "op" and value == "(":
+            self.take()
+            inner = self.or_()
+            self.take("op", ")")
+            return ("paren", inner)
+        if kind in ("str", "num"):
+            self.take()
+            return ("lit", kind, value)
+        if kind == "name":
+            self.take()
+            chain: list = [value]
+            while True:
+                if self.at_op("."):
+                    self.take()
+                    nxt = self.peek()
+                    if nxt is None or nxt[0] not in ("name", "op") or (nxt[0] == "op" and nxt[1] != "*"):
+                        raise ExprError("bad property access")
+                    chain.append(self.take()[1])
+                elif self.at_op("["):
+                    self.take()
+                    chain.append(("index", self.or_()))
+                    self.take("op", "]")
+                elif self.at_op("("):
+                    self.take()
+                    args = []
+                    if not self.at_op(")"):
+                        args.append(self.or_())
+                        while self.at_op(","):
+                            self.take()
+                            args.append(self.or_())
+                    self.take("op", ")")
+                    chain.append(("call", tuple(args)))
+                else:
+                    break
+            return ("ref", tuple(chain))
+        raise ExprError("unexpected token")
+
+
+def parse_condition(expr: str):
+    """Parse a job/step `if` expression (optionally wrapped in ${{ }}) into a tuple AST."""
+    return _Parser(_tokenize(unwrap(expr))).parse()
+
+
+def _conjuncts(node) -> list:
+    """Flatten the top-level AND structure of the WHOLE expression (looking through redundant parentheses)."""
+    if node[0] == "paren":
+        return _conjuncts(node[1])
+    if node[0] == "and":
+        out: list = []
+        for child in node[1]:
+            out += _conjuncts(child)
+        return out
+    return [node]
+
+
+def _is_guard_node(node, guard_ast) -> bool:
+    if node == guard_ast:
+        return True
+    # the same equality written the other way round: 'owner/name' == github.repository
+    return node[0] == "cmp" and node[1] == "==" and guard_ast[1] == "==" and (node[3], node[2]) == (guard_ast[2], guard_ast[3])
+
+
 def is_guarded(expr: object, repo: str) -> bool:
-    """True if ``expr`` is the guard itself or ``guard && (...)`` (top-level conjunct)."""
+    """True only if the guard is a top-level AND-conjunct of the whole condition.
+
+    `g`, `g && (a)`, `g && a && b`, `(g) && a`, `g && (a || b)` are guarded. `g && a || b`
+    (which is `(g && a) || b`), `a || g`, `g || x`, `!g && a`, `g != 'x'` and a guard text
+    inside a string literal are not. Anything that cannot be parsed is treated as unguarded."""
     if not isinstance(expr, str):
         return False
-    text = unwrap(expr)
-    guard = guard_expr(repo)
-    return text == guard or (text.startswith(guard + " && (") and text.endswith(")"))
+    try:
+        tree = parse_condition(expr)
+        guard_ast = parse_condition(guard_expr(repo))
+    except ExprError:
+        return False
+    return any(_is_guard_node(c, guard_ast) for c in _conjuncts(tree))
 
 
 def original_condition(expr: str, repo: str) -> str | None:
-    """Inverse of :func:`compose`: the pre-guard condition (None if there was none)."""
+    """Inverse of :func:`compose`: the pre-guard condition (None if there was none).
+
+    Only the exact shapes written by ``apply`` are accepted: ``g`` or ``g && (<original>)``."""
     text = unwrap(expr)
     guard = guard_expr(repo)
-    if text == guard:
+    try:
+        tree, guard_ast = parse_condition(text), parse_condition(guard)
+    except ExprError as exc:
+        raise ValueError(f"unparseable condition: {exc}") from None
+    if tree == guard_ast:
         return None
     prefix = guard + " && ("
-    if text.startswith(prefix) and text.endswith(")"):
+    if (tree[0] == "and" and len(tree[1]) == 2 and tree[1][0] == guard_ast and tree[1][1][0] == "paren"
+            and text.startswith(prefix) and text.endswith(")")):
         return text[len(prefix) : -1]
-    raise ValueError("expression does not start with the repository guard")
+    raise ValueError("expression is not of the form written by apply (guard && (original))")
 
 
 def apply_text(text: str, repo: str) -> tuple[str, int]:

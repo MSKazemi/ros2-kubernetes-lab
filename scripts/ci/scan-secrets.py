@@ -29,7 +29,12 @@ directories. Nothing else on disk is read.
 Suppress a single line with the comment ``scan-secrets: ignore`` on that line,
 or add an ``allow`` entry to the config (path glob + rule id or ``*``).
 
-Exit status: 0 clean, 1 findings, 2 usage or configuration error.
+Coverage: text files up to a hard cap (25 MiB, ``--max-mb``) are scanned in overlapping
+windows. Files whose content is NOT scanned (binary, over the cap, unreadable, symlink,
+missing) are counted by category in the status line; ``--fail-on-skipped`` turns that into
+a failure and ``--list-skipped`` names the paths.
+
+Exit status: 0 clean, 1 findings (or skipped files with --fail-on-skipped), 2 usage or configuration error.
 """
 
 from __future__ import annotations
@@ -45,7 +50,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 DEFAULT_CONFIG = Path(__file__).with_name("scan-secrets.config.json")
-MAX_BYTES = 1_000_000
+HARD_CAP_BYTES = 25 * 1024 * 1024   # files larger than this are NOT scanned (and are counted as over-cap)
+CHUNK_CHARS = 1024 * 1024           # text is scanned in windows of about this size ...
+OVERLAP_CHARS = 8 * 1024            # ... that overlap by this much, so a token up to this long is never split
+BINARY_PROBE = 8192                 # a NUL byte in the first bytes marks a file as binary
+SKIP_CATEGORIES = ("binary", "over-cap", "unreadable", "symlink", "missing")
 IGNORE_MARK = "scan-secrets: ignore"
 
 PLACEHOLDER_RE = re.compile(
@@ -299,12 +308,20 @@ class Config:
 
 
 # --------------------------------------------------------------------- scanning
-def scan_text(rel: str, text: str, cfg: Config, profile: str = "public") -> list[Finding]:
-    findings: list[Finding] = []
-    for lineno, line in enumerate(text.splitlines(), 1):
+def _is_anchored(rule: Rule) -> bool:
+    return re.match(r"(?:\(\?[a-z]+\))?\^", rule.regex.pattern) is not None
+
+
+def _scan_lines(rel: str, text: str, first_lineno: int, cfg: Config, profile: str, mid_line_start: bool,
+                out: dict[tuple[int, str, int], Finding]) -> None:
+    for offset, line in enumerate(text.split("\n")):
+        lineno = first_lineno + offset
         if IGNORE_MARK in line:
             continue
+        partial = mid_line_start and offset == 0  # window starts inside a line: '^'-anchored rules do not apply
         for rule in RULES:
+            if partial and _is_anchored(rule):
+                continue
             for m in rule.regex.finditer(line):
                 value = m.group(rule.group) if rule.group else m.group(0)
                 if rule.skip_placeholders and PLACEHOLDER_RE.search(value):
@@ -313,11 +330,40 @@ def scan_text(rel: str, text: str, cfg: Config, profile: str = "public") -> list
                     continue
                 if cfg.allowed(rel, rule.id):
                     continue
-                findings.append(Finding(rel, lineno, rule.id, rule.description, len(value)))
+                out.setdefault((lineno, rule.id, len(value)), Finding(rel, lineno, rule.id, rule.description, len(value)))
         if profile == "public":
             for tid, rx, scopes in cfg.terms:
                 if any(sc.match(rel) for sc in scopes) and rx.search(line) and not cfg.allowed(rel, tid):
-                    findings.append(Finding(rel, lineno, tid, "configured private-marker term (not shown)"))
+                    out.setdefault((lineno, tid, 0), Finding(rel, lineno, tid, "configured private-marker term (not shown)"))
+
+
+def scan_text(rel: str, text: str, cfg: Config, profile: str = "public") -> list[Finding]:
+    """Scan decoded text. Large text is scanned in overlapping windows (CHUNK_CHARS / OVERLAP_CHARS).
+
+    A window ends after a newline when one lies within its last OVERLAP_CHARS characters, so normal
+    lines are never split. Only when a single line is longer than that does the next window start
+    OVERLAP_CHARS before the cut, so a token that straddles the cut appears whole in the next window
+    (tokens longer than OVERLAP_CHARS can be missed). Duplicates from overlaps are merged."""
+    found: dict[tuple[int, str, int], Finding] = {}
+    n = len(text)
+    pos, lineno = 0, 1
+    while True:
+        end = min(pos + CHUNK_CHARS, n)
+        cut, split_line = end, False
+        if end < n:
+            nl = text.rfind("\n", max(pos, end - OVERLAP_CHARS), end)
+            if nl != -1:
+                cut = nl + 1
+            else:
+                split_line = True
+        mid = pos > 0 and text[pos - 1] != "\n"
+        _scan_lines(rel, text[pos:cut], lineno, cfg, profile, mid, found)
+        if cut >= n:
+            break
+        nxt = max(cut - OVERLAP_CHARS, pos + 1) if split_line else cut
+        lineno += text.count("\n", pos, nxt)
+        pos = nxt
+    findings = sorted(found.values(), key=lambda f: (f.line, f.rule))
     if all(rx.search(text) for rx in KUBECONFIG_FILE_RE) and re.search(r"(?m)^\s*(client-key-data|token|client-key)\s*:", text):
         if not cfg.allowed(rel, "kubeconfig-file"):
             findings.append(Finding(rel, 0, "kubeconfig-file", "file looks like a kubeconfig with credentials"))
@@ -337,19 +383,27 @@ def scan_path_name(rel: str, cfg: Config, profile: str) -> list[Finding]:
     return findings
 
 
-def scan_file(root: Path, rel: str, cfg: Config, profile: str) -> list[Finding]:
+def scan_file(root: Path, rel: str, cfg: Config, profile: str) -> tuple[list[Finding], str | None]:
+    """Return (findings, skip_category). skip_category is None when the content was scanned.
+
+    Path-name rules always apply; the content is skipped (and the caller counts it) for
+    symlinks, missing files, unreadable files, binary files and files over HARD_CAP_BYTES."""
     findings = scan_path_name(rel, cfg, profile)
     path = root / rel
     try:
-        if not path.is_file() or path.is_symlink() or path.stat().st_size > MAX_BYTES:
-            return findings
+        if path.is_symlink():
+            return findings, "symlink"
+        if not path.is_file():
+            return findings, "missing"
+        if path.stat().st_size > HARD_CAP_BYTES:
+            return findings, "over-cap"
         data = path.read_bytes()
     except OSError:
-        return findings
-    if b"\0" in data[:8192]:
-        return findings
+        return findings, "unreadable"
+    if b"\0" in data[:BINARY_PROBE]:
+        return findings, "binary"
     findings += scan_text(rel, data.decode("utf-8", errors="replace"), cfg, profile)
-    return findings
+    return findings, None
 
 
 def git_tracked(root: Path, git_dir: str | None, untracked: bool = False) -> list[str]:
@@ -385,12 +439,21 @@ def collect(root: Path, args_paths: list[str], cfg: Config, git_dir: str | None,
     return sorted({n.replace(os.sep, "/") for n in names if not cfg.ignored(n.replace(os.sep, "/"))})
 
 
-def run(root: Path, paths: list[str], cfg: Config, profile: str, git_dir: str | None, untracked: bool = False) -> tuple[list[Finding], int]:
+def run(root: Path, paths: list[str], cfg: Config, profile: str, git_dir: str | None,
+        untracked: bool = False) -> tuple[list[Finding], int, dict[str, list[str]]]:
+    """Return (findings, number_of_files_scanned, {skip_category: [paths]})."""
     rels = collect(root, paths, cfg, git_dir, untracked)
     findings: list[Finding] = []
+    skipped: dict[str, list[str]] = {}
+    scanned = 0
     for rel in rels:
-        findings += scan_file(root, rel, cfg, profile)
-    return findings, len(rels)
+        got, skip = scan_file(root, rel, cfg, profile)
+        findings += got
+        if skip is None:
+            scanned += 1
+        else:
+            skipped.setdefault(skip, []).append(rel)
+    return findings, scanned, skipped
 
 
 SOURCES = (  # (name, CLI dest, environment variable, git config key)
@@ -424,6 +487,7 @@ def resolve_source(root: Path, flag: str | None, env_var: str, git_key: str) -> 
 
 
 def main(argv: list[str] | None = None) -> int:
+    global HARD_CAP_BYTES
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("paths", nargs="*", help="files/directories to scan (default: git-tracked files)")
     ap.add_argument("--root", default=".", help="repository root (default: current directory)")
@@ -443,6 +507,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--no-private-markers", action="store_true", help="ignore every private-marker source")
     ap.add_argument("--include-untracked", action="store_true",
                     help="with no paths: also scan untracked, non-ignored files (pre-commit use)")
+    ap.add_argument("--max-mb", type=float, default=HARD_CAP_BYTES / (1024 * 1024),
+                    help="hard cap per file in MiB (default %(default)g); larger files are not scanned and are counted as over-cap")
+    ap.add_argument("--fail-on-skipped", nargs="?", const="all", default=None, metavar="CATEGORIES",
+                    help="exit 1 if any file's content was not scanned; optionally limit to a comma list of "
+                    "categories (" + ", ".join(SKIP_CATEGORIES) + "). Default: off")
+    ap.add_argument("--list-skipped", action="store_true", help="also print the paths of files whose content was not scanned")
     ap.add_argument("--json", action="store_true", help="machine-readable output (still redacted)")
     args = ap.parse_args(argv)
 
@@ -482,19 +552,38 @@ def main(argv: list[str] | None = None) -> int:
                 notes.append("private-marker checks SKIPPED (configured file(s) not found); only the secret rules ran")
             else:
                 notes.append("private-marker checks SKIPPED (not configured); only the secret rules ran")
-        findings, n = run(root, args.paths, cfg, args.profile, args.git_dir, args.include_untracked)
+        HARD_CAP_BYTES = int(args.max_mb * 1024 * 1024)
+        fail_cats: set[str] = set()
+        if args.fail_on_skipped is not None:
+            fail_cats = set(SKIP_CATEGORIES) if args.fail_on_skipped == "all" else \
+                {c.strip() for c in args.fail_on_skipped.split(",") if c.strip()}
+            unknown = fail_cats - set(SKIP_CATEGORIES)
+            if unknown:
+                raise SystemExit("scan-secrets: unknown --fail-on-skipped categories: " + ", ".join(sorted(unknown)))
+        findings, n, skipped = run(root, args.paths, cfg, args.profile, args.git_dir, args.include_untracked)
     except SystemExit as exc:
         print(exc, file=sys.stderr)
         return 2
+    n_skipped = sum(len(v) for v in skipped.values())
+    skipped_failure = any(skipped.get(c) for c in fail_cats)
     if args.json:
-        print(json.dumps({"scanned": n, "notes": notes, "findings": [f.as_dict() for f in findings]}, indent=2))
+        print(json.dumps({"scanned": n, "skipped": {c: len(v) for c, v in skipped.items()}, "notes": notes,
+                          "findings": [f.as_dict() for f in findings]}, indent=2))
     else:
         for f in findings:
             print(f.text(), file=sys.stderr)
         for note in notes:
             print(f"scan-secrets: {note}")
-        print(f"scan-secrets: scanned {n} file(s), {len(findings)} finding(s), profile={args.profile}")
-    return 1 if findings else 0
+        detail = ", ".join(f"{c}: {len(skipped[c])}" for c in SKIP_CATEGORIES if c in skipped)
+        skipped_text = f"skipped {n_skipped} ({detail})" if n_skipped else "skipped 0"
+        print(f"scan-secrets: scanned {n} file(s), {skipped_text}, {len(findings)} finding(s), profile={args.profile}")
+        if args.list_skipped:
+            for c in SKIP_CATEGORIES:
+                for rel in skipped.get(c, []):
+                    print(f"scan-secrets: not scanned ({c}): {rel}", file=sys.stderr)
+        if skipped_failure:
+            print("scan-secrets: failing because content was not scanned (--fail-on-skipped)", file=sys.stderr)
+    return 1 if findings or skipped_failure else 0
 
 
 if __name__ == "__main__":

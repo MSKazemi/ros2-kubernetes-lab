@@ -53,7 +53,7 @@ python3 scripts/ci/scan-secrets.py --profile private        # secret rules only 
 python3 scripts/ci/scan-secrets.py --git-dir <other-gitdir>  # list files from another git directory
 ```
 
-Exit status: `0` clean, `1` findings, `2` usage or configuration error.
+Exit status: `0` clean, `1` findings (or skipped files with `--fail-on-skipped`), `2` usage or configuration error.
 
 **Findings never contain the matched text.** Each line is
 `path:line: rule-id: description [value redacted, N chars]`. Private denylist terms are
@@ -96,7 +96,22 @@ file(s) not found)`. A skipped run never claims the checks ran. `--no-private-ma
 
 Suppress one line with the comment `scan-secrets: ignore` on that line, or add an
 `allow` entry (`{"path": "glob", "rule": "rule-id or *", "reason": "..."}`) to the config.
-Binary files, symlinks and files over 1 MB are skipped.
+### Coverage: what was and was not scanned
+
+Text files up to a hard cap (25 MiB, change with `--max-mb`) are scanned in windows of about
+1 MiB that overlap by 8 KiB, so a token that straddles a window cut is still found (a token
+longer than the overlap could be missed; real credentials are far shorter). Windows end at a
+newline when possible, so normal lines are never split. Line numbers stay exact.
+
+Content that is **not** scanned is never dropped silently. The status line counts it by category:
+
+    scan-secrets: scanned 376 file(s), skipped 27 (binary: 27), 0 finding(s), profile=public
+
+Categories: `binary` (a NUL byte in the first 8 KiB), `over-cap`, `unreadable`, `symlink`,
+`missing` (listed by git but absent on disk). File-name rules still apply to skipped files.
+`--list-skipped` prints their paths. `--fail-on-skipped` (default off) exits 1 when anything was
+skipped; give a comma list (`--fail-on-skipped=over-cap,unreadable`) to fail only for those
+categories, which is the useful form here because tracked images and PDFs are legitimately binary.
 
 This is a pattern scanner. It finds common, recognisable credential shapes; it does not
 prove a repository is free of secrets, and it does not replace rotating a credential that
@@ -114,6 +129,13 @@ python3 scripts/ci/repo_guard.py apply --dry-run             # show what would c
 python3 scripts/ci/repo_guard.py apply                       # rewrite .github/workflows/* in place (idempotent)
 python3 scripts/ci/repo_guard.py apply --repo OWNER/NAME     # a different canonical repository
 ```
+
+`check` and `apply` parse each condition (`&&`, `||`, `!`, comparisons, parentheses, string
+literals, optional `${{ }}`) and accept a job only if the guard is a top-level AND-conjunct of the
+**whole** condition. `g`, `g && (a)`, `g && a && b`, `(g) && a` and `g && (a || b)` pass.
+`g && a || b` does not, because `&&` binds tighter than `||` and that means `(g && a) || b`,
+which runs in any repository; `a || g`, `!g && a`, `g != 'x'` and a guard text inside a string
+literal fail too, and so does anything the parser cannot read.
 
 `apply` edits text, so comments, SHA pins and ordering are kept. It refuses (exit 2) to
 touch a job whose `if:` is a block scalar, quoted, multi-line or carries a trailing
