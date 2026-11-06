@@ -1,0 +1,480 @@
+"""Tests for scripts/ci/scan-secrets.py.
+
+All "secrets" below are SYNTHETIC and assembled at runtime from fragments so that
+this file never contains a complete token-shaped string (it must pass its own scan).
+stdlib unittest, offline. Run:
+    python3 -m unittest discover -s tests -p 'test_scan_secrets.py'
+"""
+
+from __future__ import annotations
+
+import importlib.util
+import io
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+import unittest
+from contextlib import redirect_stderr, redirect_stdout
+from pathlib import Path
+from unittest import mock
+
+REPO = Path(__file__).resolve().parents[1]
+_SPEC = importlib.util.spec_from_file_location("scan_secrets", REPO / "scripts" / "ci" / "scan-secrets.py")
+ss = importlib.util.module_from_spec(_SPEC)
+sys.modules["scan_secrets"] = ss
+_SPEC.loader.exec_module(ss)  # type: ignore[union-attr]
+
+# ---- synthetic material (fragments joined at runtime) ----
+RAND36 = "aB3dE5gH7jK9mN1pQ3sT5vX7zC9fL2hR4tW6"          # 36 mixed chars
+GH_TOKEN = "ghp" + "_" + RAND36
+GH_PAT = "github_pat" + "_" + "11ABCDEFG0" + "abcdefghijKLMNOPQR" + "stuvwxYZ01"
+AWS_ID = "AKIA" + "QWERTYUIOPASDFGH"                     # 4 + 16
+AWS_SECRET_VALUE = "wJalrXUtnFEMI" + "K7MDENGbPxRfiCYzq3H5vN9aB"  # 13 + 24 + ... = 40 below
+SLACK = "xox" + "b-" + "1234567890-abcdefghijklmnop"
+HF = "hf" + "_" + "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789"
+PEM_HEADER = "-----" + "BEGIN RSA PRIVATE" + " KEY-----"
+JWT = "eyJ" + "hbGciOiJSUzI1NiJ9" + "." + "eyJ" + "pc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50In0" + "." + "Xy7Zq1Pabc_DEFghiJKLmnOP"
+JOIN = "abcdef" + "." + "0123456789abcdef"
+CA_HASH = "sha256:" + "a1b2c3d4" * 8
+NO_GROUP_SECRET = "Zx9Qw3Er7Ty1" + "Ui5Op8As2Df6" + "Gh4Jk0Lm"   # 32 mixed chars
+
+
+def scan(text: str, rel: str = "docs/x.md", cfg: "ss.Config | None" = None, profile: str = "public"):
+    return ss.scan_text(rel, text, cfg or ss.Config({}), profile)
+
+
+def rules(findings) -> set[str]:
+    return {f.rule for f in findings}
+
+
+class DetectionTests(unittest.TestCase):
+    def test_true_positives(self):
+        cases = {
+            "private-key-block": PEM_HEADER,
+            "aws-access-key-id": f"id = {AWS_ID}",
+            "aws-secret-access-key": "aws_secret_access_key = " + ("A1b2C3d4E5" * 4),
+            "github-token": f"token {GH_TOKEN}",
+            "slack-token": f"SLACK={SLACK}",
+            "slack-webhook": "https://hooks" + ".slack.com/services/T01ABCDEF/B02GHIJKL/" + "a1b2c3d4e5f6g7h8i9j0k1l2",
+            "huggingface-token": f"HF={HF}",
+            "jwt": f"bearer {JWT}",
+            "kubeadm-join-token": f"kubeadm join 10.0.0.1:6443 --token {JOIN}",
+            "kubeadm-ca-hash": f"--discovery-token-ca-cert-hash {CA_HASH}",
+            "kubeconfig-client-key": "    client-key-data: " + ("LS0tLS1CRUdJTiBSU0Eg" * 3),
+            "secret-assignment": f"API_KEY={NO_GROUP_SECRET}",
+        }
+        for rule, line in cases.items():
+            with self.subTest(rule=rule):
+                self.assertIn(rule, rules(scan(line)), line[:20])
+        self.assertIn("github-token", rules(scan(f"x {GH_PAT} y")))
+
+    def test_forbidden_file_names(self):
+        cfg = ss.Config({})
+        for rel in (".env", ".env.production", "deploy/server.pem", "id_rsa", "kubeconfig", "join-command.sh", "a/b/admin.conf"):
+            with self.subTest(rel=rel):
+                self.assertIn("forbidden-filename", rules(ss.scan_path_name(rel, cfg, "public")))
+
+    def test_whole_kubeconfig_file(self):
+        text = "apiVersion: v1\nkind: Config\nclusters:\n- name: c\nusers:\n- name: u\n  user:\n    token: short\n"
+        self.assertIn("kubeconfig-file", rules(scan(text, "kc.yaml")))
+
+
+class FalsePositiveTests(unittest.TestCase):
+    def assertClean(self, text: str, rel: str = "docs/x.md"):
+        self.assertEqual(scan(text, rel), [], text)
+
+    def test_placeholders_and_references(self):
+        for line in (
+            "password: ${{ secrets.DOCKER_PASSWORD }}",
+            "username: ${{ secrets.DOCKER_USERNAME }}",
+            "export API_KEY=<your-api-key-goes-here>",
+            "DB_PASSWORD=changeme-changeme-changeme",
+            "token: $(cat /var/run/secrets/token-file-1234567890)",
+            "api_key = os.environ['API_KEY_FROM_ENVIRONMENT']",
+            "SECRET_TOKEN=${SECRET_TOKEN_FROM_VAULT_ENTRY}",
+            "AWS_SECRET_ACCESS_KEY=your-secret-access-key-goes-here-1234567",
+        ):
+            with self.subTest(line=line):
+                self.assertClean(line)
+
+    def test_documented_example_keys(self):
+        self.assertClean("AWS example: AKIAIOSFODNN7" + "EXAMPLE")
+
+    def test_key_names_that_only_contain_the_word(self):
+        for line in (
+            "TOKEN_FILE=/home/vagrant/dashboard-token",
+            'SECRET_MARKER = "DOCTOR-TEST-SECRET-MARKER-7c1e"',
+            'secretFieldSelector: "type!=kubernetes.io/dockercfg,type!=x"',
+            "secretName: grafana-admin-credentials-store",
+        ):
+            with self.subTest(line=line):
+                self.assertClean(line)
+
+    def test_low_entropy_and_prose(self):
+        self.assertClean("password: aaaaaaaaaaaaaaaaaaaaaaaa")
+        self.assertClean("The token is checked before every request, so tokens expire quickly.")
+        self.assertClean("hf_model_name is a variable, hf_ is only a prefix here")
+        self.assertClean("uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683")
+        self.assertClean("sha256: " + "0123456789abcdef" * 4)
+
+    def test_env_example_files_are_allowed(self):
+        cfg = ss.Config({})
+        for rel in (".env.example", ".env.sample", ".env.template"):
+            self.assertEqual(ss.scan_path_name(rel, cfg, "public"), [], rel)
+
+    def test_public_key_files_and_pub_not_flagged(self):
+        self.assertEqual(ss.scan_path_name("keys/id_rsa.pub", ss.Config({}), "public"), [])
+
+    def test_inline_ignore_marker(self):
+        self.assertClean(f"id = {AWS_ID}  # scan-secrets: ignore")
+
+
+class RedactionTests(unittest.TestCase):
+    def test_value_never_printed(self):
+        secrets = [GH_TOKEN, AWS_ID, SLACK, HF, JWT, JOIN, NO_GROUP_SECRET]
+        text = "\n".join(f"v{i} = {s}" for i, s in enumerate(secrets))
+        with tempfile.TemporaryDirectory(prefix="ss-test-") as d:
+            (Path(d) / "a.txt").write_text(text, encoding="utf-8")
+            out, err = io.StringIO(), io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                code = ss.main(["--root", d, "--no-config", d])
+            blob = out.getvalue() + err.getvalue()
+            self.assertEqual(code, 1)
+            for s in secrets:
+                self.assertNotIn(s, blob)
+                self.assertNotIn(s[:12], blob)
+            with redirect_stdout(out), redirect_stderr(err):
+                ss.main(["--root", d, "--no-config", "--json", d])
+            for s in secrets:
+                self.assertNotIn(s, out.getvalue())
+
+    def test_private_term_not_printed(self):
+        cfg = ss.Config({"denylist_terms": [{"id": "t1", "term": "acmecorp-codename", "paths": ["**"]}]})
+        found = scan("we talk to AcmeCorp-Codename about it", cfg=cfg)
+        self.assertEqual(rules(found), {"t1"})
+        self.assertNotIn("acmecorp", found[0].text().lower())
+
+
+class ConfigAndGlobTests(unittest.TestCase):
+    def test_glob_semantics(self):
+        g = ss.glob_to_regex
+        self.assertTrue(g("alphadir/**").match("alphadir/a/b.md"))
+        self.assertFalse(g("alphadir/**").match("docs/alphadir/a.md"))  # anchored (has a slash)
+        self.assertTrue(g("*BETAWORD*").match("x/y/MY-BETAWORD-2026.md"))  # basename, any depth
+        self.assertTrue(g("/README.md").match("README.md"))
+        self.assertFalse(g("/README.md").match("alphadir/README.md"))
+        self.assertTrue(g("**/__pycache__/**").match("a/b/__pycache__/c.pyc"))
+        self.assertFalse(g("docs/*.md").match("docs/a/b.md"))
+
+    def test_denylist_paths_only_in_public_profile(self):
+        cfg = ss.Config({"denylist_paths": [{"glob": "alphadir/**"}]})
+        self.assertEqual(rules(ss.scan_path_name("alphadir/a.md", cfg, "public")), {"private-marker-denylist"})
+        self.assertEqual(ss.scan_path_name("alphadir/a.md", cfg, "private"), [])
+        self.assertEqual(ss.scan_path_name("docs/alphadir-notes.md", cfg, "public"), [])
+
+    def test_term_scope_whole_word_and_disabled(self):
+        base = {"id": "p", "term": "gammaword(s)?", "regex": True, "paths": ["docs/**"]}
+        cfg = ss.Config({"denylist_terms": [base]})
+        self.assertEqual(rules(scan("Our gammawords are fine", "docs/a.md", cfg)), {"p"})
+        self.assertEqual(scan("Our gammaword are fine", "src/a.py", cfg), [])        # out of scope
+        self.assertEqual(scan("a gammawordish approach", "docs/a.md", cfg), [])      # whole word only
+        self.assertEqual(scan("Our gammaword", "docs/a.md", ss.Config({"denylist_terms": [dict(base, enabled=False)]})), [])
+        self.assertEqual(scan("Our gammaword", "docs/a.md", cfg, profile="private"), [])
+
+    def test_allow_entry_by_rule_and_wildcard(self):
+        text = f"id = {AWS_ID}"
+        self.assertEqual(scan(text, "tests/f.py", ss.Config({"allow": [{"path": "tests/**", "rule": "aws-access-key-id"}]})), [])
+        self.assertEqual(scan(text, "tests/f.py", ss.Config({"allow": [{"path": "tests/**", "rule": "*"}]})), [])
+        self.assertTrue(scan(text, "src/f.py", ss.Config({"allow": [{"path": "tests/**", "rule": "*"}]})))
+
+    def test_unknown_config_key_rejected(self):
+        with self.assertRaises(ValueError):
+            ss.Config({"denylist": []})
+
+    def test_shipped_config_loads_and_terms_compile(self):
+        cfg = ss.Config.load(ss.DEFAULT_CONFIG)
+        self.assertTrue(cfg.ignore)
+
+    def test_shipped_config_is_neutral(self):
+        """The tracked config carries no private directory or word; those load at run time."""
+        cfg = ss.Config.load(ss.DEFAULT_CONFIG)
+        self.assertEqual((cfg.deny_paths, cfg.terms), ([], []))
+
+    def test_tracked_ci_files_name_no_private_markers(self):
+        # fragments are assembled so this test file does not itself contain the words
+        fragments = ("pros" + "pect", "partner" + "ship", "out" + "reach")
+        for f in ("scan-secrets.py", "scan-secrets.config.json", "README.md", "repo_guard.py", "run-offline-checks.sh"):
+            text = (REPO / "scripts" / "ci" / f).read_text(encoding="utf-8").lower()
+            for fragment in fragments:
+                self.assertNotIn(fragment, text, f"{f}: {fragment}")
+
+
+class PrivateDenyFileTests(unittest.TestCase):
+    """Private patterns/words come from untracked local files whose location is configured at run time."""
+
+    DENY = "# comment\n\nalphadir/\n*BETAWORD*\nsecretsdir\nexperiments/*\nresults/\n!ignored-negation\n*.pem\n"
+    CARVE = "# carve-outs\nexperiments/pub-one/\nsite/results/\n"
+
+    def setUp(self):
+        self.dir = Path(tempfile.mkdtemp(prefix="ss-repo-"))      # the scanned "repository"
+        self.cfgdir = Path(tempfile.mkdtemp(prefix="localcfg-"))  # the untracked local files, outside it
+        self.addCleanup(shutil.rmtree, self.dir, ignore_errors=True)
+        self.addCleanup(shutil.rmtree, self.cfgdir, ignore_errors=True)
+        (self.cfgdir / "deny.txt").write_text(self.DENY, encoding="utf-8")
+        (self.cfgdir / "carve.txt").write_text(self.CARVE, encoding="utf-8")
+        env = {k: v for k, v in os.environ.items() if not k.startswith("RRL_")}
+        patcher = mock.patch.dict(os.environ, env, clear=True)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def cfg(self) -> "ss.Config":
+        cfg = ss.Config({})
+        self.assertTrue(cfg.load_private_deny(self.cfgdir / "deny.txt", self.cfgdir / "carve.txt"))
+        return cfg
+
+    def test_patterns_match_at_any_depth_and_by_name(self):
+        cfg = self.cfg()
+        for rel in ("alphadir/a.md", "docs/alphadir/a.md", "x/y/MY-BETAWORD-2026.md", "secretsdir/f", "a/secretsdir/f",
+                    "experiments/private-two/a.py", "src/results/out.json"):
+            self.assertTrue(cfg.path_denied(rel), rel)
+        for rel in ("docs/a.md", "docs/alphadir-notes.md", "experiments", "src/resultsfile.py", "ignored-negation/x"):
+            self.assertFalse(cfg.path_denied(rel), rel)
+
+    def test_carveout_reincludes_dir_but_nested_denies_still_apply(self):
+        cfg = self.cfg()
+        self.assertFalse(cfg.path_denied("experiments/pub-one/run.py"))
+        self.assertFalse(cfg.path_denied("experiments/pub-one/tests/t.py"))
+        self.assertTrue(cfg.path_denied("experiments/pub-one/results/out.json"))   # nested deny below the carve-out
+        self.assertTrue(cfg.path_denied("experiments/pub-one/key.pem"))
+        self.assertTrue(cfg.path_denied("experiments/pub-two/run.py"))
+
+    def test_absent_file_is_a_clean_skip(self):
+        cfg = ss.Config({})
+        self.assertFalse(cfg.load_private_deny(self.cfgdir / "nope.deny"))
+        self.assertFalse(cfg.private_deny_loaded)
+        self.assertFalse(cfg.path_denied("alphadir/a.md"))
+
+    def _main(self, *args):
+        out, err = io.StringIO(), io.StringIO()
+        with redirect_stdout(out), redirect_stderr(err):
+            code = ss.main(["--root", str(self.dir), "--no-config", *args])
+        return code, out.getvalue() + err.getvalue()
+
+    def _bad_file(self):
+        (self.dir / "alphadir").mkdir(exist_ok=True)
+        (self.dir / "alphadir" / "a.md").write_text("fine\n", encoding="utf-8")
+        (self.dir / "ok.md").write_text("fine\n", encoding="utf-8")
+
+    def test_nothing_configured_prints_exactly_one_skipped_line_and_passes(self):
+        self._bad_file()
+        code, out = self._main(str(self.dir))
+        self.assertEqual(code, 0, out)
+        self.assertEqual([l for l in out.splitlines() if "private-marker checks" in l],
+                         ["scan-secrets: private-marker checks SKIPPED (not configured); only the secret rules ran"])
+        self.assertNotIn("RAN", out)
+
+    def test_flag_configures_and_patterns_are_never_printed(self):
+        self._bad_file()
+        code, out = self._main("--private-deny", str(self.cfgdir / "deny.txt"), str(self.dir))
+        self.assertEqual(code, 1)
+        self.assertIn("alphadir/a.md: private-marker-denylist", out)
+        self.assertIn("private-marker checks RAN using 1 local source(s)", out)
+        for secret in ("BETAWORD", "secretsdir", "deny.txt"):
+            self.assertNotIn(secret, out)
+
+    def test_environment_variable_configures(self):
+        self._bad_file()
+        os.environ["RRL_PRIVATE_DENY"] = str(self.cfgdir / "deny.txt")
+        os.environ["RRL_PRIVATE_CARVEOUT"] = str(self.cfgdir / "carve.txt")
+        code, out = self._main(str(self.dir))
+        self.assertEqual(code, 1)
+        self.assertIn("alphadir/a.md: private-marker-denylist", out)
+        self.assertIn("RAN using 1 local source(s)", out)
+
+    def test_flag_beats_environment(self):
+        self._bad_file()
+        other = self.cfgdir / "other.txt"
+        other.write_text("nothing-matches-this\n", encoding="utf-8")
+        os.environ["RRL_PRIVATE_DENY"] = str(self.cfgdir / "deny.txt")
+        self.assertEqual(self._main("--private-deny", str(other), str(self.dir))[0], 0)
+
+    @unittest.skipUnless(shutil.which("git"), "git not available")
+    def test_repo_local_git_config_with_a_relative_path(self):
+        subprocess.run(["git", "init", "-q", str(self.dir)], check=True, capture_output=True)
+        (self.dir / "localcfg").mkdir()
+        shutil.copy2(self.cfgdir / "deny.txt", self.dir / "localcfg" / "deny.txt")
+        subprocess.run(["git", "-C", str(self.dir), "config", "--local", "rrl.privateDeny", "localcfg/deny.txt"],
+                       check=True, capture_output=True)
+        self._bad_file()
+        code, out = self._main(str(self.dir / "alphadir"), str(self.dir / "ok.md"))
+        self.assertEqual(code, 1, out)
+        self.assertIn("alphadir/a.md: private-marker-denylist", out)
+        self.assertIn("RAN using 1 local source(s)", out)
+        os.environ["RRL_PRIVATE_DENY"] = str(self.cfgdir / "nope.txt")       # environment beats git config
+        code, out = self._main(str(self.dir / "alphadir"))
+        self.assertEqual(code, 0)
+        self.assertIn("SKIPPED (configured file(s) not found)", out)
+
+    def test_configured_but_missing_via_environment_is_a_skip_not_a_claim(self):
+        self._bad_file()
+        os.environ["RRL_PRIVATE_DENY"] = str(self.cfgdir / "nope.txt")
+        code, out = self._main(str(self.dir))
+        self.assertEqual(code, 0)
+        self.assertIn("private-marker checks SKIPPED (configured file(s) not found)", out)
+        self.assertNotIn("RAN", out)
+
+    def test_explicit_missing_flag_is_an_error_and_private_profile_and_disable_switch(self):
+        self.assertEqual(self._main("--private-deny", str(self.cfgdir / "nope"), str(self.dir))[0], 2)
+        self._bad_file()
+        self.assertEqual(self._main("--private-deny", str(self.cfgdir / "deny.txt"), "--profile", "private", str(self.dir))[0], 0)
+        code, out = self._main("--private-deny", str(self.cfgdir / "deny.txt"), "--no-private-markers", str(self.dir))
+        self.assertEqual(code, 0)
+        self.assertIn("SKIPPED (disabled", out)
+
+    def test_markers_file_adds_whole_word_terms_and_is_never_echoed(self):
+        (self.dir / "docs").mkdir()
+        (self.dir / "docs" / "a.md").write_text("see Epsilonword and epsilonwordish\n", encoding="utf-8")
+        markers = self.cfgdir / "markers.txt"
+        self.assertEqual(self._main(str(self.dir))[0], 0)
+        markers.write_text("# words\nepsilonword\n\n", encoding="utf-8")
+        os.environ["RRL_PRIVATE_MARKERS"] = str(markers)
+        code, out = self._main(str(self.dir))
+        self.assertEqual(code, 1)
+        self.assertIn("docs/a.md:1: private-marker-term", out)
+        self.assertNotIn("epsilonword", out.lower())
+        self.assertEqual(self._main("--profile", "private", str(self.dir))[0], 0)
+
+    def test_local_config_adds_terms_when_present(self):
+        (self.dir / "docs").mkdir()
+        (self.dir / "docs" / "a.md").write_text("mentions deltaword here\n", encoding="utf-8")
+        self.assertEqual(self._main(str(self.dir))[0], 0)
+        local = self.cfgdir / "local.json"
+        local.write_text(json.dumps({"denylist_terms": [{"id": "local-term", "term": "deltaword", "paths": ["docs/**"]}]}),
+                         encoding="utf-8")
+        os.environ["RRL_SCAN_LOCAL_CONFIG"] = str(local)
+        code, out = self._main(str(self.dir))
+        self.assertEqual(code, 1)
+        self.assertIn("docs/a.md:1: local-term", out)
+        self.assertNotIn("deltaword", out)
+
+
+class TrackedFilesNamePrivateSetupTests(unittest.TestCase):
+    NEEDLES = (".dual" + "git", ".git-" + "private")  # assembled so this file does not contain them
+
+    def test_no_tracked_ci_or_test_file_names_the_private_setup(self):
+        for base in (REPO / "scripts" / "ci", REPO / "tests"):
+            for path in sorted(base.rglob("*")):
+                if not path.is_file() or "__pycache__" in path.parts or path.suffix == ".pyc":
+                    continue
+                text = path.read_text(encoding="utf-8", errors="replace")
+                for needle in self.NEEDLES:
+                    self.assertNotIn(needle, text, f"{path.relative_to(REPO)} contains a private-setup name")
+
+    def test_runner_prunes_other_git_dirs_but_not_dot_github(self):
+        text = (REPO / "scripts" / "ci" / "run-offline-checks.sh").read_text(encoding="utf-8")
+        self.assertIn("-name '.git-*'", text)
+        self.assertNotIn("-name .github", text)
+        self.assertNotIn("'.git*'", text)
+
+    def test_ignore_glob_matches_other_git_dirs_not_dot_github(self):
+        cfg = ss.Config.load(ss.DEFAULT_CONFIG)
+        self.assertTrue(cfg.ignored(".git-alt/objects/x"))
+        self.assertTrue(cfg.ignored(".git/config"))
+        self.assertFalse(cfg.ignored(".github/workflows/ci.yml"))
+        self.assertFalse(cfg.ignored(".gitattributes"))
+        self.assertFalse(cfg.ignored(".gitignore"))
+
+
+class SelectionAndCliTests(unittest.TestCase):
+    def setUp(self):
+        env = {k: v for k, v in os.environ.items() if not k.startswith("RRL_")}
+        patcher = mock.patch.dict(os.environ, env, clear=True)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.dir = Path(tempfile.mkdtemp(prefix="ss-test-"))
+        self.addCleanup(shutil.rmtree, self.dir, ignore_errors=True)
+
+    def w(self, rel: str, text: str | bytes) -> Path:
+        p = self.dir / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        if isinstance(text, bytes):
+            p.write_bytes(text)
+        else:
+            p.write_text(text, encoding="utf-8")
+        return p
+
+    def cli(self, *args: str) -> tuple[int, str]:
+        out, err = io.StringIO(), io.StringIO()
+        with redirect_stdout(out), redirect_stderr(err):
+            code = ss.main(["--root", str(self.dir), *args])
+        return code, out.getvalue() + err.getvalue()
+
+    def test_clean_tree_exit_zero_and_finding_exit_one(self):
+        self.w("a/ok.md", "nothing to see\n")
+        self.assertEqual(self.cli("--no-config", str(self.dir))[0], 0)
+        self.w("a/bad.txt", f"x {GH_TOKEN}\n")
+        code, out = self.cli("--no-config", str(self.dir))
+        self.assertEqual(code, 1)
+        self.assertIn("a/bad.txt:1: github-token", out)
+
+    def test_only_given_paths_are_scanned(self):
+        self.w("bad.txt", f"x {GH_TOKEN}\n")
+        self.w("ok/clean.txt", "fine\n")
+        code, out = self.cli("--no-config", str(self.dir / "ok"))
+        self.assertEqual(code, 0)
+        self.assertIn("scanned 1 file", out)
+
+    def test_directory_walk_skips_other_git_dirs_but_scans_dot_github(self):
+        self.w(".git-alt/a.txt", f"x {GH_TOKEN}\n")
+        self.w(".github/b.txt", f"x {HF}\n")
+        code, out = self.cli("--no-config", "--no-private-markers", str(self.dir))
+        self.assertEqual(code, 1)
+        self.assertIn(".github/b.txt:1: huggingface-token", out)
+        self.assertNotIn(".git-alt", out)
+
+    def test_binary_and_large_files_skipped(self):
+        self.w("bin.dat", b"\0\1\2" + GH_TOKEN.encode())
+        self.w("big.txt", (GH_TOKEN + "\n").encode() + b"x" * (ss.MAX_BYTES + 10))
+        self.assertEqual(self.cli("--no-config", str(self.dir))[0], 0)
+
+    def test_missing_path_and_missing_config_exit_two(self):
+        self.assertEqual(self.cli("--no-config", str(self.dir / "nope"))[0], 2)
+        self.assertEqual(self.cli("--config", str(self.dir / "nope.json"), str(self.dir))[0], 2)
+
+    def test_bad_config_exit_two(self):
+        cfg = self.w("c.json", "{not json")
+        with self.assertRaises(SystemExit):
+            ss.Config.load(cfg)
+        self.assertEqual(self.cli("--config", str(cfg), str(self.dir))[0], 2)
+
+    def test_ignore_paths_from_config(self):
+        self.w("vendor/x.txt", f"x {GH_TOKEN}\n")
+        cfg = self.w("c.json", json.dumps({"ignore_paths": ["vendor/**"]}))
+        self.assertEqual(self.cli("--config", str(cfg), str(self.dir))[0], 0)
+
+    @unittest.skipUnless(shutil.which("git"), "git not available")
+    def test_default_selection_is_git_tracked_files_only(self):
+        subprocess.run(["git", "init", "-q", str(self.dir)], check=True, capture_output=True)
+        self.w("tracked.txt", f"x {GH_TOKEN}\n")
+        self.w("untracked.txt", f"x {HF}\n")
+        subprocess.run(["git", "-C", str(self.dir), "add", "tracked.txt"], check=True, capture_output=True)
+        code, out = self.cli("--no-config")
+        self.assertEqual(code, 1)
+        self.assertIn("tracked.txt:1", out)
+        self.assertNotIn("untracked.txt", out)
+        code, out = self.cli("--no-config", "--include-untracked")
+        self.assertIn("untracked.txt:1", out)
+
+    def test_scanner_passes_its_own_source_and_tests(self):
+        buf = io.StringIO()
+        with redirect_stdout(buf), redirect_stderr(buf):
+            code = ss.main(["--root", str(REPO), "--no-config", "--no-private-markers", "scripts/ci", "tests/test_scan_secrets.py",
+                            "tests/test_repo_guard.py"])
+        self.assertEqual(code, 0, buf.getvalue())
+
+
+if __name__ == "__main__":
+    unittest.main()
