@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
 # Supported ROS 2 container baseline (not an upgrade of the legacy Vagrant cluster).
 # Official multi-platform Jazzy/Noble ROS base; this OCI index digest is immutable.
-# Ref: https://hub.docker.com/layers/library/ros/jazzy-ros-base-noble/images/sha256-f652c502c971653afc2ed9b9e5929643df644e6125b6ee68349408b6cc2f64cd
-FROM docker.io/library/ros:jazzy-ros-base-noble@sha256:2589a8fba5257307857890173c069852c2abf913a0be7970f172478baecb09e4
+# Ref: https://hub.docker.com/layers/library/ros/jazzy-ros-base-noble/images/sha256-c26c86a28e1addf9d10a81232869791974a3f7907943d5634742b58b2f26e1a3
+FROM docker.io/library/ros:jazzy-ros-base-noble@sha256:8eed0a4669bbf43ee331878a4c39bd8ebddea8e3312a58b4fae8edb14526b617
 
 LABEL org.opencontainers.image.source="https://github.com/MSKazemi/robo-resilience-lab" \
       org.opencontainers.image.description="ROS 2 Jazzy on Ubuntu 24.04: demo_nodes_cpp, stress-ng and opt-in ros2_pulse telemetry for educational experiments"
