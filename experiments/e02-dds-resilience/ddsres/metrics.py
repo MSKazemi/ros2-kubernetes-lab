@@ -5,11 +5,14 @@ Definitions (also in the README):
 * ``delivery_completeness`` = distinct sent seqs that were received at least once / distinct sent seqs.
 * ``loss_ratio`` = 1 - delivery_completeness.
 * ``duplicate_copies`` = received records beyond the first for a seq;
-  ``duplicate_ratio`` = duplicate_copies / received records (null if nothing was received).
+  ``duplicate_ratio`` = duplicate_copies / solicited_received, where solicited_received =
+  received records whose seq was sent (received_total minus unsolicited); null if that is 0.
 * ``reorder`` follows RFC 4737 (type-P-reordered): walking first deliveries in file
   (arrival) order with ``NextExp`` starting at the smallest sent seq, a delivery with
   ``seq >= NextExp`` sets ``NextExp = seq + 1``; otherwise it counts as reordered.
-* ``latency`` = first receive time of a seq - its send time, same clock domain only.
+* ``latency`` = first receive time of a seq - its send time, same clock domain only. If any sample
+  is negative (clock skew), percentiles are null, ``latency_diagnostics`` gives the counts and the
+  minimum, a warning is added, and every clock-independent metric is still produced.
   Percentiles use the nearest-rank method: the value at 1-based rank ``ceil(p/100 * n)``
   of the ascending samples (always an actual sample, no interpolation).
 * ``fault_windows`` pair ``<name>_begin`` / ``<name>_end`` markers. For each window:
@@ -151,16 +154,29 @@ def analyze(trace: Trace, on_mixed_clock: str = "error", require_latency: bool =
 
     latency: Optional[Dict[str, Any]] = None
     latency_reason: Optional[str] = None
+    latency_diag: Optional[Dict[str, Any]] = None
+    negative_found = False
     if mixed:
         latency_reason = "mixed_clock_domains"
     else:
-        samples = []
-        for seq, r in first_recv.items():
-            d = r.t_ns - sent[seq].t_ns
-            if d < 0:
-                raise TraceError(f"{trace.source}: seq {seq} received {-d} ns before it was sent (same clock domain)")
-            samples.append(d)
-        if len(samples) < 2:
+        samples = [r.t_ns - sent[seq].t_ns for seq, r in first_recv.items()]
+        negatives = [d for d in samples if d < 0]
+        if negatives:
+            # Same-domain labels do not guarantee synchronised clocks (wall/ros across nodes), so a
+            # negative sample is a clock-quality finding, not a reason to drop clock-independent metrics.
+            latency_diag = {"total_samples": len(samples), "negative_samples": len(negatives), "min_ns": min(samples)}
+            msg = (f"{len(negatives)} of {len(samples)} latency samples are negative (min {min(samples)} ns): "
+                   f"receive stamped before send within one clock domain, i.e. clock skew or unsynchronised clocks; "
+                   f"latency percentiles set to null")
+            if require_latency:
+                raise TraceError(f"{trace.source}: {msg}")
+            warnings.append(msg)
+            latency_reason = "negative_latency_samples"
+            samples = []
+            negative_found = True
+        if negative_found:
+            pass
+        elif len(samples) < 2:
             if require_latency:
                 raise InsufficientSamplesError(f"only {len(samples)} latency sample(s); need at least 2")
             latency_reason = f"insufficient_samples (n={len(samples)})"
@@ -202,6 +218,7 @@ def analyze(trace: Trace, on_mixed_clock: str = "error", require_latency: bool =
             "received_unique": received_unique,
             "lost": n_sent - received_unique,
             "unsolicited": unsolicited,
+            "solicited_received": solicited_total,
             "duplicate_copies": duplicate_copies,
         },
         "delivery_completeness": completeness,
@@ -214,6 +231,7 @@ def analyze(trace: Trace, on_mixed_clock: str = "error", require_latency: bool =
         },
         "latency": latency,
         "latency_unavailable_reason": latency_reason,
+        "latency_diagnostics": latency_diag,
         "fault_windows": faults,
         "resources": {"cpu_pct": _summary(cpu), "mem_bytes": _summary(mem)},
         "warnings": warnings,

@@ -130,9 +130,38 @@ class Basics(unittest.TestCase):
         self.assertIsNone(r["latency"])
         self.assertIn("n=1", r["latency_unavailable_reason"])
 
-    def test_negative_latency_same_clock_rejected(self):
+    def test_negative_latency_nulls_percentiles_but_keeps_other_metrics(self):
+        recs = [S(0, 100), R(0, 50), S(1, 200), R(1, 250), S(2, 300), R(2, 305), R(2, 310)]
+        r = run(recs)
+        self.assertIsNone(r["latency"])
+        self.assertEqual(r["latency_unavailable_reason"], "negative_latency_samples")
+        self.assertEqual(r["latency_diagnostics"], {"total_samples": 3, "negative_samples": 1, "min_ns": -50})
+        self.assertTrue(any("1 of 3 latency samples are negative (min -50 ns)" in w for w in r["warnings"]))
+        self.assertEqual(r["delivery_completeness"], 1.0)
+        self.assertEqual(r["counts"]["duplicate_copies"], 1)
+        self.assertEqual(r["reorder"]["count"], 0)
         with self.assertRaises(TraceError):
-            run([S(0, 100), R(0, 50), S(1, 200), R(1, 250)])
+            run(recs, require_latency=True)
+
+    def test_clean_latency_has_no_diagnostics(self):
+        self.assertIsNone(run([S(0, 0), R(0, 5), S(1, 1), R(1, 7)])["latency_diagnostics"])
+
+    def test_corrupt_timestamps_stay_strict(self):
+        for bad in (1.5, "7", float("nan")):
+            with self.assertRaises(TraceError):
+                parse_lines(build([S(0, 0), {"type": "recv", "seq": 0, "t_ns": bad}]))
+
+    def test_duplicate_ratio_denominator_is_solicited_received(self):
+        # 4 received records: seq0 twice, seq1 once, seq99 never sent.
+        r = run([S(0, 0), S(1, 1), R(0, 5), R(0, 6), R(1, 7), R(99, 8)])
+        self.assertEqual(r["counts"]["received_total"], 4)
+        self.assertEqual(r["counts"]["unsolicited"], 1)
+        self.assertEqual(r["counts"]["solicited_received"], 3)
+        self.assertEqual(r["counts"]["duplicate_copies"], 1)
+        self.assertAlmostEqual(r["duplicate_ratio"], 1 / 3)  # not 1/4
+
+    def test_only_unsolicited_receives_gives_null_ratio(self):
+        self.assertIsNone(run([S(0, 0), R(99, 5)])["duplicate_ratio"])
 
 
 class Faults(unittest.TestCase):
@@ -368,10 +397,10 @@ def sp(event, role, node, seq=None, ts=0, clock="wall", sent_ts=None, sent_clock
     }) + "\n"
 
 
-def sp_run(clock="wall", n=3, drop=(), lat=1000):
+def sp_run(clock="wall", n=3, drop=(), lat=1000, base=10_000):
     lines = [sp("start", "publisher", "pub", clock=clock), sp("start", "subscriber", "sub", clock=clock)]
     for i in range(n):
-        t = 10_000 + i * 100
+        t = base + i * 100
         lines.append(sp("send", "publisher", "pub", i, t, clock))
         if i not in drop:
             lines.append(sp("recv", "subscriber", "sub", i, t + lat, clock, t, clock))
@@ -447,6 +476,60 @@ class SeqProbeReader(unittest.TestCase):
         w = r["fault_windows"][0]
         self.assertTrue(w["recovered"])
         self.assertEqual(w["recovery_time_ns"], 10_410 - 10_350)  # first recv at/after end is seq 4
+
+    def test_wall_clock_skew_still_yields_clock_independent_metrics(self):
+        lines = sp_run(n=6, drop=(2, 3), lat=-50)  # subscriber clock behind the publisher's
+        markers = [json.dumps({"name": "restart_begin", "t_ns": 10_150, "clock": "wall"}) + "\n",
+                   json.dumps({"name": "restart_end", "t_ns": 10_300, "clock": "wall"}) + "\n"]
+        r = analyze(parse_seqprobe([("both", lines)], ("m", markers)))
+        self.assertIsNone(r["latency"])
+        self.assertEqual(r["latency_diagnostics"], {"total_samples": 4, "negative_samples": 4, "min_ns": -50})
+        self.assertEqual(r["counts"]["lost"], 2)
+        self.assertEqual(r["fault_windows"][0]["recovery_time_ns"], 50)  # seq 4 arrives at 10350
+
+    def test_cli_exits_zero_with_skewed_clocks(self):
+        import contextlib
+        import io
+        from ddsres.cli import main
+        with tempfile.TemporaryDirectory() as d:
+            p = os.path.join(d, "skew.jsonl")
+            with open(p, "w") as fh:
+                fh.writelines(sp_run(n=5, drop=(1,), lat=-100))
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = main(["analyze-seqprobe", p])
+        self.assertEqual(rc, 0)
+        out = json.loads(buf.getvalue())
+        self.assertIsNone(out["latency"])
+        self.assertEqual(out["counts"]["lost"], 1)
+
+    def test_corrupt_seqprobe_timestamps_stay_strict(self):
+        for bad in ("1.5", "\"7\"", "NaN"):
+            lines = sp_run()
+            i = next(k for k, l in enumerate(lines) if json.loads(l)["event"] == "recv")
+            lines[i] = lines[i].replace('"ts_ns": 11000', f'"ts_ns": {bad}')
+            self.assertIn(bad, lines[i])
+            with self.assertRaises(TraceError):
+                parse_seqprobe([("both", lines)])
+
+    def test_log_passed_twice_is_rejected_with_both_positions(self):
+        lines = sp_run()
+        for sources in ([("a.jsonl", lines), ("a.jsonl", lines)], [("a.jsonl", lines + lines)]):
+            with self.assertRaises(TraceError) as cm:
+                parse_seqprobe(sources)
+            msg = str(cm.exception)
+            self.assertNotIsInstance(cm.exception, NonMonotonicClockError)
+            self.assertIn("duplicate send for seq 0", msg)
+            self.assertIn("a.jsonl: line 3", msg)  # first seen
+            self.assertIn("first seen at", msg)
+
+    def test_two_concatenated_runs_same_run_id_rejected(self):
+        run1, run2 = sp_run(n=3), sp_run(n=3, base=50_000)
+        with self.assertRaises(TraceError) as cm:
+            parse_seqprobe([("run1.jsonl", run1), ("run2.jsonl", run2)])
+        self.assertIn("duplicate send for seq 0", str(cm.exception))
+        self.assertIn("run1.jsonl: line 3", str(cm.exception))
+        self.assertIn("run2.jsonl: line 3", str(cm.exception))
 
     def test_contract_with_real_seqprobe_writer(self):
         probe = os.path.join(HERE, "..", "..", "examples", "ros2-sequence-probe")

@@ -24,7 +24,7 @@ This directory contains the **measurement and analysis side** of a resilience ex
 | `ddsres/synth.py` | Seeded SYNTHETIC fixture generator |
 | `ddsres/checks.py` | Evaluates a cell's `synthetic_checks` |
 | `fixtures/` | 12 generated traces plus `MANIFEST.json` (sha256); every file is labelled SYNTHETIC |
-| `tests/test_e02.py` | 49 `unittest` tests, including negative cases |
+| `tests/test_e02.py` | unittest tests, including negative cases |
 | `run.py` | Entry point (`python3 experiments/e02-dds-resilience/run.py --help`) |
 
 Dependencies: Python 3 standard library plus PyYAML (matrix loading only). No network, no cluster, no root.
@@ -51,7 +51,7 @@ python3 -m unittest discover -s $R/tests -t $R   # tests
 |---|---|
 | `delivery_completeness` | distinct sent seqs received at least once / distinct sent seqs |
 | `loss_ratio` | 1 - completeness |
-| `duplicate_copies`, `duplicate_ratio` | received records beyond the first per seq; ratio over received records (null if none received) |
+| `duplicate_copies`, `duplicate_ratio` | received records beyond the first per seq; `duplicate_ratio` = copies / *solicited received records* (received records whose seq was sent, i.e. `received_total - unsolicited`; reported as `counts.solicited_received`); null if that is 0 |
 | `reorder` | RFC 4737 *NextExp* over first deliveries in arrival order; a delivery with `seq < NextExp` is reordered. Gaps from loss are not reordering |
 | `latency` p50/p95/p99 | first receive minus send, same clock domain only. **Nearest rank**: sorted samples, 1-based rank `ceil(p/100 * n)`, an actual sample, no interpolation. `n < 2` is an error in `nearest_rank`; `analyze` reports `latency: null` with a reason (or raises with `require_latency=True`) |
 | `fault_windows` | `<name>_begin` / `<name>_end` markers paired in order. `delivery_gap_ns` = first receive after begin minus last receive at or before begin. `recovery_time_ns` = first receive at or after end minus end; null without an end marker, `recovered: false` if nothing arrived. A buffered stale message arriving after end counts as resumed delivery |
@@ -67,8 +67,8 @@ Null means "not in the input"; nothing is defaulted or estimated.
 | truncated (no footer / count mismatch / cut last line / no probe `stop` event) | `TruncatedTraceError` |
 | timestamps going backwards within one stream | `NonMonotonicClockError` |
 | send/recv/marker in different clock domains | `ClockDomainError` (or latency and fault times null with `--mixed-clock null`) |
-| receive earlier than send in one domain | `TraceError` (clock skew or wrong log pair) |
-| duplicate send seq, unknown fields/schema, bad types | `TraceError` |
+| receive earlier than send in one domain (negative latency) | **not an error**: latency percentiles are `null`, `latency_unavailable_reason: negative_latency_samples`, `latency_diagnostics` = `{total_samples, negative_samples, min_ns}`, plus a warning; loss, duplicate, reorder and fault-window metrics are still produced and the command exits 0. `wall`/`ros` clocks on two nodes can legitimately skew. (`require_latency=True` raises instead.) |
+| duplicate send seq (native, or in probe logs: log passed twice / runs concatenated; message names both positions), unknown fields/schema, bad types, non-integer timestamps | `TraceError` |
 
 ## Trace formats
 

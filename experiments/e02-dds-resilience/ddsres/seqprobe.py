@@ -72,6 +72,7 @@ def parse_seqprobe(
     streams = set()
     pub_nodes, sub_nodes = set(), set()
     send_ts: Dict[int, Tuple[int, str]] = {}
+    send_where: Dict[int, str] = {}
     last_t: Dict[Any, int] = {}
     synthetic_flags = []
     recv_claims: List[Tuple[str, int, int, int, str]] = []
@@ -106,6 +107,11 @@ def parse_seqprobe(
             if (ev == "send") != (role == "publisher"):
                 raise TraceError(f"{where}: event {ev!r} is not valid for role {role!r}")
             dom = _domain(clock, node)
+            if ev == "send" and seq in send_where:
+                raise TraceError(
+                    f"{where}: duplicate send for seq {seq}; first seen at {send_where[seq]} "
+                    f"(log passed twice, or two runs/sessions concatenated?)"
+                )
             key = (ev, dom)
             if key in last_t and ts < last_t[key]:
                 from .trace import NonMonotonicClockError
@@ -115,6 +121,7 @@ def parse_seqprobe(
                 pub_nodes.add(node)
                 trace.sends.append(Event("send", seq, ts, dom))
                 send_ts[seq] = (ts, clock)
+                send_where[seq] = where
             else:
                 sub_nodes.add(node)
                 trace.recvs.append(Event("recv", seq, ts, dom))
