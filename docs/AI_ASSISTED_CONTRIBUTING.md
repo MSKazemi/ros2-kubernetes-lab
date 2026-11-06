@@ -33,7 +33,7 @@ git switch -c docs/issue-NNN-short-description
 git status --short
 ```
 
-Choose a branch name that matches **your** issue. The repository is now named `ros2-kubernetes-lab`; older links and clones may still use the previous name, `Vagrant-Kubernetes-ROS2-Deployment`.
+Choose a branch name that matches **your** issue. The repository is named `robo-resilience-lab`; older links and clones may still use previous names (`ros2-kubernetes-lab`, `Vagrant-Kubernetes-ROS2-Deployment`).
 
 If you have write access to the original repository or use a connected cloud agent, you can work in its own feature branch instead of forking. In either case, **never make your contribution directly on `main`**.
 
@@ -143,7 +143,7 @@ Once your changes are reviewed:
 ```bash
 git status --short
 git add path/to/changed-file.md
-git commit -m "docs: clarify monitoring screenshot references"
+git commit -m "docs: short description of your change"
 git push -u origin docs/issue-NNN-short-description
 ```
 

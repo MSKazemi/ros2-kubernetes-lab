@@ -38,24 +38,11 @@ and show checks actually run and ones still awaiting GitHub CI.
 
 **Human check:** Confirm the issue's acceptance criteria are met and that no check implies a cluster, DDS or hardware test passed.
 
-**Coordinate first:** PR [#113](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/113) already references this issue. Read it and comment there before starting, rather than opening a duplicate.
+**Check what exists first:** PR [#113](https://github.com/MSKazemi/robo-resilience-lab/pull/113) is merged and added the first CPU-only mock policy under `examples/cloud-robotics/mock-policy/`. Read it and the issue's acceptance criteria, and propose only what is still missing rather than re-implementing it.
 
-## 3. Kubernetes validation: issue #29 — manifest schemas
+## 3. Retired: Kubernetes manifest validation (issue #29)
 
-```text
-I want to work on issue #29. Read AGENTS.md and the open issue first.
-Inspect ROS2/*.yaml and identify built-in Kubernetes resources versus
-the VerticalPodAutoscaler custom resource. Propose a maintained offline
-schema-checking workflow with pinned tool version.
-Do not silently claim a built-in schema covers VerticalPodAutoscaler;
-either validate using an appropriate pinned CRD schema or explicitly document
-the excluded file. Keep PR checks independent of a cluster or credentials.
-After approval, implement minimal CI/doc changes and report actual validation.
-```
-
-**Human check:** Any VPA schema exception must be deliberate and documented, not a fake green test.
-
-**Coordinate first:** PR [#112](https://github.com/MSKazemi/ros2-kubernetes-lab/pull/112) already addresses this issue. Read it and comment there before starting, rather than opening a duplicate.
+Issue [#29](https://github.com/MSKazemi/robo-resilience-lab/issues/29) is closed and PR [#112](https://github.com/MSKazemi/robo-resilience-lab/pull/112) (offline manifest schema validation, Kubernetes 1.29) is merged, so there is no starter prompt for it. To improve that check, open a new issue first and read `scripts/validate-k8s-manifests.py` and `.github/workflows/validate-k8s.yml`.
 
 ## 4. Advanced issue #14 — ROS 2 talker/listener integration
 

@@ -226,9 +226,9 @@ Python and Jupyter Notebook setups for analyzing data collected from the environ
 | Helm                 | v3.14.2     |
 | Visual Studio Code   | v1.89.0     |
 
-## Use Cases
-
 These pins are deliberately left as recorded. They have **not** been bumped or re-tested. As checked on 2026-10-31: Kubernetes 1.29 is past end of life (1.37.2 is the latest stable release), and the Weave Net and Kubernetes Dashboard repositories are archived with no newer release. Upgrading them means replacing the CNI and dashboard, not just changing a version number; see [modernization issue #7](https://github.com/MSKazemi/ros2-kubernetes-lab/issues/7). The CI actions and the Jazzy container image are kept current and are checked separately.
+
+## Use Cases
 
 - **Study ROS 2 on Kubernetes locally** without cloud costs, on a sufficiently resourced workstation.
 - **Prototype and test** containerized robotics middleware and DDS communication patterns.

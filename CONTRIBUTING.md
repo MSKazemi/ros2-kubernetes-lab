@@ -15,11 +15,8 @@ Welcome! Contributions from robotics engineers, Kubernetes users, students, rese
 
 ### Suggested first contributions
 
-- Improve instructions that reference a nonexistent manifest or omit the Kubernetes namespace.
-- Check that monitoring screenshots have working file paths and helpful alt text.
-- Explain common ROS 2/DDS/Kubernetes concepts in plain English.
-- Document existing historical metrics JSON files.
-- Introduce standalone CI checks that do not require running virtual machines.
+- Browse the open issues labelled [`good first issue`](https://github.com/MSKazemi/robo-resilience-lab/labels/good%20first%20issue) or [`help wanted`](https://github.com/MSKazemi/robo-resilience-lab/labels/help%20wanted), and comment on one before you start.
+- Fix an unclear instruction you hit while following the README, and say in the pull request how you ran it.
 
 These are examples, not a separate issue backlog; please use the linked labeled GitHub issues for the up-to-date list.
 
@@ -49,7 +46,7 @@ The repository uses one concise [AGENTS.md](./AGENTS.md) instruction set for Cod
    git switch -c docs/clarify-ros2-commands
    ```
 3. Make the smallest change that meets the issue's acceptance criteria. Update the related README or other docs when the behavior changes.
-4. Run checks appropriate for your contribution (see below), commit, push and open a pull request against `main`. Link the issue, for example `Closes #24` for a complete fix or `Related to #14` for partial preparatory work.
+4. Run checks appropriate for your contribution (see below), commit, push and open a pull request against `main`. Link the issue, for example `Closes #NNN` for a complete fix or `Related to #14` for partial preparatory work.
 5. In the PR, explain **what you changed, how you tested it, and what you did not test**. Screenshots or terminal output help when appropriate.
 
 ### Checks you can run without a cluster
