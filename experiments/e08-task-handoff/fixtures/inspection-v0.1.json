@@ -1,0 +1,31 @@
+{
+  "schema_version": "e08-synthetic-mission-v0.1",
+  "mission": {
+    "task_id": "inspection-001",
+    "waypoints": ["wp-01", "wp-02", "wp-03", "wp-04", "wp-05"]
+  },
+  "robot": {
+    "robot_id": "sim-robot-01",
+    "frame_id": "map",
+    "map_revision": "synthetic-map-v1",
+    "capabilities": ["inspect_waypoint", "report_status"]
+  },
+  "checkpoint": {
+    "execution_id": "cloud-planner-01",
+    "epoch": 1,
+    "cursor": 2,
+    "completed": ["wp-01", "wp-02"]
+  },
+  "observation": {
+    "captured_tick": 3,
+    "ttl_ticks": 10
+  },
+  "destination": {
+    "execution_id": "edge-planner-01",
+    "robot_id": "sim-robot-01",
+    "frame_id": "map",
+    "map_revision": "synthetic-map-v1",
+    "capabilities": ["inspect_waypoint", "report_status"]
+  },
+  "handoff_tick": 5
+}
