@@ -45,7 +45,7 @@ Time is integer logical milliseconds. Request `i` is captured at `i * interval_m
 * **Local**: a single FIFO worker; compute time `compute_base_ms + U[0, compute_jitter_ms]`. Local is eligible if `memory_mb >= model_memory_mb`; otherwise a request routed local has no viable executor.
 * **Remote**: unlimited parallelism (a stated simplification). Eligible only if its free memory *at the moment the request arrives* is at least `model_memory_mb` (`memory_mb` constant, or a `memory_schedule` step function). Otherwise it answers with an explicit reject `ineligible_memory`. It may also reject at random (`overloaded`, `reject_probability`).
 * **Capability advertisement**: policies learn remote eligibility with a lag (`advert_lag_ms`), so a policy can still send to a remote that just became ineligible and receive a reject.
-* **Network**: one-way delay `one_way_base_ms + U[0, one_way_jitter_ms]` each direction; independent loss per direction; **outage windows** during which anything *sent* is dropped (messages already in flight are still delivered, a simplification); a **recovery** period after each outage in which one-way delay is multiplied by `recovery_delay_factor`; duplicated deliveries of a response; spurious responses carrying IDs that were never issued.
+* **Network**: one-way delay `one_way_base_ms + U[0, one_way_jitter_ms]` each direction; independent loss per direction; **outage windows** (half-open `[start_ms, end_ms)`): a message is lost if the link is down at any moment of its transit, that is, it is sent inside a window, delivered inside one, or a window begins while it is in flight (requests, replies and duplicate copies alike; a message sent exactly at `end_ms` survives, one delivered exactly at `start_ms` is lost; local compute is unaffected); a **recovery** period after each outage in which one-way delay is multiplied by `recovery_delay_factor`; duplicated deliveries of a response; spurious responses carrying IDs that were never issued.
 * **Predictor** (`deadline_aware`, `hedged_fallback`): an EWMA of *observed* round trips, updated only when a response has actually arrived. A timeout is a censored observation and raises the estimate to at least the missed budget. Nothing about the future is used.
 * **Hedge** (`hedged_fallback`): fires at `capture + hedge.delay_ms` (default: predicted RTT plus margin at launch time), never later than the last moment a worst-case local run could still meet the deadline. It is skipped if the request is already applied or a local run cannot possibly finish in time.
 
@@ -64,7 +64,7 @@ The sink has no output channel. It records one decision per action-bearing respo
 | 4 | `late_after_deadline` | Arrived after the absolute deadline. |
 | 5 | `superseded_request` | A newer request was already applied. |
 
-A rejected response does not block a later valid one for the same request. Explicit remote rejects are not sink decisions; they are logged as `remote_reject` events and counted in `remote_rejects`.
+A rejected response does not block a later valid one for the same request. The placement predictor learns from each remote response only once: a re-delivered copy of the same response is still judged and logged by the sink (`duplicate_response_id`) but is not counted as a new round-trip observation. Explicit remote rejects are not sink decisions; they are logged as `remote_reject` events and counted in `remote_rejects`.
 
 ## Config schema (`schema_version` 1)
 
@@ -124,7 +124,7 @@ policy               on_time_rate  on_time_applied    deadline_miss   stale_reje
 always_local               0.9167              275               25               25                0                0
 always_remote              0.7000              210               90                9                0              300
 deadline_aware             0.8567              257               43               16                0              200
-hedged_fallback            0.9333              280               20               20               29              200
+hedged_fallback            0.9367              281               19               19               29              200
 ```
 
 These values only describe the toy model under the placeholder parameters in `configs/default.json`. They support no claim about real robots, networks or clouds. What the run does illustrate mechanically: the hedge buys on-time rate at the price of many extra local runs (`fallback_launched` is 135 for 29 rescued requests in this config), and `deadline_aware` without a fallback can do worse than `always_local` when the remote path fails after the decision is made. Different parameters can reverse these orderings; change the config and look.
@@ -133,7 +133,7 @@ These values only describe the toy model under the placeholder parameters in `co
 
 * A logical-time toy model, not a packet-level network emulator, DDS/QoS model, model-serving queue or scheduler.
 * Remote capacity is unlimited and its compute time does not depend on load; local is one FIFO worker. There is no accuracy difference between local and remote model outputs.
-* Messages in flight when an outage starts are still delivered. Loss and jitter are i.i.d. per message (no burst loss model).
+* An outage drops any message whose transit overlaps the window; there is no partial delivery, retransmission or queueing of messages across an outage. Loss and jitter are i.i.d. per message (no burst loss model).
 * "Memory" eligibility is a single scalar threshold; there is no GPU, bandwidth, payload-size or energy model.
 * Clocks are perfect and shared; real systems need clock-offset handling for freshness checks.
 * Default parameters are illustrative. `superseded_request` is covered by a sink-level unit test but does not occur in the default scenario.

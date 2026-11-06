@@ -279,6 +279,123 @@ class OutageTests(unittest.TestCase):
         self.assertEqual(s["remote_timeouts"], N)
 
 
+class InFlightOutageTests(unittest.TestCase):
+    """Outage windows are half-open [start, end) and drop messages in transit.
+
+    Timeline of request 1 in base_config (captured at 1000, always_remote):
+    uplink 1000..1020, remote compute 1020..1030, downlink 1030..1050.
+    """
+
+    def run_with_outage(self, start, end, **extra):
+        cfg = base_config(**{"network.outages": [{"start_ms": start, "end_ms": end}], **extra})
+        return run(cfg, "always_remote")
+
+    def assert_request1_lost(self, start, end):
+        s, log = self.run_with_outage(start, end)
+        self.assertEqual(s["on_time_applied"], N - 1, (start, end))
+        self.assertEqual(s["remote_timeouts"], 1, (start, end))
+        self.assertEqual(s["deadline_miss_causes"]["no_response"], 1, (start, end))
+        return log
+
+    def assert_request1_survives(self, start, end):
+        s, _ = self.run_with_outage(start, end)
+        self.assertEqual(s["on_time_applied"], N, (start, end))
+        self.assertEqual(s["remote_timeouts"], 0, (start, end))
+
+    def test_window_starting_while_request_in_flight_drops_it(self):
+        # Sent at 1000 (outside), would arrive at 1020 (outside), window [1010, 1015) in between.
+        log = self.assert_request1_lost(1010, 1015)
+        self.assertEqual([r["cause"] for r in log if r["kind"] == "remote_request_lost"], ["outage"])
+
+    def test_window_starting_while_reply_in_flight_drops_it(self):
+        # Reply leaves at 1030 and would be delivered at 1050; window [1040, 1045) in between.
+        log = self.assert_request1_lost(1040, 1045)
+        self.assertEqual([r["cause"] for r in log if r["kind"] == "remote_reply_lost"], ["outage"])
+
+    def test_uplink_edges(self):
+        self.assert_request1_lost(1019, 1020)       # window ends just before delivery, still overlaps transit
+        self.assert_request1_lost(1020, 1021)       # delivery exactly at window start is inside
+        self.assert_request1_survives(1021, 1030)   # window falls entirely in remote compute time
+        self.assert_request1_survives(990, 1000)    # window [990,1000): send exactly at its end is fine
+        self.assert_request1_lost(990, 1001)        # send inside the window
+
+    def test_downlink_edges(self):
+        self.assert_request1_lost(1050, 1051)       # delivery exactly at window start is inside
+        self.assert_request1_survives(1051, 1060)   # window begins after delivery
+        self.assert_request1_lost(1030, 1031)       # reply sent inside the window
+        self.assert_request1_survives(1021, 1030)   # window ends exactly when the reply is sent
+
+    def test_duplicate_copy_delivered_inside_outage_is_dropped(self):
+        # Original reply is delivered at 1050; its duplicate copy at 1051.
+        cfg = base_config(**{"network.duplicate_probability": 1.0,
+                             "network.duplicate_extra_delay_max_ms": 1,
+                             "network.outages": [{"start_ms": 1051, "end_ms": 1052}]})
+        s, log = run(cfg, "always_remote")
+        self.assertEqual(s["on_time_applied"], N)
+        self.assertEqual(s["rejected_by_reason"]["duplicate_response_id"], N - 1)
+        self.assertEqual(sum(1 for r in log if r["kind"] == "remote_duplicate_lost"), 1)
+
+    def test_local_compute_is_not_affected_by_in_flight_outage(self):
+        cfg = base_config(**{"network.outages": [{"start_ms": 1010, "end_ms": 1090}]})
+        s, _ = run(cfg, "always_local")
+        self.assertEqual(s["on_time_applied"], N)
+
+    def test_link_down_during_helper(self):
+        sim = ps.Simulation(ps.validate_config(
+            base_config(**{"network.outages": [{"start_ms": 100, "end_ms": 200}]})), "always_local")
+        down = sim.link_down_during
+        self.assertFalse(down(0, 99))
+        self.assertTrue(down(0, 100))        # delivered exactly at start
+        self.assertTrue(down(50, 500))       # spans the whole window
+        self.assertTrue(down(199, 300))
+        self.assertFalse(down(200, 300))     # sent exactly at end
+        self.assertTrue(down(150, 150))      # zero-latency inside
+        self.assertFalse(down(200, 200))
+
+
+class DuplicateDoesNotBiasPredictorTests(unittest.TestCase):
+    def test_predictor_observes_each_response_once(self):
+        calls = []
+        orig = ps.RttPredictor.observe_rtt
+        ps.RttPredictor.observe_rtt = lambda self, rtt: (calls.append(rtt), orig(self, rtt))[1]
+        try:
+            cfg = base_config(**{"network.duplicate_probability": 1.0,
+                                 "network.duplicate_extra_delay_max_ms": 500})
+            s, _ = run(cfg, "deadline_aware")
+        finally:
+            ps.RttPredictor.observe_rtt = orig
+        self.assertEqual(len(calls), N)
+        self.assertEqual(set(calls), {50})      # only true round trips, never a duplicate's inflated RTT
+        # The duplicates are still delivered to the sink and logged.
+        self.assertEqual(s["rejected_by_reason"]["duplicate_response_id"], N)
+        self.assertEqual(s["sink_decisions_total"], 2 * N)
+
+    def test_duplicates_do_not_change_routing(self):
+        quiet, _ = run(base_config(), "deadline_aware")
+        noisy_cfg = base_config(**{"network.duplicate_probability": 1.0,
+                                   "network.duplicate_extra_delay_max_ms": 500})
+        for policy in ("deadline_aware", "hedged_fallback"):
+            s, _ = run(noisy_cfg, policy)
+            self.assertEqual(s["routed_remote"], N, policy)
+            self.assertEqual(s["routed_local"], 0, policy)
+            self.assertEqual(s["on_time_applied"], N, policy)
+        self.assertEqual(quiet["routed_remote"], N)
+
+    def test_late_first_delivery_still_updates_predictor_once(self):
+        calls = []
+        orig = ps.RttPredictor.observe_rtt
+        ps.RttPredictor.observe_rtt = lambda self, rtt: (calls.append(rtt), orig(self, rtt))[1]
+        try:
+            # RTT 210 > 200 deadline: late, but a genuine (first) observation.
+            cfg = base_config(**{"network.one_way_base_ms": 100,
+                                 "network.duplicate_probability": 1.0})
+            run(cfg, "deadline_aware")
+        finally:
+            ps.RttPredictor.observe_rtt = orig
+        self.assertGreaterEqual(len(calls), 1)
+        self.assertTrue(all(c == 210 for c in calls))
+
+
 class DeterminismTests(unittest.TestCase):
     def noisy(self, seed):
         cfg = ps.load_config(ROOT / "configs" / "default.json")

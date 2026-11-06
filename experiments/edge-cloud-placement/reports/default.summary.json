@@ -173,7 +173,7 @@
     "hedged_fallback": {
       "actuated": false,
       "applied_by_source": {
-        "local": 110,
+        "local": 111,
         "remote": 170
       },
       "by_capture_time": {
@@ -183,15 +183,15 @@
           "requests": 40
         },
         "otherwise": {
-          "on_time": 243,
-          "on_time_rate": 0.934615,
+          "on_time": 244,
+          "on_time_rate": 0.938462,
           "requests": 260
         }
       },
-      "deadline_miss": 20,
+      "deadline_miss": 19,
       "deadline_miss_causes": {
         "ineligible_source": 0,
-        "late_response": 19,
+        "late_response": 18,
         "no_response": 0,
         "no_viable_executor": 0,
         "remote_rejected": 1,
@@ -199,13 +199,13 @@
       },
       "fallback_count": 29,
       "fallback_launched": 135,
-      "on_time_applied": 280,
-      "on_time_rate": 0.933333,
+      "on_time_applied": 281,
+      "on_time_rate": 0.936667,
       "policy": "hedged_fallback",
       "rejected_by_reason": {
         "duplicate_response_id": 116,
         "ineligible_source": 0,
-        "late_after_deadline": 20,
+        "late_after_deadline": 19,
         "superseded_request": 0,
         "unknown_request_id": 2
       },
@@ -219,12 +219,12 @@
       "routed_remote": 200,
       "simulated_latency_ms": {
         "max": 334,
-        "mean": 147.664,
+        "mean": 147.836,
         "p50": 126,
         "p95": 270
       },
       "sink_decisions_total": 418,
-      "stale_rejected": 20
+      "stale_rejected": 19
     }
   },
   "schema_version": 1,

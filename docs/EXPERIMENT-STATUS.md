@@ -79,7 +79,7 @@
 | Test command | `python3 -m unittest discover -s experiments/edge-cloud-placement/tests -t experiments/edge-cloud-placement`. Run: `python3 experiments/edge-cloud-placement/placement_sim.py --config experiments/edge-cloud-placement/configs/default.json` |
 | Verified for this page | Tests exit 0. The default-config run (seed 20261106, exit 0) printed the same four-policy table as the README |
 | NOT claimed | Any property of a real robot, network, cloud service, GPU, DDS stack or cluster. The parameters are illustrative placeholders; none was measured |
-| Negative results (SIMULATED, default config) | `always_remote` was the worst policy: on-time rate 0.7000 against 0.9167 for `always_local`. `deadline_aware` (0.8567) did worse than `always_local`. `hedged_fallback` was best at 0.9333, a gain of about 1.7 percentage points over `always_local`, and the README reports it launched 135 local fallback runs to rescue 29 requests. These results hold for the stated model and parameters only; other parameters may reorder the policies. |
+| Negative results (SIMULATED, default config) | `always_remote` was the worst policy: on-time rate 0.7000 against 0.9167 for `always_local`. `deadline_aware` (0.8567) did worse than `always_local`. `hedged_fallback` was best at 0.9367, a gain of about 2.0 percentage points over `always_local`, and the README reports it launched 135 local fallback runs to rescue 29 requests. These results hold for the stated model and parameters only; other parameters may reorder the policies. |
 | Limits | Logical-time toy: unlimited remote capacity, i.i.d. loss and jitter, perfect shared clocks, no GPU, bandwidth or energy model. The README lists seven things a real measurement would need (all NOT RUN) |
 
 ## E. LeRobot data quality

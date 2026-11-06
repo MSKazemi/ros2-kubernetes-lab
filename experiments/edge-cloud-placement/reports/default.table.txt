@@ -5,4 +5,4 @@ policy               on_time_rate  on_time_applied    deadline_miss   stale_reje
 always_local               0.9167              275               25               25                0                0
 always_remote              0.7000              210               90                9                0              300
 deadline_aware             0.8567              257               43               16                0              200
-hedged_fallback            0.9333              280               20               20               29              200
+hedged_fallback            0.9367              281               19               19               29              200

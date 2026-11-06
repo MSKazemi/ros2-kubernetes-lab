@@ -15,6 +15,10 @@ Model summary
 * Two executors: LOCAL (single FIFO worker, always on the robot) and REMOTE (a
   cloud/edge-server model reached over a network with outage windows, loss,
   jitter, duplicated deliveries and spurious responses).
+* Network outages are half-open windows [start, end). A message is lost if the link
+  is down at any moment of its transit (sent inside a window, delivered inside one,
+  or a window starting while it is in flight); this applies to requests, replies and
+  duplicate copies. Local compute is unaffected.
 * REMOTE eligibility: the remote must have at least ``model_memory_mb`` free at the
   moment the request arrives; otherwise it answers with an explicit REJECT.
   The remote may also reject at random (``reject_probability``).
@@ -549,6 +553,7 @@ class Simulation:
         self.fallback_for: set[int] = set()
         self.cause_flags: dict[int, set[str]] = {}
         self._uid_counter = 0
+        self._rtt_uids: set[str] = set()
 
     # ---- scheduling ------------------------------------------------------
     def _push(self, t: int, prio: int, kind: str, payload: Any = None) -> None:
@@ -564,6 +569,16 @@ class Simulation:
     # ---- network model ---------------------------------------------------
     def in_outage(self, t: int) -> bool:
         return any(a <= t < b for a, b in self.cfg["network"]["outages"])
+
+    def link_down_during(self, t_send: int, t_deliver: int) -> bool:
+        """True if a message in transit over [t_send, t_deliver] is lost to an outage.
+
+        An outage is the half-open window [start, end). A message is lost if the
+        link is down at any moment of its transit: it is sent inside a window, or
+        delivered inside one, or a window starts while it is in flight. A message
+        sent exactly at ``end`` is not lost; one delivered exactly at ``start`` is.
+        """
+        return any(t_send < b and t_deliver >= a for a, b in self.cfg["network"]["outages"])
 
     def in_recovery(self, t: int) -> bool:
         nw = self.cfg["network"]
@@ -611,11 +626,11 @@ class Simulation:
         self._uid_counter += 1
         uid = f"{req.request_id}:remote:{self._uid_counter}"
         self._push(req.deadline_abs_ms, _P_TIMER, "timeout", req)
-        if d.up_lost or self.in_outage(now):
-            self._record(now, "remote_request_lost", request_id=req.request_id,
-                         cause="outage" if self.in_outage(now) else "loss")
-            return
         t_arrive = now + self._one_way(now, d.up_jitter)
+        if d.up_lost or self.link_down_during(now, t_arrive):
+            self._record(now, "remote_request_lost", request_id=req.request_id,
+                         cause="loss" if d.up_lost else "outage")
+            return
         if self.remote_memory_at(t_arrive) < rm["model_memory_mb"]:
             kind, reason, t_reply = "reject", "ineligible_memory", t_arrive
         elif d.reject:
@@ -623,15 +638,20 @@ class Simulation:
         else:
             kind, reason = "action", ""
             t_reply = t_arrive + rm["compute_base_ms"] + d.remote_jitter
-        if d.down_lost or self.in_outage(t_reply):
-            self._record(t_reply, "remote_reply_lost", request_id=req.request_id,
-                         cause="outage" if self.in_outage(t_reply) else "loss")
-            return
         t_back = t_reply + self._one_way(t_reply, d.down_jitter)
+        if d.down_lost or self.link_down_during(t_reply, t_back):
+            self._record(t_reply, "remote_reply_lost", request_id=req.request_id,
+                         cause="loss" if d.down_lost else "outage")
+            return
         resp = Response(uid, req.request_id, "remote", kind, reason, sent_ms=now)
         self._push(t_back, _P_RESPONSE, "response", resp)
         if kind == "action" and d.duplicate:
-            self._push(t_back + d.dup_extra, _P_RESPONSE, "response", resp)
+            t_dup = t_back + d.dup_extra
+            if self.link_down_during(t_reply, t_dup):
+                self._record(t_reply, "remote_duplicate_lost", request_id=req.request_id,
+                             cause="outage")
+            else:
+                self._push(t_dup, _P_RESPONSE, "response", resp)
 
     # ---- main loop -------------------------------------------------------
     def run(self) -> None:
@@ -682,7 +702,12 @@ class Simulation:
             return
         if req is not None and resp.source == "remote":
             self.remote_answered.add(req.index)
-            self.policy.on_remote_action(req, now - resp.sent_ms, now)
+            # A re-delivered copy of the same response must not look like a new
+            # observation: only the first delivery of a uid feeds the predictor.
+            # (Every copy still goes to the sink, which logs duplicates.)
+            if resp.uid not in self._rtt_uids:
+                self._rtt_uids.add(resp.uid)
+                self.policy.on_remote_action(req, now - resp.sent_ms, now)
         rec = self.sink.submit(resp, now)
         if req is not None and rec["decision"] == "rejected":
             self._flag(req, {
