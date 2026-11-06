@@ -132,6 +132,60 @@ class FalsePositiveTests(unittest.TestCase):
         self.assertClean(f"id = {AWS_ID}  # scan-secrets: ignore")
 
 
+class PlaceholderTests(unittest.TestCase):
+    """A placeholder must be the WHOLE value; a placeholder word inside a longer value is not one."""
+
+    def found(self, line: str) -> set[str]:
+        return {f.rule for f in scan(line)}
+
+    def test_real_looking_values_that_merely_contain_a_placeholder_word_are_found(self):
+        values = [
+            "Passw0rd-example-2026Xq",
+            "token99todo7realvalue",
+            "aB3dExampleQ9xK2mZ7vL1pR5s",            # long mixed-case value, 'example' in the middle
+            "Zk9fixmeQ2wE8rT5yU1iO3pA7s",
+            "R7dummyH2jK9lM4nB6vC1xZ8q",
+            "Qw3Er5Ty7Ui9OpplaceholderAs2Df4",
+            "Mn8bV5cX2zL9kJ4hG7fD1sAredactedQ",
+            "Hj4Kl8Zx2Cv6Bn1Mq3W5e%sR9tY7uI",
+            "Ab12<x>Cd34Ef56Gh78Ij90Kl12Mn",
+            "pQ8${rT5yU1iO3pA7sD9fG2hJ4kL",
+            "yourSecretIs8xK2mZ7vL1pR5sT9",
+        ]
+        for v in values:
+            for line in (f"API_KEY={v}", f"password: {v}", f"token = {v}"):
+                with self.subTest(line=line):
+                    self.assertIn("secret-assignment", self.found(line))
+
+    def test_whole_value_placeholders_are_not_reported(self):
+        values = [
+            "changeme", "change-me-change-me-change-me", "changeme-changeme-changeme", "<your-token>", "<your-api-key-goes-here>",
+            "xxxxxxxx", "XXXXXXXXXXXXXXXXXXXX", "********************", "................", "${TOKEN}", "${SECRET_TOKEN_FROM_VAULT_ENTRY}",
+            "$(cat-/run/secret)", "$MY_SECRET_VARIABLE_VALUE", "{{.Values.secretToken}}", "secrets.DOCKER_PASSWORD_VALUE_X",
+            "env.SOME_TOKEN_NAME_LONG_ENOUGH", "example-token-1", "your-secret-access-key-goes-here-1234567",
+            "dummy-password-123456789", "placeholder_value_1234567", "sample-api-key-0000000000",
+            "ghp_" + "x" * 36, "hf_" + "x" * 34, "AKIA" + "X" * 16,
+        ]
+        for v in values:
+            for line in (f"API_KEY={v}", f"password: {v}"):
+                with self.subTest(line=line):
+                    self.assertNotIn("secret-assignment", self.found(line))
+
+    def test_token_shaped_placeholders_for_other_rules(self):
+        self.assertEqual(scan("x = " + "ghp" + "_" + "x" * 36), [])
+        self.assertEqual(scan("id: AKIA" + "X" * 16), [])
+        self.assertEqual(scan("AWS example: AKIAIOSFODNN7" + "EXAMPLE"), [])
+        self.assertEqual(scan("secret: wJalrXUtnFEMI/K7MDENG/bPxRfiCY" + "EXAMPLEKEY"), [])
+        # but a real-shaped key that only ends similarly short of the convention is still found
+        self.assertIn("aws-access-key-id", rules(scan("id = " + AWS_ID)))
+
+    def test_is_placeholder_unit(self):
+        for v in ("changeme", "<x>", "${A}", "xxxx", "Example-Token-9", "YOUR_API_KEY_HERE", "example"):
+            self.assertTrue(ss.is_placeholder(v), v)
+        for v in ("Passw0rd-example-2026Xq", "token99todo7realvalue", "token-key-secret", "your-8xK2mZ7vL1pR5s", ""):
+            self.assertFalse(ss.is_placeholder(v), v)
+
+
 class RedactionTests(unittest.TestCase):
     def test_value_never_printed(self):
         secrets = [GH_TOKEN, AWS_ID, SLACK, HF, JWT, JOIN, NO_GROUP_SECRET]

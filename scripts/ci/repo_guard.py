@@ -43,12 +43,56 @@ def guard_expr(repo: str) -> str:
     return f"github.repository == '{repo}'"
 
 
+class ExprError(ValueError):
+    """The condition is not in the GitHub expression subset this tool understands."""
+
+
+def _scan_braces(text: str) -> tuple[list[int], list[int]]:
+    """Positions of '${{' and '}}' that lie OUTSIDE single-quoted string literals ('' escapes a quote)."""
+    opens: list[int] = []
+    closes: list[int] = []
+    i, n = 0, len(text)
+    while i < n:
+        c = text[i]
+        if c == "'":
+            i += 1
+            while i < n:
+                if text[i] == "'":
+                    if i + 1 < n and text[i + 1] == "'":
+                        i += 2
+                        continue
+                    break
+                i += 1
+            else:
+                raise ExprError("unterminated string literal")
+            i += 1
+            continue
+        if text.startswith("${{", i):
+            opens.append(i)
+            i += 3
+            continue
+        if text.startswith("}}", i):
+            closes.append(i)
+            i += 2
+            continue
+        i += 1
+    return opens, closes
+
+
 def unwrap(expr: str) -> str:
-    """Strip an optional ``${{ ... }}`` wrapper (GitHub allows it in ``if:``)."""
-    expr = expr.strip()
-    if expr.startswith("${{") and expr.endswith("}}"):
-        return expr[3:-2].strip()
-    return expr
+    """Strip an optional ``${{ ... }}`` wrapper (GitHub allows it in ``if:``).
+
+    The wrapper is removed only when the opening ``${{`` and the final ``}}`` are one matching pair
+    around the entire expression. Text outside a single wrapper (``${{ a }} && ${{ b }}``, ``x ${{ a }}``)
+    is a different construct (GitHub then treats the whole string as truthy), so it raises
+    :class:`ExprError` instead of being rewritten."""
+    text = expr.strip()
+    opens, closes = _scan_braces(text)
+    if not opens and not closes:
+        return text
+    if opens == [0] and closes == [len(text) - 2] and len(text) >= 5:
+        return text[3:-2].strip()
+    raise ExprError("'${{ }}' is not a single wrapper around the whole expression")
 
 
 def compose(repo: str, existing: str | None) -> str:
@@ -56,10 +100,6 @@ def compose(repo: str, existing: str | None) -> str:
     if existing is None:
         return guard
     return f"{guard} && ({unwrap(existing)})"
-
-
-class ExprError(ValueError):
-    """The condition is not in the GitHub expression subset this tool understands."""
 
 
 _TOKEN_RE = re.compile(
@@ -228,9 +268,9 @@ def original_condition(expr: str, repo: str) -> str | None:
     """Inverse of :func:`compose`: the pre-guard condition (None if there was none).
 
     Only the exact shapes written by ``apply`` are accepted: ``g`` or ``g && (<original>)``."""
-    text = unwrap(expr)
     guard = guard_expr(repo)
     try:
+        text = unwrap(expr)
         tree, guard_ast = parse_condition(text), parse_condition(guard)
     except ExprError as exc:
         raise ValueError(f"unparseable condition: {exc}") from None
@@ -291,7 +331,10 @@ def apply_text(text: str, repo: str) -> tuple[str, int]:
             if if_idx + 1 < len(block) and re.match(r"^      \S", block[if_idx + 1]):
                 raise Unsupported(f"job '{job_id}': multi-line 'if:' is not supported")
             if not is_guarded(raw, repo):
-                new_block[if_idx] = f"    if: {compose(repo, raw)}"
+                try:
+                    new_block[if_idx] = f"    if: {compose(repo, raw)}"
+                except ExprError as exc:
+                    raise Unsupported(f"job '{job_id}': cannot wrap the existing 'if:' safely ({exc}); edit it by hand") from None
                 new_block.insert(if_idx, "    " + COMMENT)
                 changed += 1
         else:
@@ -326,7 +369,13 @@ def check_file(path: Path, repo: str) -> list[str]:
             # reusable-workflow call: `if` is still honoured at job level
             pass
         if not is_guarded(job.get("if"), repo):
-            problems.append(f"{path}: job '{job_id}' has no top-level repository guard (if={job.get('if')!r})")
+            hint = ""
+            if isinstance(job.get("if"), str):
+                try:
+                    parse_condition(job["if"])
+                except ExprError as exc:
+                    hint = f" [unsupported 'if' shape: {exc}]"
+            problems.append(f"{path}: job '{job_id}' has no top-level repository guard (if={job.get('if')!r}){hint}")
     # a guarded job may depend on an unguarded one only if that one is also guarded: covered above
     return problems
 

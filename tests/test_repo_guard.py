@@ -248,6 +248,105 @@ class IsGuardedTableTests(unittest.TestCase):
         self.assertEqual(toks[2][1], "&& || ( ) ! 'x'")
 
 
+class UnwrapTests(unittest.TestCase):
+    """`${{ }}` is removed only when it is ONE wrapper around the whole expression."""
+
+    def wf(self, cond: str) -> str:
+        return "jobs:\n  j:\n    name: J\n    if: " + cond + "\n    runs-on: x\n    steps: []\n"
+
+    def test_valid_wrappers_and_plain_conditions(self):
+        cases = {
+            "${{ a }}": "a",
+            "${{a}}": "a",
+            "${{   github.ref == 'x'   }}": "github.ref == 'x'",
+            "${{ format('{{0}}', x) }}": "format('{{0}}', x)",
+            "${{ github.event.head_commit.message == '}}' }}": "github.event.head_commit.message == '}}'",
+            "${{ x == 'a ${{ b' }}": "x == 'a ${{ b'",
+            "a": "a",
+            "github.ref == 'refs/heads/main'": "github.ref == 'refs/heads/main'",
+            "format('{{0}}', x)": "format('{{0}}', x)",   # braces only inside a literal: nothing to strip
+        }
+        for text, expected in cases.items():
+            with self.subTest(text=text):
+                self.assertEqual(rg.unwrap(text), expected)
+
+    def test_text_outside_a_single_wrapper_is_refused(self):
+        for text in ("${{ a }} && ${{ b }}", "x ${{ a }}", "${{ a }} y", "a && ${{ b }}", "${{ a", "a }}", "${{ a }} }}",
+                     "${{ ${{ a }} }}", "${{ x == 'oops }}"):
+            with self.subTest(text=text):
+                with self.assertRaises(rg.ExprError):
+                    rg.unwrap(text)
+
+    def test_is_guarded_is_false_for_unsupported_shapes(self):
+        two = "${{ " + G + " }} && ${{ true }}"
+        self.assertFalse(rg.is_guarded(two, PUBLIC))
+        self.assertFalse(rg.is_guarded("${{ a }} && ${{ b }}", PUBLIC))
+        self.assertTrue(rg.is_guarded("${{ " + G + " }}", PUBLIC))
+        self.assertTrue(rg.is_guarded("${{" + G + "}}", PUBLIC))
+
+    def test_compose_wraps_a_wrapped_condition_without_corrupting_it(self):
+        self.assertEqual(rg.compose(PUBLIC, "${{ a }}"), G + " && (a)")
+        self.assertEqual(rg.compose(PUBLIC, "${{a}}"), G + " && (a)")
+        self.assertEqual(rg.compose(PUBLIC, "${{ format('{{0}}', x) }}"), G + " && (format('{{0}}', x))")
+        self.assertEqual(rg.compose(PUBLIC, "a"), G + " && (a)")
+        with self.assertRaises(rg.ExprError):
+            rg.compose(PUBLIC, "${{ a }} && ${{ b }}")
+
+    @unittest.skipIf(yaml is None, "PyYAML not installed")
+    def test_apply_text_on_valid_wrappers_is_correct_and_idempotent(self):
+        for cond, inner in (("${{ a }}", "a"), ("${{a}}", "a"), ("${{ format('{{0}}', x) }}", "format('{{0}}', x)"), ("a", "a")):
+            with self.subTest(cond=cond):
+                new, changed = rg.apply_text(self.wf(cond), PUBLIC)
+                self.assertEqual(changed, 1)
+                got = yaml.safe_load(new)["jobs"]["j"]["if"]
+                self.assertEqual(got, G + " && (" + inner + ")")
+                self.assertTrue(rg.is_guarded(got, PUBLIC))
+                self.assertEqual(rg.apply_text(new, PUBLIC), (new, 0))
+
+    @unittest.skipIf(yaml is None, "PyYAML not installed")
+    def test_an_already_guarded_wrapped_condition_is_left_alone(self):
+        text = self.wf("${{ " + G + " && a }}")
+        self.assertEqual(rg.apply_text(text, PUBLIC), (text, 0))
+
+    @unittest.skipIf(yaml is None, "PyYAML not installed")
+    def test_apply_refuses_two_wrappers_naming_file_and_job(self):
+        tmp = Path(tempfile.mkdtemp(prefix="rg-unwrap-"))
+        self.addCleanup(lambda: __import__("shutil").rmtree(tmp, ignore_errors=True))
+        f = tmp / "bad.yml"
+        original = self.wf("${{ a }} && ${{ b }}")
+        f.write_text(original, encoding="utf-8")
+        with self.assertRaises(rg.Unsupported):
+            rg.apply_text(original, PUBLIC)
+        err = io.StringIO()
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+            code = rg.main(["apply", str(f)])
+        self.assertNotEqual(code, 0)
+        self.assertEqual(code, 2)
+        self.assertIn("bad.yml", err.getvalue())
+        self.assertIn("job 'j'", err.getvalue())
+        self.assertEqual(f.read_text(encoding="utf-8"), original)       # the job was not rewritten
+
+    @unittest.skipIf(yaml is None, "PyYAML not installed")
+    def test_check_reports_it_as_unguarded(self):
+        tmp = Path(tempfile.mkdtemp(prefix="rg-unwrap-"))
+        self.addCleanup(lambda: __import__("shutil").rmtree(tmp, ignore_errors=True))
+        f = tmp / "bad.yml"
+        f.write_text(self.wf("${{ " + G + " }} && ${{ true }}"), encoding="utf-8")
+        problems = rg.check_file(f, PUBLIC)
+        self.assertEqual(len(problems), 1)
+        self.assertIn("job 'j'", problems[0])
+        self.assertIn("unsupported", problems[0])
+        err = io.StringIO()
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+            self.assertEqual(rg.main(["check", str(f)]), 1)
+
+    @unittest.skipIf(yaml is None, "PyYAML not installed")
+    def test_other_jobs_in_a_file_are_not_written_when_one_is_unsupported(self):
+        text = self.wf("${{ a }} && ${{ b }}") + "  k:\n    name: K\n    runs-on: x\n    steps: []\n"
+        with self.assertRaises(rg.Unsupported):
+            rg.apply_text(text, PUBLIC)
+
+
 @unittest.skipIf(yaml is None, "PyYAML not installed")
 class CheckTests(unittest.TestCase):
     def _write(self, text: str) -> Path:

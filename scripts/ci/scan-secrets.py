@@ -57,11 +57,46 @@ BINARY_PROBE = 8192                 # a NUL byte in the first bytes marks a file
 SKIP_CATEGORIES = ("binary", "over-cap", "unreadable", "symlink", "missing")
 IGNORE_MARK = "scan-secrets: ignore"
 
-PLACEHOLDER_RE = re.compile(
-    r"(\$\{|\$\(|\{\{|<[^>]*>|%[A-Za-z_(]|your[-_ ]|change[-_ ]?me|example|placeholder|dummy|"
-    r"redacted|xxxx|\*{3,}|\.{3,}|todo|fixme|^\$[A-Za-z_]|secrets\.|env\.|os\.environ|getenv)",
-    re.IGNORECASE,
+# A value is a placeholder only if the WHOLE value is one (fullmatch), never because a placeholder
+# word appears somewhere inside a longer, random-looking value.
+_PLACEHOLDER_SHAPES = re.compile(
+    r"""(?:
+        \$\{\{.*\}\}                                # ${{ secrets.X }}
+      | \$\{[^{}]*\}                                  # ${VAR}
+      | \$\([^()]*\)                                  # $(command)
+      | \$[A-Za-z_][A-Za-z0-9_]*                       # $VAR
+      | \{\{.*\}\}                                     # {{ var }}
+      | <[^<>]*>                                       # <your-token>
+      | %\(?[A-Za-z_][A-Za-z0-9_]*\)?[sd]?             # %s, %(name)s
+      | (?:secrets|env|vars|inputs)\.[A-Za-z0-9_.-]+   # secrets.X, env.X
+      | (?:os\.environ|os\.getenv|getenv|process\.env)\b.*
+      | [xX*._~#-]{3,}                                 # xxxxxxxx, ********, ........
+      | [A-Za-z0-9]{0,10}[_-]?[xX*]{8,}                # ghp_xxxxxxxx..., AKIAXXXXXXXXXXXX
+      | [A-Z0-9]{4,}EXAMPLE(?:KEY)?                    # the AWS documentation example ids
+      | wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY       # the AWS documentation example secret
+    )""",
+    re.VERBOSE | re.DOTALL,
 )
+# Words that may make up a placeholder such as "your-secret-access-key-goes-here-1234" or
+# "example-token-1": every word must be in the vocabulary and at least one must be a marker.
+_PLACEHOLDER_MARKERS = frozenset({"changeme", "your", "example", "dummy", "placeholder", "sample", "fake", "redacted",
+                                  "todo", "fixme", "replace", "insert", "here", "yourtoken", "yourkey"})
+_PLACEHOLDER_FILLER = frozenset({"change", "me", "my", "the", "a", "an", "of", "goes", "put", "set", "token", "key", "secret",
+                                 "password", "passwd", "pass", "api", "apikey", "access", "private", "public", "id", "value",
+                                 "test", "demo", "foo", "bar", "baz", "user", "username", "xxx", "xxxx", "x", "none", "null",
+                                 "empty", "string", "env", "var", "name", "file", "path", "to", "in", "for", "and"})
+
+
+def is_placeholder(value: str) -> bool:
+    """True when the entire value is a recognised placeholder (see the shape list and vocabulary above)."""
+    if _PLACEHOLDER_SHAPES.fullmatch(value):
+        return True
+    squashed = re.sub(r"change[-_ ]me", "changeme", value, flags=re.IGNORECASE)
+    words = [re.sub(r"\d+", "", w).lower() for w in re.split(r"[-_.:/\s]+", squashed)]
+    words = [w for w in words if w]
+    if not words or not all(w in _PLACEHOLDER_MARKERS or w in _PLACEHOLDER_FILLER for w in words):
+        return False
+    return any(w in _PLACEHOLDER_MARKERS for w in words)
 
 
 @dataclass(frozen=True)
@@ -324,7 +359,7 @@ def _scan_lines(rel: str, text: str, first_lineno: int, cfg: Config, profile: st
                 continue
             for m in rule.regex.finditer(line):
                 value = m.group(rule.group) if rule.group else m.group(0)
-                if rule.skip_placeholders and PLACEHOLDER_RE.search(value):
+                if rule.skip_placeholders and is_placeholder(value):
                     continue
                 if rule.entropy and entropy(value) < rule.entropy:
                     continue

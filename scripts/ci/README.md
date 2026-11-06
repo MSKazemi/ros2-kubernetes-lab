@@ -66,9 +66,12 @@ hashes; Docker auth blobs; bearer tokens; `*_SECRET` / `*_TOKEN` / `*_PASSWORD`
 assignments with a non-placeholder, high-entropy value; tracked `.env`, `*.pem`, `*.key`,
 `id_rsa`, `admin.conf`, `join-command.sh` and similar file names (`.env.example` is allowed).
 
-Placeholders such as `${{ secrets.X }}`, `<your-token>`, `changeme`, `${VAR}`,
-`os.environ[...]`, `AKIA...EXAMPLE`, low-entropy values and key names that merely contain
-the word (`TOKEN_FILE`, `secretFieldSelector`) are not reported.
+A value counts as a placeholder only when the **whole value** is one: `${{ secrets.X }}`, `<your-token>`,
+`${VAR}`, `$(cmd)`, `{{ var }}`, `secrets.X`, `os.environ[...]`, `changeme`, a run of `x`/`*`/`.`, a token
+prefix followed by `xxxxxxxx`, the AWS documentation example keys, or words drawn only from a placeholder
+vocabulary such as `your-secret-access-key-goes-here-1234`. A real-looking value that merely *contains*
+`example`, `todo`, `dummy` and the like is still reported. Low-entropy values and key names that merely
+contain the word (`TOKEN_FILE`, `secretFieldSelector`) are not reported either.
 
 With the `public` profile (default) the scanner can also flag **private-marker** paths and
 words. Nothing private is stored in any tracked file and there is **no default path**. Each
@@ -136,6 +139,10 @@ literals, optional `${{ }}`) and accept a job only if the guard is a top-level A
 `g && a || b` does not, because `&&` binds tighter than `||` and that means `(g && a) || b`,
 which runs in any repository; `a || g`, `!g && a`, `g != 'x'` and a guard text inside a string
 literal fail too, and so does anything the parser cannot read.
+
+`${{ }}` is removed only when it is one wrapper around the whole condition. Text outside it
+(`${{ a }} && ${{ b }}`) makes `apply` stop with an error naming the file and job (exit 2, file untouched)
+and `check` report the job as unguarded; fix those by hand.
 
 `apply` edits text, so comments, SHA pins and ordering are kept. It refuses (exit 2) to
 touch a job whose `if:` is a block scalar, quoted, multi-line or carries a trailing
