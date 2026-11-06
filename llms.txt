@@ -79,3 +79,13 @@ This `llms.txt` is an informational navigation aid, not a claim of special index
 - [LeRobot integration proposal](docs/cloud-robotics/HUGGINGFACE-INTEGRATION.md): unimplemented design and compatibility gates.
 - [Safety and ethics guidance](docs/cloud-robotics/ETHICS-SAFETY-AND-GOVERNANCE.md): simulation-only first phases and public data protection.
 - [2026-2027 research roadmap](docs/cloud-robotics/ROADMAP-2026-2027.md): prerequisites and linked implementation issues; no claimed benchmark results.
+
+## Offline research modules (simulation and synthetic data; not measurements)
+
+- [Experiment status registry](docs/EXPERIMENT-STATUS.md): what each module does, how to re-run it, and what it does not show.
+- [ROS 2 sequence probe](examples/ros2-sequence-probe/README.md): counts gaps, duplicates and reordering; the rclpy adapters are documented but not run.
+- [DDS resilience harness](experiments/e02-dds-resilience/README.md): scenario matrix and trace analysis on synthetic traces; no live results.
+- [Edge/cloud placement simulation](experiments/edge-cloud-placement/README.md): SIMULATION of local, remote and deadline-aware placement; not measured.
+- [Model-serving fairness simulation](experiments/model-serving-fairness/README.md): SIMULATION of FIFO, EDF and fair scheduling with a model cache; no GPU.
+- [LeRobot data-quality contract](examples/lerobot-data-quality/README.md): metadata validator for synthetic episodes; no LeRobot conversion.
+- [Agent mobility contract](docs/cloud-robotics/agent-mobility/README.md): mission-state handoff simulation; no robots.

@@ -13,6 +13,8 @@
 | Understand what is already in the repo and what is in a PR | [28 October repository audit](REPOSITORY-AUDIT-2026-10-28.md) | Observed GitHub snapshot |
 | Build/use the current ROS 2 image | [Jazzy image guide](../ROS2/jazzy/README.md) | Container-level smoke check documented |
 | Read the **historical** three-VM path | [Root README](../README.md), [cluster setup](../KubernetesClusterSetup/README.md) | Legacy Foxy / Kubernetes 1.29 / Weave Net; NOT current E2E verification |
+| See which experiments exist, how to re-run them and what they do **not** show | [Experiment status registry](EXPERIMENT-STATUS.md) | Offline code and tests only; no measured results |
+| Check pinned versions and which claims each one supports | [Version matrix](VERSION-MATRIX.md) | Read from source files, with line references |
 | Learn DDS networking and current limitations | [ROS 2 / Kubernetes / DDS guide](ROS2-KUBERNETES-DDS-GUIDE.md) | Partly implemented and partly proposed |
 | Work with existing Prometheus data | [Offline dataset guide](../DataAnalysis/dataset/README.md) | Historical sample; not a current benchmark |
 | See conceptual research scenarios | [Scenario Lab](scenario-lab/README.md), [website source](../site/scenarios/index.html) | Animated conceptual cases, **not measurements** |
@@ -23,11 +25,11 @@
 ## Canonical ownership: do not create a second source of truth
 
 1. **Program strategy and dependency order:** [PROGRAM-ROADMAP-2026-2027.md](PROGRAM-ROADMAP-2026-2027.md). The original [90-day modernization proposal](ROADMAP-2026.md) remains historical context and is **not** an up-to-date release status board.
-2. **Experiment inventory:** [EXPERIMENT-PORTFOLIO.md](EXPERIMENT-PORTFOLIO.md) and the authoritative implemented-code/results status in [site/scenarios/data/experiments.json](../site/scenarios/data/experiments.json). Adding a proposal here does not turn its status into completed evidence.
+2. **Experiment inventory:** [EXPERIMENT-PORTFOLIO.md](EXPERIMENT-PORTFOLIO.md) and the authoritative implemented-code/results status in [site/scenarios/data/experiments.json](../site/scenarios/data/experiments.json). Adding a proposal here does not turn its status into completed evidence. [EXPERIMENT-STATUS.md](EXPERIMENT-STATUS.md) adds per-experiment evidence cards (command, exit code, what is not claimed); it does not replace `experiments.json`, which wins if the two ever disagree.
 3. **Runtime/API/source code:** owned by the implementation directories and pinned upstream dependencies. A website animation or issue is not proof of a deployed workload.
 4. **Results:** raw data, immutable artifact manifest, analysis code and independent review, as defined in [RESULTS-PUBLICATION.md](scenario-lab/RESULTS-PUBLICATION.md); never copy example numbers as research outcomes.
 5. **Issue and review state:** live [GitHub issues](https://github.com/MSKazemi/ros2-kubernetes-lab/issues) and [pull requests](https://github.com/MSKazemi/ros2-kubernetes-lab/pulls) override snapshots in planning files. Issue numbers deliberately remain stable across the repository rename.
-6. **Agent conventions:** [AGENTS.md](../AGENTS.md), reused by [CLAUDE.md](../CLAUDE.md); do not duplicate agent rules in every track.
+6. **Agent conventions:** [AGENTS.md](../AGENTS.md), reused by Claude Code through a local, uncommitted `CLAUDE.md` (see the [AI-assisted contributing guide](AI_ASSISTED_CONTRIBUTING.md)); do not duplicate agent rules in every track.
 
 ## Four coordinated workstreams
 

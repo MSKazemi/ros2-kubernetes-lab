@@ -19,6 +19,16 @@
 
 **Recommended first public experiment:** E00 (make the harness real), followed by **E01** (first HF comparison) and **E02** (infrastructure). E03 and E04 can develop in parallel in separate PRs. **First high-value PhD paper direction:** E05; E07 and E08 are differentiated follow-up research directions.
 
+## Offline building blocks already in the repository
+
+Some experiments have an offline, CPU-only building block with unit tests. Each runs on **SYNTHETIC** fixtures or produces **SIMULATION** output, so none of them answers the falsifiable question in its row; they exist so a later measured run has a tested harness. Per-module status, commands and exclusions are in [EXPERIMENT-STATUS.md](EXPERIMENT-STATUS.md).
+
+- E02: [`experiments/e02-dds-resilience/`](../experiments/e02-dds-resilience/README.md) (scenario matrix and trace analysis) and [`examples/ros2-sequence-probe/`](../examples/ros2-sequence-probe/README.md) (the sequence-ID probe whose logs it reads).
+- E03 precursor: [`examples/lerobot-data-quality/`](../examples/lerobot-data-quality/README.md) (metadata contract only; no LeRobotDataset v3 conversion).
+- E05 related: [`experiments/edge-cloud-placement/`](../experiments/edge-cloud-placement/README.md) (simulated placement policies).
+- E07: [`experiments/model-serving-fairness/`](../experiments/model-serving-fairness/README.md) (simulated schedulers and cache).
+- E08: [`examples/cloud-robotics/agent-mobility/`](../examples/cloud-robotics/agent-mobility/README.md) (mission-state handoff simulator).
+
 ## Shared experiment runner and artifact structure (proposed, not yet on main)
 
 ```text

@@ -23,7 +23,7 @@ WORKERS     := $(CLUSTER)-worker,$(CLUSTER)-worker2
 VENV ?= .venv
 PY   := $(VENV)/bin/python
 
-.PHONY: help check-prereqs demo verify verify-negative clean analysis-venv analyze-sample analysis-offline analysis-test
+.PHONY: help check-prereqs demo verify verify-negative clean analysis-venv analyze-sample analysis-offline analysis-test offline-checks seqprobe-test e02-test placement-test placement-sim serving-test serving-sim lerobot-dq-test agent-mobility-test
 
 help:
 	@echo 'ROS 2 on Kubernetes - lightweight kind profile (cluster "$(CLUSTER)")'
@@ -45,6 +45,15 @@ help:
 	@echo '  make analyze-sample    summary CSV of the default committed sample -> DataAnalysis/output/ (stdlib only)'
 	@echo '  make analysis-offline  all samples + CPU plot + tests -> DataAnalysis/output/'
 	@echo '  make analysis-test     run the offline pytest suite'
+	@echo
+	@echo 'Offline research modules (standard library, CPU only; SYNTHETIC fixtures / SIMULATION output, no cluster, no ROS):'
+	@echo '  make offline-checks       all offline checks: shell, YAML, unit tests, Markdown links, site, secret scan'
+	@echo '  make seqprobe-test        ROS 2 sequence probe unit tests (examples/ros2-sequence-probe)'
+	@echo '  make e02-test             DDS resilience harness tests on synthetic traces (needs PyYAML)'
+	@echo '  make placement-test       edge/cloud placement simulator tests;  make placement-sim  prints its SIMULATION table'
+	@echo '  make serving-test         model-serving fairness simulator tests;  make serving-sim  prints its SIMULATION table'
+	@echo '  make lerobot-dq-test      LeRobot data-quality contract tests (examples/lerobot-data-quality)'
+	@echo '  make agent-mobility-test  mission-state handoff simulator tests (examples/cloud-robotics/agent-mobility)'
 	@echo
 	@echo 'Exit codes: 0 success; non-zero on any failure (missing prerequisite, build, cluster or verification failure).'
 
@@ -114,3 +123,31 @@ analysis-offline:
 
 analysis-test:
 	$(PY) -m pytest DataAnalysis
+
+# Offline research modules. Standard library only (e02 also needs PyYAML); no Docker, Kubernetes, ROS 2 or network.
+offline-checks:
+	bash scripts/ci/run-offline-checks.sh
+
+seqprobe-test:
+	python3 -m unittest discover -s examples/ros2-sequence-probe/tests -t examples/ros2-sequence-probe
+
+e02-test:
+	python3 -m unittest discover -s experiments/e02-dds-resilience/tests -t experiments/e02-dds-resilience
+
+placement-test:
+	python3 -m unittest discover -s experiments/edge-cloud-placement/tests -t experiments/edge-cloud-placement
+
+placement-sim:
+	python3 experiments/edge-cloud-placement/placement_sim.py --config experiments/edge-cloud-placement/configs/default.json
+
+serving-test:
+	python3 -m unittest discover -s experiments/model-serving-fairness/tests -t experiments/model-serving-fairness
+
+serving-sim:
+	python3 experiments/model-serving-fairness/run_simulation.py --seeds 1,2,3
+
+lerobot-dq-test:
+	python3 -m unittest discover -s examples/lerobot-data-quality/tests -t examples/lerobot-data-quality
+
+agent-mobility-test:
+	python3 -m unittest discover -s examples/cloud-robotics/agent-mobility/tests

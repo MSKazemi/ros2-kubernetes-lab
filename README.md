@@ -226,6 +226,21 @@ Python and Jupyter Notebook setups for analyzing data collected from the environ
 | Helm                 | v3.14.2     |
 | Visual Studio Code   | v1.89.0     |
 
+### Offline research modules (simulation and synthetic data)
+
+These directories hold small, CPU-only, standard-library modules with unit tests. Their output is **SIMULATION** or runs on **SYNTHETIC** fixtures; none of it is a measurement of ROS 2, DDS, Kubernetes, a model or a robot, and none of it has been run on a cluster. See the [experiment status registry](docs/EXPERIMENT-STATUS.md) for what each one does and does not show, and the [version matrix](docs/VERSION-MATRIX.md) for the pinned versions.
+
+| Module | What it is | Check |
+| --- | --- | --- |
+| [`examples/ros2-sequence-probe/`](examples/ros2-sequence-probe/README.md) | Sequence-ID probe that counts gaps, duplicates and reordering; the `rclpy` adapters are documented but not run | `make seqprobe-test` |
+| [`experiments/e02-dds-resilience/`](experiments/e02-dds-resilience/README.md) | Scenario matrix and trace analysis on synthetic traces; no live results | `make e02-test` |
+| [`experiments/edge-cloud-placement/`](experiments/edge-cloud-placement/README.md) | Simulated local, remote and deadline-aware placement with a non-actuating sink | `make placement-test` |
+| [`experiments/model-serving-fairness/`](experiments/model-serving-fairness/README.md) | Simulated FIFO, EDF and fair scheduling with a model cache | `make serving-test` |
+| [`examples/lerobot-data-quality/`](examples/lerobot-data-quality/README.md) | Metadata contract and validator for synthetic episodes; no LeRobot conversion | `make lerobot-dq-test` |
+| [`examples/cloud-robotics/agent-mobility/`](examples/cloud-robotics/agent-mobility/README.md) | Mission-state handoff contract and simulator ([docs](docs/cloud-robotics/agent-mobility/README.md)) | `make agent-mobility-test` |
+
+`make offline-checks` runs all of them together with the Markdown link, site and secret checks.
+
 ## Use Cases
 
 - **Study ROS 2 on Kubernetes locally** without cloud costs, on a sufficiently resourced workstation.
