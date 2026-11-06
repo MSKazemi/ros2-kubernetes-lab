@@ -78,10 +78,10 @@ spec:
       - "memory"
       minAllowed:
         cpu: "100m"       # Minimum CPU request: 0.1 cores
-        memory: "100Mi"   # Minimum memory request: 128 MiB
+        memory: "100Mi"   # Minimum memory request: 100 MiB
       maxAllowed:
-        cpu: "9000m"      # Maximum CPU request: 2 cores
-        memory: "9Gi"     # Maximum memory request: 4 GiB
+        cpu: "9000m"      # Maximum CPU request: 9 cores
+        memory: "9Gi"     # Maximum memory request: 9 GiB
 
 
                 # sleep 120 &&
